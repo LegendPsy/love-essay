@@ -315,6 +315,14 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 .no-js .torch{display:none}
 
 
+
+/* Article gate: only the hero is available before choosing a reading mode */
+body.reading-locked{height:100svh;overflow:hidden}
+body.reading-locked main,
+body.reading-locked footer,
+body.reading-locked .soundtrack-section,
+body.reading-locked .sticky-thesis{display:none!important}
+
 /* Reading mode + soundtrack */
 .reading-mode-dialog{
   position:fixed;inset:0;z-index:4900;display:grid;place-items:center;
@@ -382,24 +390,13 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
   opacity:0;pointer-events:none;transition:transform .28s ease,opacity .28s ease
 }
 .soundtrack-dock.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
-.soundtrack-dock-main{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center}
+.soundtrack-dock-main{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
 .soundtrack-jump{
   min-width:0;border:0;background:none;padding:5px 4px;text-align:left;color:#ece3d7;cursor:pointer
 }
 .soundtrack-jump strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:Georgia,serif;font-size:.94rem;font-weight:400}
 .soundtrack-jump span{display:block;margin-top:1px;color:#8b8680;font-size:.67rem}
-.soundtrack-toggle,.soundtrack-expand{
-  width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.035);color:#eee5d8;display:grid;place-items:center;cursor:pointer
-}
-.soundtrack-volume{
-  max-height:0;opacity:0;overflow:hidden;display:grid;grid-template-columns:auto 1fr auto;
-  align-items:center;gap:9px;padding:0 5px;transition:max-height .25s ease,opacity .2s ease,padding .25s ease
-}
-.soundtrack-dock.expanded .soundtrack-volume{max-height:50px;opacity:1;padding:9px 5px 2px}
-.soundtrack-volume label,.soundtrack-volume output{color:#8f8981;font-size:.67rem}
-.soundtrack-volume input{width:100%;height:28px;accent-color:var(--gold)}
-
+.soundtrack-toggle,
 /* footer */
 .footer{border-top:1px solid var(--line);padding:25px 0 calc(34px + env(safe-area-inset-bottom));color:#807c76;font-size:.74rem}
 .footer .shell{display:flex;justify-content:space-between;gap:16px}
@@ -471,7 +468,7 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 }
 </style>
 </head>
-<body>
+<body class="reading-locked">
 <div class="progress" aria-hidden="true"><i id="progress"></i></div>
 <div class="sticky-thesis" id="stickyThesis">Сейчас кажется: <strong id="stickyText">боль как будто доказывает любовь</strong></div>
 
@@ -525,6 +522,8 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
       class="soundtrack-youtube"
       id="soundtrackFrame"
       title="Julio Iglesias — If You Go Away"
+      src="https://www.youtube-nocookie.com/embed/jtTqRRHESg4?playsinline=1&rel=0&controls=1&enablejsapi=1&origin=https%3A%2F%2Flegendpsy.github.io"
+      loading="eager"
       allow="autoplay; encrypted-media; picture-in-picture"
       allowfullscreen>
     </iframe>
@@ -539,12 +538,6 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
   <div class="soundtrack-dock-main">
     <button class="soundtrack-jump" id="soundtrackJump" type="button"><strong>♪ If You Go Away</strong><span>Julio Iglesias · саундтрек</span></button>
     <button class="soundtrack-toggle" id="soundtrackToggle" type="button" aria-label="Пауза">Ⅱ</button>
-    <button class="soundtrack-expand" id="soundtrackExpand" type="button" aria-label="Громкость">⌃</button>
-  </div>
-  <div class="soundtrack-volume">
-    <label for="soundtrackVolume">тише</label>
-    <input id="soundtrackVolume" type="range" min="0" max="100" value="18" aria-label="Громкость музыки">
-    <output id="soundtrackVolumeValue">18%</output>
   </div>
 </div>
 
@@ -750,7 +743,7 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
   const $$=(s,c=document)=>[...c.querySelectorAll(s)];
 
 
-  /* Reading mode + YouTube soundtrack */
+  /* Reading mode + preloaded YouTube soundtrack */
   const startReading=$('#startReading');
   const modeDialog=$('#readingModeDialog');
   const readWithMusic=$('#readWithMusic');
@@ -760,14 +753,10 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
   const soundtrackFrame=$('#soundtrackFrame');
   const soundtrackDock=$('#soundtrackDock');
   const soundtrackToggle=$('#soundtrackToggle');
-  const soundtrackExpand=$('#soundtrackExpand');
-  const soundtrackVolume=$('#soundtrackVolume');
-  const soundtrackVolumeValue=$('#soundtrackVolumeValue');
   const soundtrackJump=$('#soundtrackJump');
 
-  let soundtrackLoaded=false;
+  let soundtrackReady=false;
   let soundtrackPlaying=false;
-  let soundtrackLevel=18;
 
   function openModeDialog(){
     if(!modeDialog)return;
@@ -779,58 +768,68 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
     modeDialog.classList.remove('open');
     modeDialog.setAttribute('aria-hidden','true');
   }
+  function unlockArticle(){
+    document.body.classList.remove('reading-locked');
+  }
   function goToArticle(){
-    document.querySelector('#intuition')?.scrollIntoView({behavior:'smooth',block:'start'});
+    unlockArticle();
+    requestAnimationFrame(()=>{
+      document.querySelector('#intuition')?.scrollIntoView({behavior:'smooth',block:'start'});
+    });
   }
   function ytCommand(func,args=[]){
-    if(!soundtrackFrame?.contentWindow || !soundtrackLoaded)return;
+    if(!soundtrackFrame?.contentWindow)return;
     soundtrackFrame.contentWindow.postMessage(JSON.stringify({
       event:'command',func,args
     }),'https://www.youtube-nocookie.com');
   }
-  function syncVolume(){
-    ytCommand('setVolume',[soundtrackLevel]);
-    soundtrackVolumeValue.textContent=soundtrackLevel+'%';
+  function showSoundtrack(){
+    soundtrackSection?.classList.add('active');
+    soundtrackDock?.classList.add('show');
+    soundtrackDock?.setAttribute('aria-hidden','false');
   }
-  function loadSoundtrack(){
-    soundtrackSection.classList.add('active');
-    if(!soundtrackLoaded){
-      const origin=encodeURIComponent('https://legendpsy.github.io');
-      soundtrackFrame.src='https://www.youtube-nocookie.com/embed/jtTqRRHESg4?autoplay=1&playsinline=1&rel=0&controls=1&enablejsapi=1&origin='+origin;
-      soundtrackLoaded=true;
-      soundtrackFrame.addEventListener('load',()=>{
-        [180,650,1300].forEach(ms=>setTimeout(()=>{
-          ytCommand('setVolume',[soundtrackLevel]);
-          ytCommand('playVideo',[]);
-        },ms));
-      },{once:true});
-    }else{
-      ytCommand('setVolume',[soundtrackLevel]);
-      ytCommand('playVideo',[]);
-    }
+  function requestPlayback(){
+    /* Important: this runs directly inside the user's tap on "Читать с музыкой".
+       The iframe has already been loaded, so iOS/Android can treat playVideo as
+       user-initiated playback instead of blocked autoplay. */
+    ytCommand('playVideo',[]);
     soundtrackPlaying=true;
     soundtrackToggle.textContent='Ⅱ';
     soundtrackToggle.setAttribute('aria-label','Пауза');
-    soundtrackDock.classList.add('show');
-    soundtrackDock.setAttribute('aria-hidden','false');
   }
+
+  soundtrackFrame?.addEventListener('load',()=>{
+    soundtrackReady=true;
+  });
 
   startReading?.addEventListener('click',e=>{
     e.preventDefault();
     openModeDialog();
   });
+
   readInSilence?.addEventListener('click',()=>{
     closeModeDialog();
     goToArticle();
   });
+
   modeClose?.addEventListener('click',closeModeDialog);
+
   modeDialog?.addEventListener('click',e=>{
     if(e.target===modeDialog)closeModeDialog();
   });
+
   readWithMusic?.addEventListener('click',()=>{
+    /* Send PLAY before closing the modal / scrolling, while this call is still
+       part of the physical user gesture. */
+    requestPlayback();
+    showSoundtrack();
     closeModeDialog();
-    loadSoundtrack();
-    setTimeout(goToArticle,120);
+    goToArticle();
+
+    /* A couple of quick retries cover the rare case where the iframe finished
+       loading a fraction of a second before/after the tap. */
+    setTimeout(()=>ytCommand('playVideo',[]),120);
+    setTimeout(()=>ytCommand('playVideo',[]),420);
   });
 
   soundtrackToggle?.addEventListener('click',()=>{
@@ -846,16 +845,9 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
       soundtrackToggle.setAttribute('aria-label','Пауза');
     }
   });
-  soundtrackExpand?.addEventListener('click',()=>{
-    soundtrackDock.classList.toggle('expanded');
-    soundtrackExpand.textContent=soundtrackDock.classList.contains('expanded')?'⌄':'⌃';
-  });
-  soundtrackVolume?.addEventListener('input',()=>{
-    soundtrackLevel=Number(soundtrackVolume.value);
-    syncVolume();
-  });
+
   soundtrackJump?.addEventListener('click',()=>{
-    soundtrackSection.scrollIntoView({behavior:'smooth',block:'center'});
+    soundtrackSection?.scrollIntoView({behavior:'smooth',block:'center'});
   });
 
   /* Reading progress */
