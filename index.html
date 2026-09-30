@@ -75,9 +75,9 @@ p{margin:0 0 .95em}
 
 /* sticky thesis */
 .sticky-thesis{
-  position:sticky;top:10px;z-index:60;margin:0 auto -48px;
-  width:max-content;max-width:calc(100% - 28px);
-  padding:7px 11px;border:1px solid rgba(255,255,255,.12);border-radius:999px;
+  position:sticky;top:7px;z-index:60;margin:0 auto -42px;
+  width:max-content;max-width:calc(100% - 22px);
+  padding:6px 10px;border:1px solid rgba(255,255,255,.12);border-radius:999px;
   background:rgba(10,12,13,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   color:#bbb5ad;font-size:.69rem;opacity:0;transform:translateY(-5px);transition:.28s
 }
@@ -128,24 +128,24 @@ p{margin:0 0 .95em}
 .scrolly{position:relative;padding:54px 0 18px;background:linear-gradient(#0b0d0f,#101315 42%,#0b0d0f)}
 .scrolly-head{padding-bottom:16px}
 .scrolly-stage{
-  position:sticky;top:0;height:50svh;display:grid;align-content:center;
+  position:sticky;top:45px;height:42svh;display:grid;align-content:start;padding-top:4px;
   z-index:20;pointer-events:none;
-  background:linear-gradient(180deg,#0b0d0f 0%,rgba(11,13,15,.99) 70%,rgba(11,13,15,.88) 84%,rgba(11,13,15,0) 100%)
+  background:linear-gradient(180deg,#0b0d0f 0%,rgba(11,13,15,.99) 72%,rgba(11,13,15,.86) 86%,rgba(11,13,15,0) 100%)
 }
 .visual-card{
-  border:1px solid var(--line);border-radius:24px;
-  background:#0c0e10;box-shadow:0 22px 70px rgba(0,0,0,.42);padding:18px
+  border:1px solid var(--line);border-radius:20px;
+  background:#0c0e10;box-shadow:0 18px 54px rgba(0,0,0,.38);padding:13px 14px
 }
-.visual-title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;font-size:.74rem;color:var(--muted)}
-.visual-title strong{font-family:Georgia,serif;font-size:1.12rem;color:var(--paper);font-weight:400}
-.tracks{display:grid;gap:11px}
-.track{display:grid;grid-template-columns:72px 1fr 40px;gap:8px;align-items:center;font-size:.67rem;color:#aaa}
-.bar{height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.visual-title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;font-size:.69rem;color:var(--muted)}
+.visual-title strong{font-family:Georgia,serif;font-size:1.02rem;color:var(--paper);font-weight:400}
+.tracks{display:grid;gap:7px}
+.track{display:grid;grid-template-columns:64px 1fr 32px;gap:7px;align-items:center;font-size:.64rem;color:#aaa}
+.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
 .bar i{display:block;height:100%;width:var(--v,5%);border-radius:inherit;background:linear-gradient(90deg,var(--ember),#c66c4f);transition:width .58s cubic-bezier(.2,.8,.2,1)}
 .track.love .bar i{background:linear-gradient(90deg,var(--gold),#efd09f)}
 .track b{text-align:right;color:#d9d0c5;font-weight:600}
 .track.love b{color:var(--gold)}
-.equation{margin-top:14px;padding-top:13px;border-top:1px solid var(--line);font-family:Georgia,serif;font-size:1.2rem;line-height:1.14}
+.equation{margin-top:9px;padding-top:9px;border-top:1px solid var(--line);font-family:Georgia,serif;font-size:1.07rem;line-height:1.12}
 .equation .equals{color:var(--gold);transition:.3s}
 .visual-card.broken .equation .equals{text-decoration:line-through;color:#8e8b86}
 .visual-card.broken .track.love .bar{outline:1px dashed rgba(211,160,94,.55);background:transparent}
@@ -164,7 +164,7 @@ p{margin:0 0 .95em}
 
 .story-step{position:relative;overflow:hidden}
 .story-step::before{
-    content:"";position:absolute;z-index:0;left:7%;right:7%;top:7%;
+    content:"";position:absolute;z-index:0;left:7%;right:7%;top:50%;transform:translateY(-50%);
     height:1px;opacity:.7;pointer-events:none;
     background:linear-gradient(90deg,transparent 0%,rgba(211,160,94,.18) 18%,rgba(234,204,160,.62) 50%,rgba(211,160,94,.18) 82%,transparent 100%);
     box-shadow:0 0 12px rgba(211,160,94,.18),0 0 34px rgba(211,160,94,.08)
@@ -172,7 +172,7 @@ p{margin:0 0 .95em}
 .story-step>div{position:relative;z-index:1;backdrop-filter:none}
 .story-step::after{
   content:"";position:absolute;z-index:0;pointer-events:none;
-  left:12%;right:12%;top:10%;height:34%;
+  left:12%;right:12%;top:50%;height:34%;transform:translateY(-50%);
   background:radial-gradient(ellipse at 50% 50%,rgba(211,160,94,.055) 0%,rgba(211,160,94,.018) 42%,transparent 72%);
   filter:blur(10px)
 }
@@ -181,6 +181,32 @@ p{margin:0 0 .95em}
 .no-js .story-steps{padding-top:8px}
 .no-js .story-step{min-height:0;padding:10px 0}
 .no-js .story-step>div{background:none}
+
+
+/* Sequential interaction gates */
+.gate-hint{
+  display:none;margin:18px auto 0;width:max-content;max-width:100%;
+  padding:8px 12px;border:1px solid rgba(211,160,94,.22);border-radius:999px;
+  background:rgba(211,160,94,.045);color:#aa9c8b;text-align:center;
+  font-size:.7rem;line-height:1.3;letter-spacing:.025em
+}
+body.gate-choice #intuition ~ *,
+body.gate-meter #meter ~ *,
+body.gate-factors #factors ~ *,
+body.gate-trap #trap ~ *{display:none!important}
+
+body.gate-choice [data-gate-hint="choice"],
+body.gate-meter [data-gate-hint="meter"],
+body.gate-factors [data-gate-hint="factors"],
+body.gate-trap [data-gate-hint="trap"]{display:block}
+
+.gate-release{
+  animation:gateRelease .42s ease both
+}
+@keyframes gateRelease{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:none}
+}
 
 /* meter */
 .meter{
@@ -457,7 +483,7 @@ body.reading-locked .sticky-thesis{display:none!important}
 @media(min-width:760px){
   .section{padding:98px 0}.prose.section{padding:72px 0}
   .choice-grid{grid-template-columns:1fr 1fr}.choice{min-height:290px;padding:26px}
-  .scrolly-stage{height:60svh}.visual-card{padding:27px}.story-step{min-height:58svh}
+  .scrolly-stage{top:52px;height:54svh;padding-top:8px}.visual-card{padding:22px}.story-step{min-height:58svh}
   .meter-card{padding:30px}
   .factors{padding-top:210px!important;padding-bottom:210px!important}
   .romance summary{padding:28px;font-size:2.35rem}.romance details p{padding:0 28px 24px}
@@ -470,7 +496,7 @@ body.reading-locked .sticky-thesis{display:none!important}
 }
 </style>
 </head>
-<body class="reading-locked">
+<body class="reading-locked gate-choice">
 <div class="progress" aria-hidden="true"><i id="progress"></i></div>
 <div class="sticky-thesis" id="stickyThesis">Сейчас кажется: <strong id="stickyText">боль как будто доказывает любовь</strong></div>
 
@@ -574,6 +600,7 @@ body.reading-locked .sticky-thesis{display:none!important}
         <p class="storm">Это самый интуитивный выбор: больше страдания кажется большей любовью. Но вы только что оценили интенсивность реакции — не величину любви.</p>
       </div>
     </div>
+    <div class="gate-hint" data-gate-hint="choice">Выберите один вариант — и чтение продолжится.</div>
   </div>
 </section>
 
@@ -637,6 +664,7 @@ body.reading-locked .sticky-thesis{display:none!important}
     <div class="metric unknown"><span>Сила любви</span><strong>неизвестна</strong></div>
     <p class="meter-note" id="meterNote">Более сильная реакция всё ещё не становится доказательством более сильной любви.</p>
   </div>
+  <div class="gate-hint" data-gate-hint="meter">Подвигайте шкалу, чтобы продолжить.</div>
 </div></section>
 
 <section class="section factors" id="factors"><div class="shell">
@@ -672,6 +700,7 @@ body.reading-locked .sticky-thesis{display:none!important}
       <div class="factor-panel p6"><small>Сейчас подсвечено</small><h3>Чувствительность нервной системы</h3><p>Люди различаются по интенсивности и скорости эмоциональной реакции. Это тоже не шкала любви.</p></div>
     </div>
   </div>
+  <div class="gate-hint" data-gate-hint="factors">Выберите любой фактор, чтобы продолжить.</div>
 </div></section>
 
 <section class="section prose"><div class="shell">
@@ -691,6 +720,7 @@ body.reading-locked .sticky-thesis{display:none!important}
     <details><summary>«Он с ума сходит от ревности»</summary><p>Ревность может быть связана с привязанностью, но также с угрозой, контролем, мыслями и непереносимостью неопределённости.</p></details>
     <details><summary>«Она после расставания вообще перестала жить»</summary><p>Разрушение после потери может быть огромным. Но превращать степень разрушенности в шкалу любви — отдельный вывод, а не факт.</p></details>
   </div>
+  <div class="gate-hint" data-gate-hint="trap">Откройте хотя бы одну фразу — и текст продолжится.</div>
 </div></section>
 
 <section class="section prose"><div class="shell">
@@ -851,6 +881,39 @@ body.reading-locked .sticky-thesis{display:none!important}
   soundtrackJump?.addEventListener('click',()=>{
     soundtrackSection?.scrollIntoView({behavior:'smooth',block:'center'});
   });
+
+
+  /* Sequential interaction checkpoints */
+  function releaseGate(currentClass,nextClass,nextSectionId){
+    if(!document.body.classList.contains(currentClass))return;
+    document.body.classList.remove(currentClass);
+    if(nextClass)document.body.classList.add(nextClass);
+    const next=nextSectionId?document.getElementById(nextSectionId):null;
+    if(next){
+      next.classList.add('gate-release');
+      setTimeout(()=>next.classList.remove('gate-release'),500);
+    }
+  }
+
+  $('input[name="loveChoice"]').forEach(r=>r.addEventListener('change',()=>{
+    releaseGate('gate-choice','gate-meter','meter');
+  },{once:true}));
+
+  let meterTouched=false;
+  range?.addEventListener('input',()=>{
+    if(!meterTouched){
+      meterTouched=true;
+      releaseGate('gate-meter','gate-factors','factors');
+    }
+  });
+
+  $('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+    releaseGate('gate-factors','gate-trap','trap');
+  },{once:true}));
+
+  $('.romance details').forEach(d=>d.addEventListener('toggle',()=>{
+    if(d.open)releaseGate('gate-trap',null,null);
+  }));
 
   /* Reading progress */
   const progress=$('#progress');
