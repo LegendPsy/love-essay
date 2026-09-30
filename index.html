@@ -2471,19 +2471,14 @@ body.reading-locked .sticky-thesis{display:none!important}
     return await response.json();
   }
 
-  function startCloudSequence(items){
-    clearCloudStage();
-
+  function startCloudSequence(items,ownNote){
     const ownBody=lastOwnComment.trim();
-    const ownItem={body:ownBody,created_at:new Date().toISOString()};
     const pool=shuffle((items||[]).filter(item=>{
       const body=(item?.body||'').trim();
       return body && (!ownBody || body!==ownBody);
     }));
 
-    let ownNote=null;
-    if(ownBody){
-      ownNote=makeCloudNote(ownItem,{own:true,center:true});
+    if(ownNote){
       setTimeout(()=>{
         if(!ownNote?.isConnected)return;
         const pos=cloudPosition();
@@ -2539,25 +2534,22 @@ body.reading-locked .sticky-thesis{display:none!important}
     closeCloudFocus();
     clearCloudStage();
 
-    if(lastOwnComment){
-      makeCloudNote(
-        {body:lastOwnComment,created_at:new Date().toISOString()},
-        {own:true,center:true}
-      );
+    if(commentCloudEmpty){
+      commentCloudEmpty.textContent='Пока здесь только ваш голос.';
     }
+
+    const ownNote=lastOwnComment
+      ? makeCloudNote(
+          {body:lastOwnComment,created_at:new Date().toISOString()},
+          {own:true,center:true}
+        )
+      : null;
 
     try{
       const items=await fetchCloudComments();
-      startCloudSequence(items);
+      startCloudSequence(items,ownNote);
     }catch(err){
       console.error('Comments cloud load failed',err);
-      clearCloudStage();
-      if(lastOwnComment){
-        makeCloudNote(
-          {body:lastOwnComment,created_at:new Date().toISOString()},
-          {own:true,center:true}
-        );
-      }
       if(commentCloudEmpty){
         commentCloudEmpty.textContent='Не удалось загрузить другие комментарии.';
         setTimeout(()=>commentCloudEmpty.classList.add('show'),500);
