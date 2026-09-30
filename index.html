@@ -314,6 +314,92 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 .js .questions p:last-child.lit{color:#e5b879!important}
 .no-js .torch{display:none}
 
+
+/* Reading mode + soundtrack */
+.reading-mode-dialog{
+  position:fixed;inset:0;z-index:4900;display:grid;place-items:center;
+  padding:22px;background:rgba(3,4,5,.78);backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .22s ease,visibility .22s ease
+}
+.reading-mode-dialog.open{opacity:1;visibility:visible;pointer-events:auto}
+.reading-mode-card{
+  width:min(100%,430px);border:1px solid rgba(255,255,255,.14);border-radius:26px;
+  background:linear-gradient(180deg,rgba(18,20,21,.98),rgba(9,11,12,.98));
+  padding:24px 20px 20px;box-shadow:0 30px 90px rgba(0,0,0,.48)
+}
+.reading-mode-card .kicker{margin-bottom:10px}
+.reading-mode-card h3{
+  margin:0 0 12px;font-family:Georgia,"Times New Roman",serif;font-size:2rem;
+  line-height:1.02;font-weight:400;color:#f0e7da
+}
+.reading-mode-card p{margin:0 0 20px;color:#aaa49c;font-size:.92rem;line-height:1.5}
+.reading-mode-song{
+  display:flex;gap:12px;align-items:center;margin:0 0 18px;padding:13px 14px;
+  border:1px solid rgba(211,160,94,.25);border-radius:18px;background:rgba(211,160,94,.055)
+}
+.reading-mode-song i{font-style:normal;font-size:1.3rem;color:var(--gold)}
+.reading-mode-song strong{display:block;color:#eee4d7;font-size:.9rem}
+.reading-mode-song span{display:block;margin-top:2px;color:#8f8981;font-size:.75rem}
+.reading-mode-actions{display:grid;gap:9px}
+.reading-mode-music,.reading-mode-silent{
+  min-height:52px;border-radius:15px;padding:13px 16px;cursor:pointer;font:700 .86rem/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif
+}
+.reading-mode-music{border:1px solid #ead9c0;background:#ead9c0;color:#111315}
+.reading-mode-silent{border:1px solid rgba(255,255,255,.16);background:transparent;color:#d9d0c4}
+.reading-mode-close{
+  display:block;margin:13px auto 0;border:0;background:none;color:#77736d;
+  padding:5px 10px;cursor:pointer;font-size:.76rem
+}
+
+.soundtrack-section{
+  display:none;padding:28px 0 32px;background:
+    radial-gradient(circle at 50% 0,rgba(211,160,94,.08),transparent 45%),#0b0d0f;
+  border-bottom:1px solid rgba(255,255,255,.06)
+}
+.soundtrack-section.active{display:block}
+.soundtrack-card{
+  width:min(100% - 2*var(--pad),420px);margin:0 auto;border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;padding:15px;background:#0e1011;box-shadow:0 24px 70px rgba(0,0,0,.34)
+}
+.soundtrack-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.soundtrack-meta div:first-child{min-width:0}
+.soundtrack-meta small{display:block;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;font-size:.61rem;font-weight:750}
+.soundtrack-meta strong{display:block;margin-top:3px;font-family:Georgia,serif;font-weight:400;font-size:1.22rem;color:#eee5d8}
+.soundtrack-meta span{display:block;margin-top:2px;color:#89847d;font-size:.75rem}
+.soundtrack-youtube{
+  width:100%;height:200px;border:0;border-radius:16px;background:#050607;display:block
+}
+.soundtrack-fallback{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:11px;color:#77736d;font-size:.7rem}
+.soundtrack-fallback a{color:#bda786;text-underline-offset:3px}
+
+.soundtrack-dock{
+  position:fixed;z-index:4200;left:50%;bottom:max(12px,calc(8px + env(safe-area-inset-bottom)));
+  transform:translate(-50%,calc(100% + 28px));width:min(calc(100% - 24px),430px);
+  border:1px solid rgba(255,255,255,.14);border-radius:20px;background:rgba(8,10,11,.92);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 18px 60px rgba(0,0,0,.38);padding:10px 11px;
+  opacity:0;pointer-events:none;transition:transform .28s ease,opacity .28s ease
+}
+.soundtrack-dock.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.soundtrack-dock-main{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center}
+.soundtrack-jump{
+  min-width:0;border:0;background:none;padding:5px 4px;text-align:left;color:#ece3d7;cursor:pointer
+}
+.soundtrack-jump strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:Georgia,serif;font-size:.94rem;font-weight:400}
+.soundtrack-jump span{display:block;margin-top:1px;color:#8b8680;font-size:.67rem}
+.soundtrack-toggle,.soundtrack-expand{
+  width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.035);color:#eee5d8;display:grid;place-items:center;cursor:pointer
+}
+.soundtrack-volume{
+  max-height:0;opacity:0;overflow:hidden;display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;gap:9px;padding:0 5px;transition:max-height .25s ease,opacity .2s ease,padding .25s ease
+}
+.soundtrack-dock.expanded .soundtrack-volume{max-height:50px;opacity:1;padding:9px 5px 2px}
+.soundtrack-volume label,.soundtrack-volume output{color:#8f8981;font-size:.67rem}
+.soundtrack-volume input{width:100%;height:28px;accent-color:var(--gold)}
+
 /* footer */
 .footer{border-top:1px solid var(--line);padding:25px 0 calc(34px + env(safe-area-inset-bottom));color:#807c76;font-size:.74rem}
 .footer .shell{display:flex;justify-content:space-between;gap:16px}
@@ -397,7 +483,7 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
     <h1>Любовь<br><span>не измеряется</span><br>страданием</h1>
     <p>Почему тревогу, ревность и невозможность жить без другого так легко принять за доказательство глубины чувств.</p>
     <div class="hero-actions">
-      <a class="start" href="#intuition">Начать читать <span>↓</span></a>
+      <a class="start" id="startReading" href="#intuition">Начать читать <span>↓</span></a>
       <button class="cover-open" id="coverOpen" type="button" aria-haspopup="dialog">Посмотреть изображение ⛶</button>
     </div>
     <noscript><div class="nojs-note">Этот просмотрщик не запускает JavaScript. Статья всё равно доступна целиком, а часть интерактивов работает без скриптов. Для полной версии — с анимацией шкал и «фонариком» — откройте этот же файл в обычном браузере.</div></noscript>
@@ -410,6 +496,56 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
   </div>
   <button class="cover-viewer-close" id="coverViewerClose" type="button" aria-label="Закрыть изображение">×</button>
   <div class="cover-viewer-hint">Два пальца — увеличить · коснитесь изображения — закрыть</div>
+</div>
+
+
+<div class="reading-mode-dialog" id="readingModeDialog" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="readingModeTitle">
+  <div class="reading-mode-card">
+    <div class="kicker">Режим чтения</div>
+    <h3 id="readingModeTitle">Эту статью можно прочитать в тишине. А можно — под одну песню.</h3>
+    <p>Музыка включится после вашего выбора и останется фоном во время чтения.</p>
+    <div class="reading-mode-song">
+      <i>♪</i>
+      <div><strong>If You Go Away</strong><span>Julio Iglesias</span></div>
+    </div>
+    <div class="reading-mode-actions">
+      <button class="reading-mode-music" id="readWithMusic" type="button">♪ Читать с музыкой</button>
+      <button class="reading-mode-silent" id="readInSilence" type="button">Продолжить в тишине</button>
+    </div>
+    <button class="reading-mode-close" id="readingModeClose" type="button">Вернуться</button>
+  </div>
+</div>
+
+<section class="soundtrack-section" id="soundtrackSection" aria-label="Саундтрек к статье">
+  <div class="soundtrack-card">
+    <div class="soundtrack-meta">
+      <div><small>Саундтрек к чтению</small><strong>If You Go Away</strong><span>Julio Iglesias</span></div>
+    </div>
+    <iframe
+      class="soundtrack-youtube"
+      id="soundtrackFrame"
+      title="Julio Iglesias — If You Go Away"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+    <div class="soundtrack-fallback">
+      <span>Если музыка не запустилась автоматически — нажмите Play в плеере.</span>
+      <a href="https://youtu.be/jtTqRRHESg4" target="_blank" rel="noopener">YouTube ↗</a>
+    </div>
+  </div>
+</section>
+
+<div class="soundtrack-dock" id="soundtrackDock" aria-hidden="true">
+  <div class="soundtrack-dock-main">
+    <button class="soundtrack-jump" id="soundtrackJump" type="button"><strong>♪ If You Go Away</strong><span>Julio Iglesias · саундтрек</span></button>
+    <button class="soundtrack-toggle" id="soundtrackToggle" type="button" aria-label="Пауза">Ⅱ</button>
+    <button class="soundtrack-expand" id="soundtrackExpand" type="button" aria-label="Громкость">⌃</button>
+  </div>
+  <div class="soundtrack-volume">
+    <label for="soundtrackVolume">тише</label>
+    <input id="soundtrackVolume" type="range" min="0" max="100" value="18" aria-label="Громкость музыки">
+    <output id="soundtrackVolumeValue">18%</output>
+  </div>
 </div>
 
 <main>
@@ -612,6 +748,115 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 (()=>{
   const $=(s,c=document)=>c.querySelector(s);
   const $$=(s,c=document)=>[...c.querySelectorAll(s)];
+
+
+  /* Reading mode + YouTube soundtrack */
+  const startReading=$('#startReading');
+  const modeDialog=$('#readingModeDialog');
+  const readWithMusic=$('#readWithMusic');
+  const readInSilence=$('#readInSilence');
+  const modeClose=$('#readingModeClose');
+  const soundtrackSection=$('#soundtrackSection');
+  const soundtrackFrame=$('#soundtrackFrame');
+  const soundtrackDock=$('#soundtrackDock');
+  const soundtrackToggle=$('#soundtrackToggle');
+  const soundtrackExpand=$('#soundtrackExpand');
+  const soundtrackVolume=$('#soundtrackVolume');
+  const soundtrackVolumeValue=$('#soundtrackVolumeValue');
+  const soundtrackJump=$('#soundtrackJump');
+
+  let soundtrackLoaded=false;
+  let soundtrackPlaying=false;
+  let soundtrackLevel=18;
+
+  function openModeDialog(){
+    if(!modeDialog)return;
+    modeDialog.classList.add('open');
+    modeDialog.setAttribute('aria-hidden','false');
+  }
+  function closeModeDialog(){
+    if(!modeDialog)return;
+    modeDialog.classList.remove('open');
+    modeDialog.setAttribute('aria-hidden','true');
+  }
+  function goToArticle(){
+    document.querySelector('#intuition')?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function ytCommand(func,args=[]){
+    if(!soundtrackFrame?.contentWindow || !soundtrackLoaded)return;
+    soundtrackFrame.contentWindow.postMessage(JSON.stringify({
+      event:'command',func,args
+    }),'https://www.youtube-nocookie.com');
+  }
+  function syncVolume(){
+    ytCommand('setVolume',[soundtrackLevel]);
+    soundtrackVolumeValue.textContent=soundtrackLevel+'%';
+  }
+  function loadSoundtrack(){
+    soundtrackSection.classList.add('active');
+    if(!soundtrackLoaded){
+      const origin=encodeURIComponent('https://legendpsy.github.io');
+      soundtrackFrame.src='https://www.youtube-nocookie.com/embed/jtTqRRHESg4?autoplay=1&playsinline=1&rel=0&controls=1&enablejsapi=1&origin='+origin;
+      soundtrackLoaded=true;
+      soundtrackFrame.addEventListener('load',()=>{
+        [180,650,1300].forEach(ms=>setTimeout(()=>{
+          ytCommand('setVolume',[soundtrackLevel]);
+          ytCommand('playVideo',[]);
+        },ms));
+      },{once:true});
+    }else{
+      ytCommand('setVolume',[soundtrackLevel]);
+      ytCommand('playVideo',[]);
+    }
+    soundtrackPlaying=true;
+    soundtrackToggle.textContent='Ⅱ';
+    soundtrackToggle.setAttribute('aria-label','Пауза');
+    soundtrackDock.classList.add('show');
+    soundtrackDock.setAttribute('aria-hidden','false');
+  }
+
+  startReading?.addEventListener('click',e=>{
+    e.preventDefault();
+    openModeDialog();
+  });
+  readInSilence?.addEventListener('click',()=>{
+    closeModeDialog();
+    goToArticle();
+  });
+  modeClose?.addEventListener('click',closeModeDialog);
+  modeDialog?.addEventListener('click',e=>{
+    if(e.target===modeDialog)closeModeDialog();
+  });
+  readWithMusic?.addEventListener('click',()=>{
+    closeModeDialog();
+    loadSoundtrack();
+    setTimeout(goToArticle,120);
+  });
+
+  soundtrackToggle?.addEventListener('click',()=>{
+    if(soundtrackPlaying){
+      ytCommand('pauseVideo',[]);
+      soundtrackPlaying=false;
+      soundtrackToggle.textContent='▶';
+      soundtrackToggle.setAttribute('aria-label','Продолжить');
+    }else{
+      ytCommand('playVideo',[]);
+      soundtrackPlaying=true;
+      soundtrackToggle.textContent='Ⅱ';
+      soundtrackToggle.setAttribute('aria-label','Пауза');
+    }
+  });
+  soundtrackExpand?.addEventListener('click',()=>{
+    soundtrackDock.classList.toggle('expanded');
+    soundtrackExpand.textContent=soundtrackDock.classList.contains('expanded')?'⌄':'⌃';
+  });
+  soundtrackVolume?.addEventListener('input',()=>{
+    soundtrackLevel=Number(soundtrackVolume.value);
+    syncVolume();
+  });
+  soundtrackJump?.addEventListener('click',()=>{
+    soundtrackSection.scrollIntoView({behavior:'smooth',block:'center'});
+  });
 
   /* Reading progress */
   const progress=$('#progress');
