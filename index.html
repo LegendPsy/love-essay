@@ -528,6 +528,11 @@ body.reading-locked .sticky-thesis{display:none!important}
 .comments-card h2{margin:8px 0 10px;font-size:clamp(2rem,7vw,3.8rem);line-height:.98}
 .comments-intro{margin:0 0 24px;color:var(--muted);font-size:1rem;line-height:1.65}
 .comment-form{display:grid;gap:12px}
+.comment-hp{
+  position:absolute!important;left:-10000px!important;top:auto!important;
+  width:1px!important;height:1px!important;overflow:hidden!important;
+  opacity:0!important;pointer-events:none!important
+}
 .comment-form label{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(236,228,216,.62)}
 .comment-form textarea{
   width:100%;min-height:132px;resize:vertical;padding:16px 17px;border-radius:16px;
@@ -834,9 +839,13 @@ body.reading-locked .sticky-thesis{display:none!important}
     <div class="comments-card">
       <div class="kicker">08 · После прочтения</div>
       <h2>Оставить что-то после себя</h2>
-      <p class="comments-intro">Отзыв, мысль, пожелание или благодарность. Без регистрации и без имени. То, что вы напишете, смогут прочитать следующие читатели.</p>
+      <p class="comments-intro">Отзыв, мысль, пожелание или благодарность. Без регистрации и смс :) . То, что вы напишете, смогут прочитать следующие читатели.</p>
 
       <form class="comment-form" id="commentForm">
+        <div class="comment-hp" aria-hidden="true">
+          <label for="commentWebsite">Сайт</label>
+          <input id="commentWebsite" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
         <label for="commentBody">Ваше сообщение</label>
         <textarea id="commentBody" maxlength="2000" placeholder="Напишите здесь…" required></textarea>
         <div class="comment-form-row">
@@ -1321,6 +1330,7 @@ body.reading-locked .sticky-thesis{display:none!important}
   const commentChars=$('#commentChars');
   const commentSubmit=$('#commentSubmit');
   const commentStatus=$('#commentStatus');
+  const commentWebsite=$('#commentWebsite');
 
   const SUPABASE_URL='https://eswoqjxioavegjnhosbb.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY='sb_publishable_Czx1d7slcJQgqhjOS0miWw_Na2Yrnvb';
@@ -1395,27 +1405,40 @@ body.reading-locked .sticky-thesis{display:none!important}
     commentStatus.textContent='Сохраняю…';
 
     try{
-      const response=await fetch(SUPABASE_URL+'/rest/v1/comments',{
+      const response=await fetch(SUPABASE_URL+'/functions/v1/submit-comment',{
         method:'POST',
-        headers:{
-          apikey:SUPABASE_PUBLISHABLE_KEY,
-          'Content-Type':'application/json',
-          Prefer:'return=minimal'
-        },
+        headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
           article_id:COMMENTS_ARTICLE_ID,
-          body
+          body,
+          website:commentWebsite?.value||''
         })
       });
-      if(!response.ok)throw new Error('save '+response.status);
+
+      let result={};
+      try{result=await response.json()}catch(_){}
+
+      if(!response.ok){
+        const code=result?.error||('save_'+response.status);
+        throw new Error(code);
+      }
 
       commentBody.value='';
+      if(commentWebsite)commentWebsite.value='';
       if(commentChars)commentChars.textContent='0';
       commentStatus.textContent='Сообщение сохранено. Спасибо.';
       await loadComments();
     }catch(err){
       console.error('Comment save failed',err);
-      commentStatus.textContent='Не удалось сохранить сообщение. Попробуйте ещё раз чуть позже.';
+      if(err?.message==='rate_limit'){
+        commentStatus.textContent='Слишком много сообщений подряд. Попробуйте через несколько минут.';
+      }else if(err?.message==='duplicate_comment'){
+        commentStatus.textContent='Такое сообщение уже было отправлено недавно.';
+      }else if(err?.message==='too_many_links'){
+        commentStatus.textContent='В сообщении слишком много ссылок.';
+      }else{
+        commentStatus.textContent='Не удалось сохранить сообщение. Попробуйте ещё раз чуть позже.';
+      }
     }finally{
       commentSubmit.disabled=false;
     }
