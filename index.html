@@ -1577,11 +1577,11 @@ body.reading-locked .sticky-thesis{display:none!important}
     }catch(err){
       console.error('Rating save failed',err);
       ratingSaving=false;
-      ratingStatus.textContent=err?.message==='rate_limit'
-        ? 'Слишком много попыток. Попробуйте немного позже.'
-        : 'Не удалось сохранить оценку. Включите фонарик и попробуйте ещё раз.';
       setOn(true);
       ratingChoices.forEach(x=>x.disabled=false);
+      ratingStatus.textContent=err?.message==='rate_limit'
+        ? 'Слишком много попыток. Попробуйте немного позже.'
+        : 'Не удалось сохранить оценку. Попробуйте ещё раз.';
     }
   }));
 
