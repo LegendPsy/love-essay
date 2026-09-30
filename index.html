@@ -200,14 +200,46 @@ body.gate-meter #meter ~ *,
 body.gate-factors #factors ~ *,
 body.gate-trap #trap ~ *{display:none!important}
 
-body.gate-final #commentsSection,
-body.gate-final #commentsSection ~ *{display:none!important}
+/* Final gate: post-article content stays in the document and can be scrolled,
+   but remains visually obscured and non-interactive until the rating is sent. */
+#commentsSection>.shell,
+#continue>.shell,
+.footer>.shell{
+  transition:
+    filter 1.15s cubic-bezier(.16,1,.3,1),
+    opacity .95s cubic-bezier(.16,1,.3,1),
+    transform 1.15s cubic-bezier(.16,1,.3,1);
+  transform-origin:50% 0
+}
+body.gate-final #commentsSection>.shell,
+body.gate-final #continue>.shell,
+body.gate-final .footer>.shell{
+  filter:blur(20px) saturate(.58) brightness(.64);
+  opacity:.26;
+  transform:scale(.985);
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-select:none
+}
+#commentsSection::after,
+#continue::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:0;
+  background:
+    linear-gradient(180deg,rgba(5,6,7,.16),rgba(5,6,7,.32)),
+    radial-gradient(circle at 50% 12%,rgba(211,160,94,.04),transparent 34%);
+  transition:opacity .9s cubic-bezier(.16,1,.3,1)
+}
+body.gate-final #commentsSection::after,
+body.gate-final #continue::after{opacity:1}
 
 body.gate-choice footer,
 body.gate-meter footer,
 body.gate-factors footer,
-body.gate-trap footer,
-body.gate-final footer{display:none!important}
+body.gate-trap footer{display:none!important}
 
 body.gate-choice [data-gate-hint="choice"],
 body.gate-meter [data-gate-hint="meter"],
@@ -220,6 +252,16 @@ body.gate-trap [data-gate-hint="trap"]{display:block}
 @keyframes gateRelease{
   from{opacity:0;transform:translateY(10px)}
   to{opacity:1;transform:none}
+}
+body.post-reveal #commentsSection>.shell,
+body.post-reveal #continue>.shell,
+body.post-reveal .footer>.shell{
+  animation:postRevealGlow 1.15s cubic-bezier(.16,1,.3,1) both
+}
+@keyframes postRevealGlow{
+  0%{filter:blur(20px) saturate(.58) brightness(.64);opacity:.26;transform:scale(.985)}
+  58%{filter:blur(2.5px) saturate(1.04) brightness(1.06);opacity:1;transform:scale(1.002)}
+  100%{filter:none;opacity:1;transform:none}
 }
 
 /* meter */
@@ -399,26 +441,6 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
   outline:1px solid rgba(211,160,94,.7);outline-offset:4px;border-radius:8px
 }
 .rating-star:disabled{cursor:default}
-.rating-next-cue{
-  width:30px;height:42px;margin:8px auto 0;position:relative;
-  opacity:.58;transition:opacity .24s ease,transform .24s ease
-}
-.rating-next-cue::before{
-  content:"";position:absolute;left:50%;top:2px;width:1px;height:24px;
-  transform:translateX(-50%);
-  background:linear-gradient(180deg,rgba(211,160,94,.06),rgba(211,160,94,.78));
-  box-shadow:0 0 10px rgba(211,160,94,.24)
-}
-.rating-next-cue::after{
-  content:"";position:absolute;left:50%;top:19px;width:10px;height:10px;
-  border-right:1px solid rgba(211,160,94,.92);
-  border-bottom:1px solid rgba(211,160,94,.92);
-  transform:translateX(-50%) rotate(45deg);
-  box-shadow:4px 4px 9px rgba(211,160,94,.08)
-}
-.article-finale.unlocked .rating-next-cue{
-  opacity:1;transform:translateY(3px)
-}
 @media(hover:hover) and (pointer:fine){
   .rating-star:hover{transform:scale(1.1)}
 }
@@ -590,10 +612,14 @@ body.reading-locked .sticky-thesis{display:none!important}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
   .js .reveal{opacity:1;transform:none}
+  #commentsSection>.shell,
+  #continue>.shell,
+  .footer>.shell{transition:none!important;animation:none!important}
 }
 
 /* Anonymous reader comments */
 .comments-section{
+  position:relative;
   padding:30px 0 34px;
   background:
     radial-gradient(circle at 50% 0%,rgba(211,160,94,.08),transparent 36%),
@@ -643,6 +669,7 @@ body.reading-locked .sticky-thesis{display:none!important}
 
 /* Social / author */
 .social-section{
+  position:relative;
   padding:0 0 104px;
   background:linear-gradient(180deg,#090a0b,#0b0d0f);
 }
@@ -1289,7 +1316,6 @@ body.reading-locked .sticky-thesis{display:none!important}
         <button class="rating-star" type="button" data-rating="4" aria-label="4 звезды" aria-pressed="false">★</button>
         <button class="rating-star" type="button" data-rating="5" aria-label="5 звёзд" aria-pressed="false">★</button>
       </div>
-      <div class="rating-next-cue" aria-hidden="true"></div>
     </div>
   </div>
 </section>
@@ -1514,6 +1540,26 @@ body.reading-locked .sticky-thesis{display:none!important}
       setTimeout(()=>next.classList.remove('gate-release'),500);
     }
   }
+
+  const lockedPostSections=[
+    document.querySelector('#commentsSection'),
+    document.querySelector('#continue'),
+    document.querySelector('.footer')
+  ].filter(Boolean);
+
+  function setPostArticleLocked(locked){
+    lockedPostSections.forEach(el=>{
+      if(locked){
+        el.setAttribute('inert','');
+        el.setAttribute('aria-hidden','true');
+      }else{
+        el.removeAttribute('inert');
+        el.removeAttribute('aria-hidden');
+      }
+    });
+  }
+
+  setPostArticleLocked(document.body.classList.contains('gate-final'));
 
   document.querySelectorAll('input[name="loveChoice"]').forEach(r=>{
     r.addEventListener('change',()=>{
@@ -1752,11 +1798,10 @@ body.reading-locked .sticky-thesis{display:none!important}
         if(!response.ok)throw new Error(result?.error||('rating_'+response.status));
 
         try{localStorage.setItem('legendpsy_rating_love_suffering_v1',String(rating))}catch(_){}
-        document.querySelector('#articleFinale')?.classList.add('unlocked');
+        setPostArticleLocked(false);
+        document.body.classList.add('post-reveal');
         releaseGate('gate-final',null,'commentsSection');
-        setTimeout(()=>{
-          document.querySelector('#commentsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
-        },220);
+        setTimeout(()=>document.body.classList.remove('post-reveal'),1250);
       }catch(err){
         console.error('Rating save failed',err);
         ratingSaving=false;
