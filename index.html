@@ -198,16 +198,21 @@ p{margin:0 0 .95em}
 body.gate-choice #intuition ~ *,
 body.gate-meter #meter ~ *,
 body.gate-factors #factors ~ *,
-body.gate-trap #trap ~ *{display:none!important}
+body.gate-trap #trap ~ *,
+body.gate-flashlight #flashlight ~ *,
+body.gate-rating #ratingGate ~ *{display:none!important}
 body.gate-choice footer,
 body.gate-meter footer,
 body.gate-factors footer,
-body.gate-trap footer{display:none!important}
+body.gate-trap footer,
+body.gate-flashlight footer,
+body.gate-rating footer{display:none!important}
 
 body.gate-choice [data-gate-hint="choice"],
 body.gate-meter [data-gate-hint="meter"],
 body.gate-factors [data-gate-hint="factors"],
-body.gate-trap [data-gate-hint="trap"]{display:block}
+body.gate-trap [data-gate-hint="trap"],
+body.gate-flashlight [data-gate-hint="flashlight"]{display:block}
 
 .gate-release{
   animation:gateRelease .42s ease both
@@ -351,6 +356,43 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 .js .questions p:last-child{color:rgba(211,160,94,.20)}
 .js .questions p:last-child.lit{color:#e5b879!important}
 .no-js .torch{display:none}
+
+/* Article rating gate */
+.rating-section{
+  padding:84px 0 92px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(211,160,94,.09),transparent 36%),
+    linear-gradient(180deg,#050607,#0b0d0f);
+  border-top:1px solid var(--line)
+}
+.rating-card{
+  max-width:760px;margin:0 auto;padding:clamp(22px,5vw,34px);
+  border:1px solid rgba(236,228,216,.13);border-radius:24px;
+  background:rgba(236,228,216,.035);box-shadow:0 28px 80px rgba(0,0,0,.22)
+}
+.rating-card h2{margin:8px 0 10px;font-size:clamp(2.2rem,8vw,4rem);line-height:.98}
+.rating-intro{margin:0 0 22px;color:var(--muted);line-height:1.6}
+.rating-scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:18px 0 10px}
+.rating-choice{
+  min-height:52px;border-radius:14px;border:1px solid rgba(236,228,216,.16);
+  background:rgba(255,255,255,.025);color:var(--paper);font-weight:760;cursor:pointer
+}
+.rating-choice[aria-pressed="true"]{
+  border-color:rgba(211,160,94,.78);background:rgba(211,160,94,.14);color:#f3dfc3
+}
+.rating-labels{display:flex;justify-content:space-between;gap:14px;color:rgba(236,228,216,.46);font-size:.72rem}
+.rating-submit{
+  width:100%;min-height:52px;margin-top:20px;border-radius:999px;
+  border:1px solid rgba(211,160,94,.58);background:rgba(211,160,94,.12);
+  color:var(--paper);font-weight:760;cursor:pointer
+}
+.rating-submit:disabled{opacity:.38;cursor:default}
+.rating-status{min-height:1.35em;margin:11px 0 0;color:var(--muted);font-size:.88rem}
+@media(min-width:760px){
+  .rating-section{padding:108px 0}
+  .rating-card{padding:38px 42px}
+  .rating-choice{min-height:60px;font-size:1.08rem}
+}
 
 
 
@@ -565,7 +607,7 @@ body.reading-locked .sticky-thesis{display:none!important}
 .comments-empty{color:var(--muted);font-style:italic}
 @media(min-width:760px){.comments-section{padding:112px 0 124px}}
 
-/* Social / author / booking */
+/* Social / author */
 .social-section{
   padding:0 0 104px;
   background:linear-gradient(180deg,#090a0b,#0b0d0f);
@@ -599,7 +641,7 @@ body.reading-locked .sticky-thesis{display:none!important}
 .share-status{margin:11px 0 0!important;min-height:1.25em;font-size:.82rem;color:rgba(236,228,216,.52)!important}
 @media(min-width:760px){
   .social-section{padding-bottom:130px}
-  .social-grid{grid-template-columns:repeat(3,1fr)}
+  .social-grid{grid-template-columns:repeat(2,1fr)}
   .social-card{display:flex;flex-direction:column}
   .social-card .social-actions{margin-top:auto}
 }
@@ -629,9 +671,8 @@ body.reading-locked .sticky-thesis{display:none!important}
   .paradox .shell{max-width:840px}
   .flash-content{max-width:860px}
   .questions{gap:30px}
-  .comments-card{max-width:840px}
+  .rating-card,.comments-card{max-width:840px}
   .social-grid{grid-template-columns:1fr 1fr}
-  .social-card:last-child{grid-column:1/-1}
   .reading-mode-card{width:min(100%,620px);padding:30px}
 }
 
@@ -752,14 +793,14 @@ body.reading-locked .sticky-thesis{display:none!important}
   .questions p:last-child{grid-column:1/-1;max-width:780px}
 
   /* End matter expands without becoming visually loose. */
-  .comments-section{padding:118px 0}
+  .rating-section{padding:118px 0}\n  .rating-section>.shell{max-width:1000px}\n  .rating-card{max-width:none;padding:40px 44px;border-radius:30px}\n  .comments-section{padding:118px 0}
   .comments-section>.shell{max-width:1000px}
   .comments-card{max-width:none;padding:40px 44px;border-radius:30px}
   .comments-card h2{font-size:clamp(3rem,4vw,4.5rem)}
   .comment-form textarea{min-height:160px}
   .social-section{padding-bottom:148px}
   .social-wrap{max-width:1160px}
-  .social-grid{grid-template-columns:repeat(3,1fr);gap:18px}
+  .social-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
   .social-card{padding:30px;min-height:270px}
   .social-card-title{font-size:1.32rem}
   .social-card p{font-size:.96rem}
@@ -772,8 +813,8 @@ body.reading-locked .sticky-thesis{display:none!important}
 }
 
 @media (hover:hover) and (pointer:fine){
-  .social-action,.choice,.chip,.torch,.comment-submit{transition:transform .18s ease,border-color .18s ease,background .18s ease}
-  .social-action:hover,.choice:hover,.chip:hover,.torch:hover,.comment-submit:hover{transform:translateY(-2px)}
+  .social-action,.choice,.chip,.torch,.comment-submit,.rating-choice,.rating-submit{transition:transform .18s ease,border-color .18s ease,background .18s ease}
+  .social-action:hover,.choice:hover,.chip:hover,.torch:hover,.comment-submit:hover,.rating-choice:hover,.rating-submit:not(:disabled):hover{transform:translateY(-2px)}
 }
 
 /* Very wide screens: preserve composition instead of endlessly scaling text and imagery. */
@@ -1055,13 +1096,34 @@ body.reading-locked .sticky-thesis{display:none!important}
       <p>И если однажды рядом окажется человек, который будет глубоко любить меня, но при этом не разрушаться от страха меня потерять, не цепляться за меня и оставаться способным жить свою жизнь, — смогу ли я распознать в этом любовь?</p>
       <p>Или мне покажется, что её почему-то недостаточно?</p>
     </div>
+    <div class="gate-hint" data-gate-hint="flashlight">Включите фонарик и проведите им по вопросам, чтобы закончить статью.</div>
+  </div>
+</section>
+
+<section class="rating-section" id="ratingGate">
+  <div class="shell">
+    <div class="rating-card">
+      <div class="kicker">08 · Оценить статью</div>
+      <h2>Как вам эта статья?</h2>
+      <p class="rating-intro">Поставьте оценку от 1 до 5. После этого откроются комментарии, возможность поделиться и страницы автора.</p>
+      <div class="rating-scale" id="ratingScale" role="group" aria-label="Оценка статьи от 1 до 5">
+        <button class="rating-choice" type="button" data-rating="1" aria-pressed="false">1</button>
+        <button class="rating-choice" type="button" data-rating="2" aria-pressed="false">2</button>
+        <button class="rating-choice" type="button" data-rating="3" aria-pressed="false">3</button>
+        <button class="rating-choice" type="button" data-rating="4" aria-pressed="false">4</button>
+        <button class="rating-choice" type="button" data-rating="5" aria-pressed="false">5</button>
+      </div>
+      <div class="rating-labels"><span>низкая оценка</span><span>высокая оценка</span></div>
+      <button class="rating-submit" id="ratingSubmit" type="button" disabled>Оценить статью</button>
+      <p class="rating-status" id="ratingStatus" role="status" aria-live="polite"></p>
+    </div>
   </div>
 </section>
 
 <section class="comments-section" id="commentsSection">
   <div class="shell">
     <div class="comments-card">
-      <div class="kicker">08 · После прочтения</div>
+      <div class="kicker">09 · После прочтения</div>
       <h2>Оставить что-то после себя</h2>
       <p class="comments-intro">Отзыв, мысль, пожелание или благодарность. Без регистрации и смс :) . То, что вы напишете, смогут прочитать следующие читатели.</p>
 
@@ -1090,9 +1152,9 @@ body.reading-locked .sticky-thesis{display:none!important}
 <section class="social-section" id="continue">
   <div class="shell social-wrap">
     <div class="social-head">
-      <div class="kicker">09 · Продолжить</div>
+      <div class="kicker">10 · Продолжить</div>
       <h2>Если хочется передать дальше</h2>
-      <p>Поделиться статьёй, узнать больше об авторе или написать напрямую.</p>
+      <p>Поделиться статьёй или узнать больше об авторе.</p>
     </div>
 
     <div class="social-grid">
@@ -1121,21 +1183,7 @@ body.reading-locked .sticky-thesis{display:none!important}
         </div>
       </article>
 
-      <article class="social-card">
-        <h3 class="social-card-title">Записаться на сессию</h3>
-        <p>Можно написать напрямую и договориться о первой встрече.</p>
-        <div class="social-actions">
-          <a class="social-action primary" href="https://t.me/lexej" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.8 3.6 18.6 19c-.24 1.09-.88 1.36-1.79.85l-4.87-3.59-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.96 9.02-8.15c.39-.35-.09-.55-.61-.2L6.22 12.72 1.42 11.2c-1.04-.33-1.06-1.04.22-1.54L20.4 2.43c.87-.32 1.63.2 1.4 1.17Z"/></svg>
-            Telegram
-          </a>
-          <a class="social-action" href="https://wa.me/79182782241?text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%2C%20%D1%8F%20%D1%85%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D0%B5%D1%80%D0%B2%D1%83%D1%8E%20%D0%B2%D1%81%D1%82%D1%80%D0%B5%D1%87%D1%83%20%D0%B8%20%D0%BF%D0%BE%D0%BE%D0%B1%D1%89%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BB%D0%B8%D1%87%D0%BD%D0%BE." target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.5 3.5A11.8 11.8 0 0 0 2 17.7L.4 23.5l5.9-1.55A11.78 11.78 0 0 0 12 23.4h.01A11.8 11.8 0 0 0 20.5 3.5Zm-8.49 17.91h-.01a9.8 9.8 0 0 1-5-1.37l-.36-.21-3.5.92.94-3.41-.23-.35A9.81 9.81 0 1 1 12 21.41Zm5.38-7.34c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.66.15-.2.3-.76.96-.93 1.16-.17.2-.34.22-.63.07-.3-.15-1.25-.46-2.38-1.47a8.93 8.93 0 0 1-1.65-2.05c-.17-.3-.02-.45.13-.6.13-.13.3-.34.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.91-2.19-.24-.57-.48-.49-.66-.5h-.57c-.2 0-.52.08-.79.37-.27.3-1.03 1-1.03 2.45 0 1.44 1.05 2.84 1.2 3.04.15.2 2.07 3.16 5.01 4.43.7.3 1.25.48 1.67.62.7.22 1.34.19 1.85.12.56-.08 1.75-.72 2-1.41.24-.7.24-1.3.17-1.42-.08-.12-.27-.2-.57-.35Z"/></svg>
-            WhatsApp
-          </a>
-        </div>
-      </article>
-    </div>
+      </div>
   </div>
 </section>
 
@@ -1304,7 +1352,7 @@ body.reading-locked .sticky-thesis{display:none!important}
 
   document.querySelectorAll('.romance details').forEach(d=>{
     d.addEventListener('toggle',()=>{
-      if(d.open)releaseGate('gate-trap',null,null);
+      if(d.open)releaseGate('gate-trap','gate-flashlight','flashlight');
     });
   });
 
@@ -1409,8 +1457,9 @@ body.reading-locked .sticky-thesis{display:none!important}
   const fs=$('#flashlight');
   const light=$('#light');
   const torch=$('#torch');
-  const qs=$$('.questions p');
+  const qs=$('.questions p');
   let on=false;
+  let flashlightUsed=false;
 
   function setOn(v){
     on=v;
@@ -1420,6 +1469,12 @@ body.reading-locked .sticky-thesis{display:none!important}
     if(!v)qs.forEach(q=>q.classList.remove('lit'));
   }
   torch.addEventListener('click',()=>setOn(!on));
+
+  function markFlashlightUsed(){
+    if(!on||flashlightUsed)return;
+    flashlightUsed=true;
+    releaseGate('gate-flashlight','gate-rating','ratingGate');
+  }
 
   function nearest(y){
     if(!on)return;
@@ -1438,6 +1493,7 @@ body.reading-locked .sticky-thesis{display:none!important}
     light.style.setProperty('--x',((x-r.left)/r.width*100)+'%');
     light.style.setProperty('--y',((y-r.top)/r.height*100)+'%');
     nearest(y);
+    markFlashlightUsed();
   }
 
   fs.addEventListener('pointermove',e=>move(e.clientX,e.clientY));
@@ -1447,13 +1503,69 @@ body.reading-locked .sticky-thesis{display:none!important}
   },{passive:true});
 
   qs.forEach(q=>q.addEventListener('click',()=>{
-    if(!on)setOn(true);
+    if(!on)return;
     qs.forEach(x=>x.classList.remove('lit'));
     q.classList.add('lit');
     const r=q.getBoundingClientRect(),s=fs.getBoundingClientRect();
     light.style.setProperty('--x','50%');
     light.style.setProperty('--y',((r.top+r.height/2-s.top)/s.height*100)+'%');
+    markFlashlightUsed();
   }));
+
+  /* Rating gate */
+  const ratingChoices=$('.rating-choice');
+  const ratingSubmit=$('#ratingSubmit');
+  const ratingStatus=$('#ratingStatus');
+  let selectedRating=0;
+
+  function getRatingClientId(){
+    const key='legendpsy_rating_client_v1';
+    let id='';
+    try{id=localStorage.getItem(key)||''}catch(_){}
+    if(id.length>=16)return id;
+    id=(crypto?.randomUUID?.()||(
+      Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)
+    ));
+    try{localStorage.setItem(key,id)}catch(_){}
+    return id;
+  }
+
+  ratingChoices.forEach(btn=>btn.addEventListener('click',()=>{
+    selectedRating=Number(btn.dataset.rating)||0;
+    ratingChoices.forEach(x=>x.setAttribute('aria-pressed',String(x===btn)));
+    ratingSubmit.disabled=!selectedRating;
+    ratingStatus.textContent='';
+  }));
+
+  ratingSubmit?.addEventListener('click',async()=>{
+    if(!selectedRating)return;
+    ratingSubmit.disabled=true;
+    ratingStatus.textContent='Сохраняю оценку…';
+    try{
+      const response=await fetch(SUPABASE_URL+'/functions/v1/submit-rating',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          article_id:COMMENTS_ARTICLE_ID,
+          rating:selectedRating,
+          client_id:getRatingClientId()
+        })
+      });
+      let result={};
+      try{result=await response.json()}catch(_){}
+      if(!response.ok)throw new Error(result?.error||('rating_'+response.status));
+
+      try{localStorage.setItem('legendpsy_rating_love_suffering_v1',String(selectedRating))}catch(_){}
+      ratingStatus.textContent='Спасибо. Оценка сохранена.';
+      releaseGate('gate-rating',null,'commentsSection');
+    }catch(err){
+      console.error('Rating save failed',err);
+      ratingStatus.textContent=err?.message==='rate_limit'
+        ? 'Слишком много попыток. Попробуйте немного позже.'
+        : 'Не удалось сохранить оценку. Попробуйте ещё раз.';
+      ratingSubmit.disabled=false;
+    }
+  });
 
 
 
