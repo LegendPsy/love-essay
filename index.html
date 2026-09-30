@@ -200,20 +200,19 @@ body.gate-meter #meter ~ *,
 body.gate-factors #factors ~ *,
 body.gate-trap #trap ~ *{display:none!important}
 
-body.gate-flashlight #commentsSection,
-body.gate-flashlight #commentsSection ~ *{display:none!important}
+body.gate-final #commentsSection,
+body.gate-final #commentsSection ~ *{display:none!important}
 
 body.gate-choice footer,
 body.gate-meter footer,
 body.gate-factors footer,
 body.gate-trap footer,
-body.gate-flashlight footer{display:none!important}
+body.gate-final footer{display:none!important}
 
 body.gate-choice [data-gate-hint="choice"],
 body.gate-meter [data-gate-hint="meter"],
 body.gate-factors [data-gate-hint="factors"],
-body.gate-trap [data-gate-hint="trap"],
-body.gate-flashlight [data-gate-hint="flashlight"]{display:block}
+body.gate-trap [data-gate-hint="trap"]{display:block}
 
 .gate-release{
   animation:gateRelease .42s ease both
@@ -358,36 +357,52 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 .js .questions p:last-child.lit{color:#e5b879!important}
 .no-js .torch{display:none}
 
-/* Article rating gate */
-.rating-section{
-  padding:84px 0 92px;
-  background:
-    radial-gradient(circle at 50% 0%,rgba(211,160,94,.09),transparent 36%),
-    linear-gradient(180deg,#050607,#0b0d0f);
-  border-top:1px solid var(--line)
+/* Article finale + compact five-star rating */
+.article-finale{
+  position:relative;text-align:center;
+  margin:clamp(46px,9vw,82px) auto 0;
+  padding:clamp(28px,6vw,48px) 0 8px;
+  max-width:720px
 }
-.rating-card{
-  max-width:760px;margin:0 auto;padding:clamp(22px,5vw,34px);
-  border:1px solid rgba(236,228,216,.13);border-radius:24px;
-  background:rgba(236,228,216,.035);box-shadow:0 28px 80px rgba(0,0,0,.22)
+.article-finale::before{
+  content:"";display:block;width:72px;height:1px;margin:0 auto 30px;
+  background:linear-gradient(90deg,transparent,rgba(211,160,94,.72),transparent)
 }
-.rating-card h2{margin:8px 0 10px;font-size:clamp(2.2rem,8vw,4rem);line-height:.98}
-.rating-intro{margin:0 0 22px;color:var(--muted);line-height:1.6}
-.rating-scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:18px 0 10px}
-.rating-choice{
-  min-height:52px;border-radius:14px;border:1px solid rgba(236,228,216,.16);
-  background:rgba(255,255,255,.025);color:var(--paper);font-weight:760;cursor:pointer
+.final-thanks{
+  margin:0 auto 18px;max-width:650px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(1.7rem,6vw,2.8rem);line-height:1.18;
+  color:#efe5d8
 }
-.rating-choice[aria-pressed="true"]{
-  border-color:rgba(211,160,94,.78);background:rgba(211,160,94,.14);color:#f3dfc3
+.final-question{
+  margin:0 0 17px;color:#aaa49c;
+  font-size:clamp(.95rem,3.8vw,1.12rem);line-height:1.45
 }
-.rating-choice:disabled{opacity:.34;cursor:default}
-.rating-labels{display:flex;justify-content:space-between;gap:14px;color:rgba(236,228,216,.46);font-size:.72rem}
-.rating-status{min-height:1.35em;margin:11px 0 0;color:var(--muted);font-size:.88rem}
+.rating-stars{
+  display:flex;justify-content:center;align-items:center;
+  gap:clamp(4px,1.4vw,10px);margin:0 auto;
+  width:max-content;max-width:100%
+}
+.rating-star{
+  appearance:none;-webkit-appearance:none;border:0;background:none;
+  padding:4px 2px;color:rgba(211,160,94,.28);
+  font-size:clamp(2.55rem,11vw,4.2rem);line-height:1;
+  cursor:pointer;transition:transform .16s ease,color .16s ease,text-shadow .16s ease;
+  -webkit-tap-highlight-color:transparent
+}
+.rating-star.preview,
+.rating-star.selected{
+  color:#d3a05e;text-shadow:0 0 22px rgba(211,160,94,.2)
+}
+.rating-star:focus-visible{
+  outline:1px solid rgba(211,160,94,.7);outline-offset:4px;border-radius:8px
+}
+.rating-star:disabled{cursor:default}
+@media(hover:hover) and (pointer:fine){
+  .rating-star:hover{transform:scale(1.1)}
+}
 @media(min-width:760px){
-  .rating-section{padding:108px 0}
-  .rating-card{padding:38px 42px}
-  .rating-choice{min-height:60px;font-size:1.08rem}
+  .article-finale{margin-top:86px;padding-top:46px}
 }
 
 
@@ -667,7 +682,7 @@ body.reading-locked .sticky-thesis{display:none!important}
   .paradox .shell{max-width:840px}
   .flash-content{max-width:860px}
   .questions{gap:30px}
-  .rating-card,.comments-card{max-width:840px}
+  .comments-card{max-width:840px}
   .social-grid{grid-template-columns:1fr 1fr}
   .reading-mode-card{width:min(100%,620px);padding:30px}
 }
@@ -809,8 +824,8 @@ body.reading-locked .sticky-thesis{display:none!important}
 }
 
 @media (hover:hover) and (pointer:fine){
-  .social-action,.choice,.chip,.torch,.comment-submit,.rating-choice{transition:transform .18s ease,border-color .18s ease,background .18s ease}
-  .social-action:hover,.choice:hover,.chip:hover,.torch:hover,.comment-submit:hover,.rating-choice:not(:disabled):hover{transform:translateY(-2px)}
+  .social-action,.choice,.chip,.torch,.comment-submit{transition:transform .18s ease,border-color .18s ease,background .18s ease}
+  .social-action:hover,.choice:hover,.chip:hover,.torch:hover,.comment-submit:hover:not(:disabled):hover{transform:translateY(-2px)}
 }
 
 /* Very wide screens: preserve composition instead of endlessly scaling text and imagery. */
@@ -1092,25 +1107,17 @@ body.reading-locked .sticky-thesis{display:none!important}
       <p>И если однажды рядом окажется человек, который будет глубоко любить меня, но при этом не разрушаться от страха меня потерять, не цепляться за меня и оставаться способным жить свою жизнь, — смогу ли я распознать в этом любовь?</p>
       <p>Или мне покажется, что её почему-то недостаточно?</p>
     </div>
-    <div class="gate-hint" data-gate-hint="flashlight">Включите фонарик. Он останется включённым, пока вы не дойдёте до оценки статьи.</div>
-  </div>
-</section>
 
-<section class="rating-section" id="ratingGate">
-  <div class="shell">
-    <div class="rating-card">
-      <div class="kicker">08 · Оценить статью</div>
-      <h2>Как вам эта статья?</h2>
-      <p class="rating-intro">Выберите оценку от 1 до 5. Одного нажатия достаточно — после него откроется следующий раздел.</p>
-      <div class="rating-scale" id="ratingScale" role="group" aria-label="Оценка статьи от 1 до 5">
-        <button class="rating-choice" type="button" data-rating="1" aria-pressed="false" disabled>1</button>
-        <button class="rating-choice" type="button" data-rating="2" aria-pressed="false" disabled>2</button>
-        <button class="rating-choice" type="button" data-rating="3" aria-pressed="false" disabled>3</button>
-        <button class="rating-choice" type="button" data-rating="4" aria-pressed="false" disabled>4</button>
-        <button class="rating-choice" type="button" data-rating="5" aria-pressed="false" disabled>5</button>
+    <div class="article-finale" id="articleFinale">
+      <p class="final-thanks">Благодарю за проявленный интерес и уделённое время</p>
+      <p class="final-question">Понравилась ли вам статья?</p>
+      <div class="rating-stars" id="ratingStars" role="group" aria-label="Оценка статьи от одной до пяти звёзд">
+        <button class="rating-star" type="button" data-rating="1" aria-label="1 звезда" aria-pressed="false">★</button>
+        <button class="rating-star" type="button" data-rating="2" aria-label="2 звезды" aria-pressed="false">★</button>
+        <button class="rating-star" type="button" data-rating="3" aria-label="3 звезды" aria-pressed="false">★</button>
+        <button class="rating-star" type="button" data-rating="4" aria-label="4 звезды" aria-pressed="false">★</button>
+        <button class="rating-star" type="button" data-rating="5" aria-label="5 звёзд" aria-pressed="false">★</button>
       </div>
-      <div class="rating-labels"><span>1</span><span>5</span></div>
-      <p class="rating-status" id="ratingStatus" role="status" aria-live="polite">Сначала включите фонарик и пройдите с ним до конца.</p>
     </div>
   </div>
 </section>
@@ -1118,7 +1125,7 @@ body.reading-locked .sticky-thesis{display:none!important}
 <section class="comments-section" id="commentsSection">
   <div class="shell">
     <div class="comments-card">
-      <div class="kicker">09 · После прочтения</div>
+      <div class="kicker">08 · После прочтения</div>
       <h2>Оставить что-то после себя</h2>
       <p class="comments-intro">Отзыв, мысль, пожелание или благодарность. Без регистрации и смс :) . То, что вы напишете, смогут прочитать следующие читатели.</p>
 
@@ -1147,7 +1154,7 @@ body.reading-locked .sticky-thesis{display:none!important}
 <section class="social-section" id="continue">
   <div class="shell social-wrap">
     <div class="social-head">
-      <div class="kicker">10 · Продолжить</div>
+      <div class="kicker">09 · Продолжить</div>
       <h2>Если хочется передать дальше</h2>
       <p>Поделиться статьёй или узнать больше об авторе.</p>
     </div>
@@ -1347,7 +1354,7 @@ body.reading-locked .sticky-thesis{display:none!important}
 
   document.querySelectorAll('.romance details').forEach(d=>{
     d.addEventListener('toggle',()=>{
-      if(d.open)releaseGate('gate-trap','gate-flashlight','flashlight');
+      if(d.open)releaseGate('gate-trap','gate-final','flashlight');
     });
   });
 
@@ -1448,43 +1455,22 @@ body.reading-locked .sticky-thesis{display:none!important}
     if(label)label.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   }));
 
-  /* Flashlight */
+  /* Flashlight — optional interaction */
   const fs=$('#flashlight');
   const light=$('#light');
   const torch=$('#torch');
   const qs=$$('.questions p');
-  const ratingChoices=$$('.rating-choice');
-  const ratingStatus=$('#ratingStatus');
   let on=false;
-  let ratingSaving=false;
-
-  function setRatingEnabled(enabled){
-    ratingChoices.forEach(btn=>{btn.disabled=!enabled});
-    if(ratingStatus){
-      ratingStatus.textContent=enabled
-        ? 'Нажмите на оценку — подтверждение не потребуется.'
-        : 'Сначала включите фонарик и пройдите с ним до конца.';
-    }
-  }
 
   function setOn(v){
     on=v;
     fs.classList.toggle('on',v);
     torch.setAttribute('aria-pressed',String(v));
     torch.textContent=v?'Фонарик включён':'Включить фонарик';
-    if(v){
-      /* Once started, the flashlight stays on until the reader rates the article. */
-      torch.disabled=true;
-      setRatingEnabled(true);
-    }else{
-      torch.disabled=false;
-      qs.forEach(q=>q.classList.remove('lit'));
-    }
+    if(!v)qs.forEach(q=>q.classList.remove('lit'));
   }
 
-  torch.addEventListener('click',()=>{
-    if(!on)setOn(true);
-  });
+  torch.addEventListener('click',()=>setOn(!on));
 
   function nearest(y){
     if(!on)return;
@@ -1512,7 +1498,7 @@ body.reading-locked .sticky-thesis{display:none!important}
   },{passive:true});
 
   qs.forEach(q=>q.addEventListener('click',()=>{
-    if(!on)return;
+    if(!on)setOn(true);
     qs.forEach(x=>x.classList.remove('lit'));
     q.classList.add('lit');
     const r=q.getBoundingClientRect(),s=fs.getBoundingClientRect();
@@ -1520,7 +1506,16 @@ body.reading-locked .sticky-thesis{display:none!important}
     light.style.setProperty('--y',((r.top+r.height/2-s.top)/s.height*100)+'%');
   }));
 
-  /* Rating: tapping 1–5 is the submission. No extra confirmation button. */
+  /* Five-star rating — a single star tap submits immediately. */
+  const ratingStars=$$('.rating-star');
+  let ratingSaving=false;
+
+  function paintStars(value,className){
+    ratingStars.forEach(star=>{
+      star.classList.toggle(className,Number(star.dataset.rating)<=value);
+    });
+  }
+
   function getRatingClientId(){
     const key='legendpsy_rating_client_v1';
     let id='';
@@ -1533,57 +1528,56 @@ body.reading-locked .sticky-thesis{display:none!important}
     return id;
   }
 
-  setRatingEnabled(false);
+  ratingStars.forEach(star=>{
+    const value=Number(star.dataset.rating)||0;
 
-  ratingChoices.forEach(btn=>btn.addEventListener('click',async()=>{
-    if(!on||ratingSaving||btn.disabled)return;
+    star.addEventListener('pointerenter',()=>paintStars(value,'preview'));
+    star.addEventListener('pointerleave',()=>ratingStars.forEach(x=>x.classList.remove('preview')));
 
-    const rating=Number(btn.dataset.rating)||0;
-    if(!rating)return;
+    star.addEventListener('click',async()=>{
+      if(ratingSaving)return;
+      const rating=Number(star.dataset.rating)||0;
+      if(!rating)return;
 
-    ratingSaving=true;
-    ratingChoices.forEach(x=>{
-      x.disabled=true;
-      x.setAttribute('aria-pressed',String(x===btn));
+      ratingSaving=true;
+      ratingStars.forEach(x=>{
+        x.disabled=true;
+        x.setAttribute('aria-pressed',String(Number(x.dataset.rating)<=rating));
+      });
+      paintStars(rating,'selected');
+      ratingStars.forEach(x=>x.classList.remove('preview'));
+
+      /* If the flashlight happens to be on, rating ends that interaction naturally. */
+      if(on)setOn(false);
+
+      try{
+        const response=await fetch(SUPABASE_URL+'/functions/v1/submit-rating',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            article_id:COMMENTS_ARTICLE_ID,
+            rating,
+            client_id:getRatingClientId()
+          })
+        });
+
+        let result={};
+        try{result=await response.json()}catch(_){}
+        if(!response.ok)throw new Error(result?.error||('rating_'+response.status));
+
+        try{localStorage.setItem('legendpsy_rating_love_suffering_v1',String(rating))}catch(_){}
+        releaseGate('gate-final',null,'commentsSection');
+      }catch(err){
+        console.error('Rating save failed',err);
+        ratingSaving=false;
+        ratingStars.forEach(x=>{
+          x.disabled=false;
+          x.classList.remove('selected');
+          x.setAttribute('aria-pressed','false');
+        });
+      }
     });
-
-    /* The flashlight switches off immediately on the rating tap. */
-    setOn(false);
-    ratingChoices.forEach(x=>x.disabled=true);
-    ratingStatus.textContent='Сохраняю оценку…';
-
-    try{
-      const response=await fetch(SUPABASE_URL+'/functions/v1/submit-rating',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          article_id:COMMENTS_ARTICLE_ID,
-          rating,
-          client_id:getRatingClientId()
-        })
-      });
-
-      let result={};
-      try{result=await response.json()}catch(_){}
-      if(!response.ok)throw new Error(result?.error||('rating_'+response.status));
-
-      try{localStorage.setItem('legendpsy_rating_love_suffering_v1',String(rating))}catch(_){}
-      ratingStatus.textContent='Спасибо.';
-      releaseGate('gate-flashlight',null,'commentsSection');
-
-      requestAnimationFrame(()=>{
-        document.querySelector('#commentsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
-      });
-    }catch(err){
-      console.error('Rating save failed',err);
-      ratingSaving=false;
-      setOn(true);
-      ratingChoices.forEach(x=>x.disabled=false);
-      ratingStatus.textContent=err?.message==='rate_limit'
-        ? 'Слишком много попыток. Попробуйте немного позже.'
-        : 'Не удалось сохранить оценку. Попробуйте ещё раз.';
-    }
-  }));
+  });
 
 
 
