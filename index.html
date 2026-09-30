@@ -510,6 +510,51 @@ body.reading-locked .sticky-thesis{display:none!important}
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
   .js .reveal{opacity:1;transform:none}
 }
+
+/* Anonymous reader comments */
+.comments-section{
+  padding:88px 0 96px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(211,160,94,.08),transparent 36%),
+    linear-gradient(180deg,#0b0d0f,#090a0b);
+  border-top:1px solid var(--line)
+}
+.comments-card{
+  max-width:760px;margin:0 auto;padding:clamp(22px,5vw,34px);
+  border:1px solid rgba(236,228,216,.13);border-radius:24px;
+  background:rgba(236,228,216,.035);
+  box-shadow:0 28px 80px rgba(0,0,0,.22)
+}
+.comments-card h2{margin:8px 0 10px;font-size:clamp(2rem,7vw,3.8rem);line-height:.98}
+.comments-intro{margin:0 0 24px;color:var(--muted);font-size:1rem;line-height:1.65}
+.comment-form{display:grid;gap:12px}
+.comment-form label{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(236,228,216,.62)}
+.comment-form textarea{
+  width:100%;min-height:132px;resize:vertical;padding:16px 17px;border-radius:16px;
+  border:1px solid rgba(236,228,216,.16);background:rgba(0,0,0,.24);
+  color:var(--paper);font:inherit;line-height:1.55;outline:none
+}
+.comment-form textarea:focus{border-color:rgba(211,160,94,.72);box-shadow:0 0 0 3px rgba(211,160,94,.08)}
+.comment-form-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.comment-count{font-size:.76rem;color:rgba(236,228,216,.45)}
+.comment-submit{
+  appearance:none;border:1px solid rgba(211,160,94,.55);border-radius:999px;
+  padding:11px 17px;background:rgba(211,160,94,.12);color:var(--paper);
+  font:inherit;font-weight:650;cursor:pointer
+}
+.comment-submit:disabled{opacity:.45;cursor:default}
+.comment-status{min-height:1.3em;margin:8px 0 0;color:var(--muted);font-size:.88rem}
+.comment-divider{height:1px;background:var(--line);margin:28px 0 22px}
+.comments-list{display:grid;gap:14px}
+.comment-item{
+  padding:16px 17px;border:1px solid rgba(236,228,216,.1);border-radius:16px;
+  background:rgba(236,228,216,.025)
+}
+.comment-meta{margin-bottom:8px;font-size:.72rem;color:rgba(236,228,216,.42);letter-spacing:.03em}
+.comment-body{white-space:pre-wrap;overflow-wrap:anywhere;color:rgba(236,228,216,.88);line-height:1.58}
+.comments-empty{color:var(--muted);font-style:italic}
+@media(min-width:760px){.comments-section{padding:112px 0 124px}}
+
 </style>
 </head>
 <body class="reading-locked gate-choice">
@@ -783,6 +828,32 @@ body.reading-locked .sticky-thesis{display:none!important}
     </div>
   </div>
 </section>
+
+<section class="comments-section" id="commentsSection">
+  <div class="shell">
+    <div class="comments-card">
+      <div class="kicker">08 · После прочтения</div>
+      <h2>Оставить что-то после себя</h2>
+      <p class="comments-intro">Отзыв, мысль, пожелание или благодарность. Без регистрации и без имени. То, что вы напишете, смогут прочитать следующие читатели.</p>
+
+      <form class="comment-form" id="commentForm">
+        <label for="commentBody">Ваше сообщение</label>
+        <textarea id="commentBody" maxlength="2000" placeholder="Напишите здесь…" required></textarea>
+        <div class="comment-form-row">
+          <span class="comment-count"><span id="commentChars">0</span>/2000</span>
+          <button class="comment-submit" id="commentSubmit" type="submit">Оставить анонимно</button>
+        </div>
+        <p class="comment-status" id="commentStatus" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="comment-divider" aria-hidden="true"></div>
+      <div class="comments-list" id="commentsList" aria-live="polite">
+        <p class="comments-empty">Загружаю сообщения…</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
 
 <footer class="footer"><div class="shell"><a href="#top">Наверх ↑</a><span>Любовь не измеряется страданием</span></div></footer>
@@ -1242,7 +1313,117 @@ body.reading-locked .sticky-thesis{display:none!important}
     }),{threshold:.15});
     finalObs.observe(fs);
   }
-})();
+
+  /* Anonymous comments via Supabase */
+  const commentsList=$('#commentsList');
+  const commentForm=$('#commentForm');
+  const commentBody=$('#commentBody');
+  const commentChars=$('#commentChars');
+  const commentSubmit=$('#commentSubmit');
+  const commentStatus=$('#commentStatus');
+
+  const SUPABASE_URL='https://eswoqjxioavegjnhosbb.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY='sb_publishable_Czx1d7slcJQgqhjOS0miWw_Na2Yrnvb';
+  const COMMENTS_ARTICLE_ID='love-suffering-v1';
+
+  const commentsEndpoint=()=>(
+    SUPABASE_URL+
+    '/rest/v1/comments?select=id,body,created_at&article_id=eq.'+
+    encodeURIComponent(COMMENTS_ARTICLE_ID)+
+    '&is_visible=eq.true&order=created_at.asc'
+  );
+
+  function formatCommentDate(value){
+    try{
+      return new Intl.DateTimeFormat('ru-RU',{
+        day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'
+      }).format(new Date(value));
+    }catch(_){return '';}
+  }
+
+  function renderComments(items){
+    if(!commentsList)return;
+    commentsList.replaceChildren();
+    if(!items?.length){
+      const p=document.createElement('p');
+      p.className='comments-empty';
+      p.textContent='Здесь пока тихо. Можно оставить первое сообщение.';
+      commentsList.appendChild(p);
+      return;
+    }
+    items.forEach(item=>{
+      const article=document.createElement('article');
+      article.className='comment-item';
+
+      const meta=document.createElement('div');
+      meta.className='comment-meta';
+      meta.textContent='Анонимно · '+formatCommentDate(item.created_at);
+
+      const body=document.createElement('div');
+      body.className='comment-body';
+      body.textContent=item.body;
+
+      article.append(meta,body);
+      commentsList.appendChild(article);
+    });
+  }
+
+  async function loadComments(){
+    if(!commentsList)return;
+    try{
+      const response=await fetch(commentsEndpoint(),{
+        headers:{apikey:SUPABASE_PUBLISHABLE_KEY}
+      });
+      if(!response.ok)throw new Error('load '+response.status);
+      renderComments(await response.json());
+    }catch(err){
+      console.error('Comments load failed',err);
+      commentsList.innerHTML='<p class="comments-empty">Не удалось загрузить сообщения. Попробуйте обновить страницу позже.</p>';
+    }
+  }
+
+  commentBody?.addEventListener('input',()=>{
+    if(commentChars)commentChars.textContent=String(commentBody.value.length);
+  });
+
+  commentForm?.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const body=commentBody?.value.trim()||'';
+    if(!body)return;
+
+    commentSubmit.disabled=true;
+    commentStatus.textContent='Сохраняю…';
+
+    try{
+      const response=await fetch(SUPABASE_URL+'/rest/v1/comments',{
+        method:'POST',
+        headers:{
+          apikey:SUPABASE_PUBLISHABLE_KEY,
+          'Content-Type':'application/json',
+          Prefer:'return=minimal'
+        },
+        body:JSON.stringify({
+          article_id:COMMENTS_ARTICLE_ID,
+          body
+        })
+      });
+      if(!response.ok)throw new Error('save '+response.status);
+
+      commentBody.value='';
+      if(commentChars)commentChars.textContent='0';
+      commentStatus.textContent='Сообщение сохранено. Спасибо.';
+      await loadComments();
+    }catch(err){
+      console.error('Comment save failed',err);
+      commentStatus.textContent='Не удалось сохранить сообщение. Попробуйте ещё раз чуть позже.';
+    }finally{
+      commentSubmit.disabled=false;
+    }
+  });
+
+  loadComments();
+
+  })();
 </script>
 </body>
 </html>
