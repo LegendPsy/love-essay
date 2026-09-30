@@ -85,6 +85,16 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
       <div id="loginNote" class="note" role="status"></div>
     </form>
 
+    <div id="activationBox" class="setup hidden">
+      <div style="font-weight:750;margin-bottom:8px">Первичная активация администратора</div>
+      <p class="note" style="margin:0 0 12px">Введи одноразовый код настройки. Он нужен только один раз — после активации перестанет работать.</p>
+      <form id="activateForm" class="form">
+        <div><label for="setupCode">Код настройки</label><input id="setupCode" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" required></div>
+        <button id="activateBtn" class="btn" type="submit">Активировать админ-доступ</button>
+        <div id="activateNote" class="note" role="status"></div>
+      </form>
+    </div>
+
     <details class="setup">
       <summary>Первый вход: создать учётную запись</summary>
       <form id="signupForm" class="form" style="margin-top:14px">
@@ -133,11 +143,13 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
   const SUPABASE_URL='https://eswoqjxioavegjnhosbb.supabase.co';
   const KEY='sb_publishable_Czx1d7slcJQgqhjOS0miWw_Na2Yrnvb';
   const ADMIN_URL=SUPABASE_URL+'/functions/v1/admin-comments';
+  const SETUP_URL=SUPABASE_URL+'/functions/v1/admin-setup';
   const $=s=>document.querySelector(s);
   const $$=s=>[...document.querySelectorAll(s)];
   const authView=$('#authView'), dashboard=$('#dashboard');
-  const loginForm=$('#loginForm'), signupForm=$('#signupForm');
-  const loginNote=$('#loginNote'), signupNote=$('#signupNote'), statusbar=$('#statusbar');
+  const loginForm=$('#loginForm'), signupForm=$('#signupForm'), activateForm=$('#activateForm');
+  const loginNote=$('#loginNote'), signupNote=$('#signupNote'), activateNote=$('#activateNote'), statusbar=$('#statusbar');
+  const activationBox=$('#activationBox');
   const list=$('#commentsList'), search=$('#search');
   let comments=[],filter='all';
 
@@ -169,8 +181,9 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
     if(!r.ok) throw new Error(data.error||('http_'+r.status));
     return data;
   }
-  function showAuth(msg=''){
+  function showAuth(msg='',showActivation=false){
     authView.classList.remove('hidden');dashboard.classList.add('hidden');
+    activationBox.classList.toggle('hidden',!showActivation);
     if(msg)loginNote.textContent=msg;
   }
   function showDashboard(){
@@ -264,10 +277,39 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
       const data=await adminCall({action:'list'});
       comments=data.comments||[];showDashboard();render();statusbar.textContent='';
     }catch(e){
-      if(e.message==='forbidden'){showAuth('Аккаунт существует, но права администратора ещё не активированы.')}
-      else{clearSession();showAuth(friendly(e.message))}
+      if(e.message==='forbidden'){
+        showAuth('Аккаунт существует. Осталось один раз активировать права администратора.',true);
+      }else{
+        clearSession();showAuth(friendly(e.message));
+      }
     }
   }
+
+  activateForm.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const s=getSession();
+    if(!s?.access_token){activateNote.textContent='Сначала войди в созданную учётную запись.';return}
+    const code=$('#setupCode').value.trim();
+    if(!code)return;
+    $('#activateBtn').disabled=true;activateNote.textContent='Активирую…';
+    try{
+      const r=await fetch(SETUP_URL,{
+        method:'POST',
+        headers:authHeaders(s.access_token),
+        body:JSON.stringify({code})
+      });
+      const data=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(data.error||('http_'+r.status));
+      $('#setupCode').value='';
+      activateNote.textContent='Админ-доступ активирован.';
+      await load();
+    }catch(e){
+      if(e.message==='invalid_setup_code')activateNote.textContent='Неверный или просроченный код настройки.';
+      else if(e.message==='admin_already_initialized')activateNote.textContent='Первичный администратор уже создан.';
+      else if(e.message==='unauthorized')activateNote.textContent='Сессия закончилась. Войди заново.';
+      else activateNote.textContent='Не удалось активировать доступ.';
+    }finally{$('#activateBtn').disabled=false}
+  });
 
   loginForm.addEventListener('submit',async e=>{
     e.preventDefault();loginNote.textContent='Вхожу…';$('#loginBtn').disabled=true;
@@ -296,14 +338,14 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
       const data=await r.json().catch(()=>({}));
       if(!r.ok)throw new Error(data?.msg||'signup_failed');
       signupNote.textContent=data?.session
-        ? 'Учётная запись создана. Теперь нужно активировать права администратора.'
-        : 'Учётная запись создана. Проверь почту и подтверди email. После этого права администратора нужно активировать.';
+        ? 'Учётная запись создана. Теперь войди и введи одноразовый код настройки.'
+        : 'Учётная запись создана. Проверь почту и подтверди email. Затем войди сюда и введи одноразовый код настройки.';
     }catch(e){signupNote.textContent=e.message==='weak'?'Пароль должен быть не короче 12 символов.':'Не удалось создать учётную запись.'}
     finally{$('#signupBtn').disabled=false}
   });
 
   $('#refreshBtn').onclick=load;
-  $('#logoutBtn').onclick=()=>{clearSession();showAuth('Ты вышел из админ-панели.')};
+  $('#logoutBtn').onclick=()=>{clearSession();showAuth('Ты вышел из админ-панели.',false)};
   search.addEventListener('input',render);
   $$('.filter').forEach(b=>b.onclick=()=>{
     filter=b.dataset.filter;$$('.filter').forEach(x=>x.classList.toggle('active',x===b));render();
