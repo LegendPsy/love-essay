@@ -320,6 +320,53 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 .js .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
 .js .reveal.in{opacity:1;transform:none}
 
+
+/* Full-screen cover viewer */
+.hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:18px}
+.hero-actions .start{margin-top:0}
+.cover-open{
+  appearance:none;-webkit-appearance:none;display:inline-flex;align-items:center;gap:8px;
+  min-height:42px;padding:8px 12px;border:1px solid rgba(255,255,255,.22);
+  border-radius:999px;background:rgba(8,10,11,.28);backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);color:rgba(255,255,255,.86);cursor:pointer;
+  font-size:.78rem;letter-spacing:.03em
+}
+.cover-open:active{transform:scale(.985)}
+.cover-viewer{
+  position:fixed;inset:0;z-index:5000;display:grid;place-items:center;
+  background:#030405;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .22s ease,visibility .22s ease;overscroll-behavior:none
+}
+.cover-viewer.open{opacity:1;visibility:visible;pointer-events:auto}
+.cover-viewer-stage{
+  position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;
+  touch-action:none;cursor:zoom-out
+}
+.cover-viewer-image{
+  width:100%;height:100%;object-fit:contain;transform-origin:center center;
+  transform:translate3d(0,0,0) scale(1);will-change:transform;
+  user-select:none;-webkit-user-select:none;-webkit-user-drag:none;
+  touch-action:none
+}
+.cover-viewer-close{
+  position:absolute;z-index:2;top:max(14px,env(safe-area-inset-top));right:14px;
+  width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.2);
+  background:rgba(5,6,7,.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:#f4ecdf;font-size:1.5rem;line-height:1;display:grid;place-items:center;cursor:pointer
+}
+.cover-viewer-hint{
+  position:absolute;z-index:2;left:50%;bottom:max(18px,calc(12px + env(safe-area-inset-bottom)));
+  transform:translateX(-50%);width:max-content;max-width:calc(100% - 36px);
+  padding:8px 11px;border-radius:999px;background:rgba(5,6,7,.58);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:rgba(255,255,255,.72);font-size:.68rem;letter-spacing:.02em;text-align:center;
+  transition:opacity .25s ease
+}
+.cover-viewer.zoomed .cover-viewer-hint{opacity:.25}
+@media(min-width:760px){
+  .cover-open{font-size:.82rem}
+}
+
 @media(min-width:760px){
   .section{padding:98px 0}.prose.section{padding:72px 0}
   .choice-grid{grid-template-columns:1fr 1fr}.choice{min-height:290px;padding:26px}
@@ -347,10 +394,21 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
     <div class="eyebrow">Интерактивное эссе</div>
     <h1>Любовь<br><span>не измеряется</span><br>страданием</h1>
     <p>Почему тревогу, ревность и невозможность жить без другого так легко принять за доказательство глубины чувств.</p>
-    <a class="start" href="#intuition">Начать читать <span>↓</span></a>
+    <div class="hero-actions">
+      <a class="start" href="#intuition">Начать читать <span>↓</span></a>
+      <button class="cover-open" id="coverOpen" type="button" aria-haspopup="dialog">Посмотреть изображение ⛶</button>
+    </div>
     <noscript><div class="nojs-note">Этот просмотрщик не запускает JavaScript. Статья всё равно доступна целиком, а часть интерактивов работает без скриптов. Для полной версии — с анимацией шкал и «фонариком» — откройте этот же файл в обычном браузере.</div></noscript>
   </div>
 </header>
+
+<div class="cover-viewer" id="coverViewer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Просмотр фонового изображения">
+  <div class="cover-viewer-stage" id="coverViewerStage">
+    <img class="cover-viewer-image" id="coverViewerImage" alt="Обложка эссе «Любовь не измеряется страданием»" draggable="false">
+  </div>
+  <button class="cover-viewer-close" id="coverViewerClose" type="button" aria-label="Закрыть изображение">×</button>
+  <div class="cover-viewer-hint">Два пальца — увеличить · коснитесь изображения — закрыть</div>
+</div>
 
 <main>
 <section class="section" id="intuition">
@@ -700,6 +758,121 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
     light.style.setProperty('--y',((r.top+r.height/2-s.top)/s.height*100)+'%');
   }));
 
+
+
+  /* Full-screen cover viewer with pinch zoom + pan */
+  const coverOpen=$('#coverOpen');
+  const coverViewer=$('#coverViewer');
+  const coverStage=$('#coverViewerStage');
+  const coverImage=$('#coverViewerImage');
+  const coverClose=$('#coverViewerClose');
+  const heroPhoto=$('.hero-photo');
+
+  if(coverOpen && coverViewer && coverStage && coverImage && heroPhoto){
+    let scale=1, tx=0, ty=0;
+    let pointers=new Map();
+    let gestureStart=null;
+    let panStart=null;
+    let moved=false;
+    let pinched=false;
+    let tapStarted=0;
+
+    const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
+    const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+    const midpoint=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
+
+    function applyTransform(){
+      coverImage.style.transform=`translate3d(${tx}px,${ty}px,0) scale(${scale})`;
+      coverViewer.classList.toggle('zoomed',scale>1.02);
+    }
+    function resetCover(){
+      scale=1;tx=0;ty=0;pointers.clear();gestureStart=null;panStart=null;moved=false;pinched=false;
+      applyTransform();
+    }
+    function openCover(){
+      resetCover();
+      coverImage.src=heroPhoto.currentSrc||heroPhoto.src;
+      coverViewer.classList.add('open');
+      coverViewer.setAttribute('aria-hidden','false');
+      document.body.dataset.coverOverflow=document.body.style.overflow||'';
+      document.body.style.overflow='hidden';
+    }
+    function closeCover(){
+      coverViewer.classList.remove('open');
+      coverViewer.setAttribute('aria-hidden','true');
+      document.body.style.overflow=document.body.dataset.coverOverflow||'';
+      delete document.body.dataset.coverOverflow;
+      setTimeout(resetCover,220);
+    }
+    coverOpen.addEventListener('click',openCover);
+    coverClose.addEventListener('click',e=>{e.stopPropagation();closeCover()});
+
+    coverStage.addEventListener('pointerdown',e=>{
+      if(e.pointerType==='mouse' && e.button!==0)return;
+      coverStage.setPointerCapture?.(e.pointerId);
+      pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      tapStarted=performance.now();
+      moved=false;
+      if(pointers.size===1){
+        panStart={x:e.clientX,y:e.clientY,tx,ty};
+      }else if(pointers.size===2){
+        const [a,b]=[...pointers.values()];
+        gestureStart={dist:distance(a,b),scale,mid:midpoint(a,b),tx,ty};
+        pinched=true;
+      }
+      e.preventDefault();
+    });
+
+    coverStage.addEventListener('pointermove',e=>{
+      if(!pointers.has(e.pointerId))return;
+      const prev=pointers.get(e.pointerId);
+      pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      if(Math.hypot(e.clientX-prev.x,e.clientY-prev.y)>2)moved=true;
+
+      if(pointers.size===2){
+        const [a,b]=[...pointers.values()];
+        if(!gestureStart){
+          gestureStart={dist:distance(a,b),scale,mid:midpoint(a,b),tx,ty};
+        }
+        const mid=midpoint(a,b);
+        const next=clamp(gestureStart.scale*(distance(a,b)/Math.max(1,gestureStart.dist)),1,5);
+        tx=gestureStart.tx+(mid.x-gestureStart.mid.x);
+        ty=gestureStart.ty+(mid.y-gestureStart.mid.y);
+        scale=next;
+        moved=true;
+        pinched=true;
+        applyTransform();
+      }else if(pointers.size===1 && scale>1.02 && panStart){
+        tx=panStart.tx+(e.clientX-panStart.x);
+        ty=panStart.ty+(e.clientY-panStart.y);
+        if(Math.abs(e.clientX-panStart.x)>3||Math.abs(e.clientY-panStart.y)>3)moved=true;
+        applyTransform();
+      }
+      e.preventDefault();
+    });
+
+    function pointerEnd(e){
+      if(!pointers.has(e.pointerId))return;
+      pointers.delete(e.pointerId);
+      if(pointers.size===1){
+        const p=[...pointers.values()][0];
+        panStart={x:p.x,y:p.y,tx,ty};
+        gestureStart=null;
+      }else if(pointers.size===0){
+        const quickTap=(performance.now()-tapStarted)<450;
+        if(!moved && !pinched && quickTap)closeCover();
+        if(scale<1.02){scale=1;tx=0;ty=0;applyTransform()}
+        gestureStart=null;panStart=null;moved=false;pinched=false;
+      }
+      e.preventDefault();
+    }
+    coverStage.addEventListener('pointerup',pointerEnd);
+    coverStage.addEventListener('pointercancel',pointerEnd);
+
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape' && coverViewer.classList.contains('open'))closeCover();
+    });
+  }
 
   /* Dynamic sticky summaries by section */
   const sectionTheses=[
