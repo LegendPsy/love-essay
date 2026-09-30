@@ -450,13 +450,15 @@ body.reading-locked .sticky-thesis{display:none!important}
 /* Reading mode + soundtrack */
 .reading-mode-dialog{
   position:fixed;inset:0;z-index:4900;display:grid;place-items:center;
+  overflow-y:auto;overscroll-behavior:contain;
   padding:22px;background:rgba(3,4,5,.78);backdrop-filter:blur(18px);
   -webkit-backdrop-filter:blur(18px);opacity:0;visibility:hidden;pointer-events:none;
   transition:opacity .22s ease,visibility .22s ease
 }
 .reading-mode-dialog.open{opacity:1;visibility:visible;pointer-events:auto}
 .reading-mode-card{
-  width:min(100%,430px);border:1px solid rgba(255,255,255,.14);border-radius:26px;
+  width:min(100%,430px);max-height:calc(100svh - 32px);overflow:auto;
+  border:1px solid rgba(255,255,255,.14);border-radius:26px;
   background:linear-gradient(180deg,rgba(18,20,21,.98),rgba(9,11,12,.98));
   padding:24px 20px 20px;box-shadow:0 30px 90px rgba(0,0,0,.48)
 }
@@ -708,7 +710,7 @@ body.reading-locked .sticky-thesis{display:none!important}
   .reading-mode-card{width:min(100%,620px);padding:30px}
 }
 
-@media (min-width:1180px){
+@media (min-width:1180px) and (hover:hover) and (pointer:fine){
   :root{--pad:48px}
   .shell{width:min(calc(100% - 96px),1160px)}
   .section{padding:124px 0}
@@ -901,6 +903,111 @@ body.reading-locked .sticky-thesis{display:none!important}
   .hero-photo{right:max(64px,calc((100vw - 1280px)/2));height:min(84svh,800px)}
   .hero-inner{padding-right:53%}
   .scrolly{padding-inline:max(64px,calc((100vw - 1280px)/2));column-gap:94px}
+}
+
+
+/* Tablet stability: touch devices should not inherit desktop-only assumptions. */
+@media (min-width:760px) and (max-width:1400px) and (hover:none) and (pointer:coarse){
+  body.reading-locked{
+    height:auto;
+    min-height:100svh;
+    overflow-x:hidden;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch
+  }
+
+  .hero{
+    min-height:100svh;
+    height:auto;
+    align-items:end;
+    overflow:hidden
+  }
+  .hero-inner{
+    padding-top:max(42px,env(safe-area-inset-top));
+    padding-bottom:max(42px,calc(28px + env(safe-area-inset-bottom)))
+  }
+  .hero h1{
+    font-size:clamp(4.6rem,9vw,6.8rem);
+    line-height:.82;
+    max-width:8.1ch
+  }
+  .hero p{max-width:36rem}
+  .hero-actions{
+    position:relative;
+    z-index:3;
+    gap:14px
+  }
+  .start,.cover-open,
+  .reading-mode-music,.reading-mode-silent{
+    touch-action:manipulation
+  }
+  .start,.cover-open{
+    min-height:46px;
+    align-items:center
+  }
+
+  .reading-mode-dialog{
+    place-items:start center;
+    padding:
+      max(16px,env(safe-area-inset-top))
+      18px
+      max(16px,env(safe-area-inset-bottom))
+  }
+  .reading-mode-card{
+    width:min(100%,620px);
+    max-height:none;
+    margin:auto 0;
+    padding:26px 26px 24px
+  }
+
+  .section{padding:88px 0}
+  .prose.section{padding:66px 0}
+
+  .scrolly-stage{
+    top:42px;
+    height:48svh;
+    min-height:330px
+  }
+  .story-step{min-height:52svh}
+
+  .factors{padding-top:185px!important;padding-bottom:185px!important}
+  .factor-core{width:168px}
+  .factor-core span{width:98px}
+
+  .flash-content{max-width:860px}
+  .questions{
+    grid-template-columns:1fr;
+    gap:20px
+  }
+  .questions p{
+    font-size:clamp(1.7rem,4vw,2.5rem)
+  }
+
+  .social-grid{grid-template-columns:1fr 1fr}
+}
+
+/* Short tablet landscape: keep the very first interaction fully reachable. */
+@media (min-width:760px) and (max-width:1400px) and (hover:none) and (pointer:coarse) and (max-height:720px){
+  .hero-inner{
+    padding-top:28px;
+    padding-bottom:28px
+  }
+  .hero h1{
+    font-size:clamp(3.7rem,7.5vw,5.3rem);
+    margin:10px 0 16px
+  }
+  .hero p{
+    font-size:.94rem;
+    line-height:1.45;
+    margin-bottom:.65em
+  }
+  .hero-actions{margin-top:12px}
+  .reading-mode-card{
+    padding:20px 22px 18px
+  }
+  .reading-mode-card h3{font-size:1.7rem}
+  .reading-mode-card p{margin-bottom:14px}
+  .reading-mode-song{margin-bottom:13px}
 }
 
 </style>
@@ -1303,7 +1410,21 @@ body.reading-locked .sticky-thesis{display:none!important}
   function goToArticle(){
     unlockArticle();
     requestAnimationFrame(()=>{
-      document.querySelector('#intuition')?.scrollIntoView({behavior:'smooth',block:'start'});
+      const target=document.querySelector('#intuition');
+      if(!target)return;
+      try{
+        target.scrollIntoView({behavior:'smooth',block:'start'});
+      }catch(_){
+        target.scrollIntoView();
+      }
+      /* Tablet Safari can occasionally keep the old locked scroll state for one frame. */
+      setTimeout(()=>{
+        if(document.body.classList.contains('reading-locked'))return;
+        const r=target.getBoundingClientRect();
+        if(Math.abs(r.top)>Math.max(80,innerHeight*.45)){
+          target.scrollIntoView({block:'start'});
+        }
+      },180);
     });
   }
   function ytCommand(func,args=[]){
