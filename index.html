@@ -331,7 +331,7 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 
 /* flashlight */
 .flashlight{
-  position:relative;padding:86px 0 104px;
+  position:relative;padding:86px 0 30px;
   background:linear-gradient(180deg,#0b0d0f 0,#050607 16%,#050607 100%);
   overflow:hidden
 }
@@ -360,22 +360,22 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 /* Article finale + compact five-star rating */
 .article-finale{
   position:relative;text-align:center;
-  margin:clamp(46px,9vw,82px) auto 0;
-  padding:clamp(28px,6vw,48px) 0 8px;
+  margin:clamp(18px,4vw,34px) auto 0;
+  padding:clamp(12px,3vw,20px) 0 0;
   max-width:720px
 }
 .article-finale::before{
-  content:"";display:block;width:72px;height:1px;margin:0 auto 30px;
+  content:"";display:block;width:72px;height:1px;margin:0 auto 18px;
   background:linear-gradient(90deg,transparent,rgba(211,160,94,.72),transparent)
 }
 .final-thanks{
-  margin:0 auto 18px;max-width:650px;
+  margin:0 auto 13px;max-width:650px;
   font-family:Georgia,"Times New Roman",serif;
   font-size:clamp(1.7rem,6vw,2.8rem);line-height:1.18;
   color:#efe5d8
 }
 .final-question{
-  margin:0 0 17px;color:#aaa49c;
+  margin:0 0 10px;color:#aaa49c;
   font-size:clamp(.95rem,3.8vw,1.12rem);line-height:1.45
 }
 .rating-stars{
@@ -398,11 +398,31 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
   outline:1px solid rgba(211,160,94,.7);outline-offset:4px;border-radius:8px
 }
 .rating-star:disabled{cursor:default}
+.rating-next-cue{
+  width:30px;height:42px;margin:8px auto 0;position:relative;
+  opacity:.58;transition:opacity .24s ease,transform .24s ease
+}
+.rating-next-cue::before{
+  content:"";position:absolute;left:50%;top:2px;width:1px;height:24px;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,rgba(211,160,94,.06),rgba(211,160,94,.78));
+  box-shadow:0 0 10px rgba(211,160,94,.24)
+}
+.rating-next-cue::after{
+  content:"";position:absolute;left:50%;top:19px;width:10px;height:10px;
+  border-right:1px solid rgba(211,160,94,.92);
+  border-bottom:1px solid rgba(211,160,94,.92);
+  transform:translateX(-50%) rotate(45deg);
+  box-shadow:4px 4px 9px rgba(211,160,94,.08)
+}
+.article-finale.unlocked .rating-next-cue{
+  opacity:1;transform:translateY(3px)
+}
 @media(hover:hover) and (pointer:fine){
   .rating-star:hover{transform:scale(1.1)}
 }
 @media(min-width:760px){
-  .article-finale{margin-top:86px;padding-top:46px}
+  .article-finale{margin-top:34px;padding-top:22px}
 }
 
 
@@ -561,7 +581,7 @@ body.reading-locked .sticky-thesis{display:none!important}
   .meter-card{padding:30px}
   .factors{padding-top:210px!important;padding-bottom:210px!important}
   .romance summary{padding:28px;font-size:2.35rem}.romance details p{padding:0 28px 24px}
-  .flashlight{padding:125px 0}.questions{gap:34px}.hero-bg{background-position:center 45%}
+  .flashlight{padding:112px 0 50px}.questions{gap:34px}.hero-bg{background-position:center 45%}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -571,20 +591,20 @@ body.reading-locked .sticky-thesis{display:none!important}
 
 /* Anonymous reader comments */
 .comments-section{
-  padding:88px 0 96px;
+  padding:30px 0 34px;
   background:
     radial-gradient(circle at 50% 0%,rgba(211,160,94,.08),transparent 36%),
     linear-gradient(180deg,#0b0d0f,#090a0b);
   border-top:1px solid var(--line)
 }
 .comments-card{
-  max-width:760px;margin:0 auto;padding:clamp(22px,5vw,34px);
+  max-width:760px;margin:0 auto;padding:clamp(20px,4vw,28px);
   border:1px solid rgba(236,228,216,.13);border-radius:24px;
   background:rgba(236,228,216,.035);
   box-shadow:0 28px 80px rgba(0,0,0,.22)
 }
 .comments-card h2{margin:8px 0 10px;font-size:clamp(2rem,7vw,3.8rem);line-height:.98}
-.comments-intro{margin:0 0 24px;color:var(--muted);font-size:1rem;line-height:1.65}
+.comments-intro{margin:0 0 18px;color:var(--muted);font-size:1rem;line-height:1.65}
 .comment-form{display:grid;gap:12px}
 .comment-hp{
   position:absolute!important;left:-10000px!important;top:auto!important;
@@ -607,7 +627,7 @@ body.reading-locked .sticky-thesis{display:none!important}
 }
 .comment-submit:disabled{opacity:.45;cursor:default}
 .comment-status{min-height:1.3em;margin:8px 0 0;color:var(--muted);font-size:.88rem}
-.comment-divider{height:1px;background:var(--line);margin:28px 0 22px}
+.comment-divider{height:1px;background:var(--line);margin:16px 0 14px}
 .comments-list{display:grid;gap:14px}
 .comment-item{
   padding:16px 17px;border:1px solid rgba(236,228,216,.1);border-radius:16px;
@@ -615,8 +635,8 @@ body.reading-locked .sticky-thesis{display:none!important}
 }
 .comment-meta{margin-bottom:8px;font-size:.72rem;color:rgba(236,228,216,.42);letter-spacing:.03em}
 .comment-body{white-space:pre-wrap;overflow-wrap:anywhere;color:rgba(236,228,216,.88);line-height:1.58}
-.comments-empty{color:var(--muted);font-style:italic}
-@media(min-width:760px){.comments-section{padding:112px 0 124px}}
+.comments-empty{margin:0;color:var(--muted);font-style:italic}
+@media(min-width:760px){.comments-section{padding:52px 0 58px}}
 
 /* Social / author */
 .social-section{
@@ -796,7 +816,7 @@ body.reading-locked .sticky-thesis{display:none!important}
   /* Desktop flashlight uses the pointer and a wider question grid. */
   .touch-instruction{display:none}
   .pointer-instruction{display:inline}
-  .flashlight{padding:150px 0 160px}
+  .flashlight{padding:150px 0 62px}
   .flash-content{max-width:1120px}
   .light{background:radial-gradient(circle 220px at var(--x,50%) var(--y,50%),rgba(240,222,193,.28),rgba(211,160,94,.07) 45%,transparent 73%)}
   .questions{grid-template-columns:1fr 1fr;gap:44px 72px;margin-top:14px}
@@ -804,7 +824,7 @@ body.reading-locked .sticky-thesis{display:none!important}
   .questions p:last-child{grid-column:1/-1;max-width:780px}
 
   /* End matter expands without becoming visually loose. */
-  .rating-section{padding:118px 0}\n  .rating-section>.shell{max-width:1000px}\n  .rating-card{max-width:none;padding:40px 44px;border-radius:30px}\n  .comments-section{padding:118px 0}
+  .rating-section{padding:118px 0}\n  .rating-section>.shell{max-width:1000px}\n  .rating-card{max-width:none;padding:40px 44px;border-radius:30px}\n  .comments-section{padding:62px 0 68px}
   .comments-section>.shell{max-width:1000px}
   .comments-card{max-width:none;padding:40px 44px;border-radius:30px}
   .comments-card h2{font-size:clamp(3rem,4vw,4.5rem)}
@@ -1118,6 +1138,7 @@ body.reading-locked .sticky-thesis{display:none!important}
         <button class="rating-star" type="button" data-rating="4" aria-label="4 звезды" aria-pressed="false">★</button>
         <button class="rating-star" type="button" data-rating="5" aria-label="5 звёзд" aria-pressed="false">★</button>
       </div>
+      <div class="rating-next-cue" aria-hidden="true"></div>
     </div>
   </div>
 </section>
@@ -1566,7 +1587,11 @@ body.reading-locked .sticky-thesis{display:none!important}
         if(!response.ok)throw new Error(result?.error||('rating_'+response.status));
 
         try{localStorage.setItem('legendpsy_rating_love_suffering_v1',String(rating))}catch(_){}
+        document.querySelector('#articleFinale')?.classList.add('unlocked');
         releaseGate('gate-final',null,'commentsSection');
+        setTimeout(()=>{
+          document.querySelector('#commentsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+        },220);
       }catch(err){
         console.error('Rating save failed',err);
         ratingSaving=false;
@@ -1740,7 +1765,7 @@ body.reading-locked .sticky-thesis{display:none!important}
     SUPABASE_URL+
     '/rest/v1/comments?select=id,body,created_at&article_id=eq.'+
     encodeURIComponent(COMMENTS_ARTICLE_ID)+
-    '&is_visible=eq.true&order=created_at.asc'
+    '&order=created_at.asc'
   );
 
   function formatCommentDate(value){
