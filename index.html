@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="ru" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090b0c">
+<meta name="color-scheme" content="dark">
+<title>Любовь не измеряется страданием</title>
+<meta name="description" content="Интерактивное эссе о том, почему интенсивность страдания не является мерой любви.">
+<script>
+document.documentElement.classList.remove('no-js');
+document.documentElement.classList.add('js');
+</script>
+<style>
+:root{
+  --bg:#0b0d0f;
+  --bg2:#111416;
+  --paper:#ece4d8;
+  --muted:#aaa49c;
+  --ink:#171819;
+  --gold:#d3a05e;
+  --ember:#9e4634;
+  --line:rgba(236,228,216,.13);
+  --pad:clamp(18px,5vw,28px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  margin:0;background:var(--bg);color:var(--paper);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;
+  line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden
+}
+button,input,label,summary{font:inherit}
+button{color:inherit}
+a{color:inherit}
+::selection{background:rgba(211,160,94,.35)}
+.shell{width:min(100% - 2*var(--pad),760px);margin-inline:auto}
+.eyebrow,.kicker{text-transform:uppercase;letter-spacing:.16em;font-size:.66rem;font-weight:760;color:var(--gold)}
+h1,h2,h3,.serif,.pull,blockquote,summary{font-family:Georgia,"Times New Roman",serif;font-weight:400}
+h2{font-size:clamp(2.25rem,10.5vw,4.9rem);line-height:.96;letter-spacing:-.043em;margin:0 0 18px}
+p{margin:0 0 .95em}
+.section{padding:66px 0}
+.prose.section{padding:48px 0}
+.lede{font-size:1.02rem;line-height:1.55;color:var(--muted);max-width:38rem}
+
+/* progress */
+.progress{position:fixed;z-index:1000;inset:0 0 auto;height:3px;background:rgba(255,255,255,.035)}
+.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ember),var(--gold));box-shadow:0 0 18px rgba(211,160,94,.35)}
+
+/* hero */
+.hero{position:relative;min-height:100svh;display:grid;align-items:end;isolation:isolate;overflow:hidden}
+.hero-bg{
+  position:absolute;inset:0;z-index:-3;
+  background-image:url('cover.svg');
+  background-size:cover;background-position:52% center;
+  transform:scale(1.012);
+  filter:saturate(.82) contrast(1.04) brightness(.72)
+}
+.hero::before{
+  content:"";position:absolute;inset:0;z-index:-2;
+  background:
+    linear-gradient(180deg,rgba(5,6,7,.06),rgba(5,6,7,.16) 38%,rgba(5,6,7,.82) 78%,#0b0d0f 100%),
+    linear-gradient(90deg,rgba(5,6,7,.30),transparent 68%)
+}
+.hero-inner{padding-bottom:max(38px,7svh)}
+.hero h1{font-size:clamp(3.7rem,17vw,7.1rem);line-height:.8;letter-spacing:-.068em;margin:14px 0 22px;max-width:8.4ch;text-wrap:balance}
+.hero h1 span{font-size:.62em;font-style:italic;color:#d9c7af}
+.hero p{max-width:34rem;color:rgba(255,255,255,.78);font-size:1rem;line-height:1.55}
+.start{display:inline-flex;gap:10px;align-items:center;margin-top:18px;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.35);padding:0 0 4px}
+
+/* no-JS / Telegram fallback */
+.nojs-note{
+  margin:18px 0 0;padding:14px 16px;border:1px solid rgba(211,160,94,.26);
+  border-radius:16px;background:rgba(10,12,13,.68);color:#d7c8b4;font-size:.82rem;line-height:1.45
+}
+.no-js .progress,.no-js .sticky-thesis{display:none!important}
+.js-only{display:none}.js .js-only{display:inline}
+.nojs-only{display:inline}.js .nojs-only{display:none}
+
+/* sticky thesis */
+.sticky-thesis{
+  position:sticky;top:10px;z-index:60;margin:0 auto -48px;
+  width:max-content;max-width:calc(100% - 28px);
+  padding:7px 11px;border:1px solid rgba(255,255,255,.12);border-radius:999px;
+  background:rgba(10,12,13,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  color:#bbb5ad;font-size:.69rem;opacity:0;transform:translateY(-5px);transition:.28s
+}
+.sticky-thesis.show{opacity:1;transform:none}
+.sticky-thesis strong{color:#f0e6d7;font-weight:650}
+
+/* opening choice — works even without JS */
+.choice-wrap{position:relative}
+.choice-radio,.factor-radio{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.choice-grid{display:grid;gap:10px;margin-top:28px}
+.choice{
+  display:block;position:relative;width:100%;text-align:left;padding:20px 18px 18px;
+  border:1px solid var(--line);border-radius:22px;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.016));
+  min-height:205px;cursor:pointer
+}
+.choice:active{transform:scale(.994)}
+.choice small{display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--line);border-radius:50%;color:var(--gold);margin-bottom:22px}
+.choice strong{display:block;font-family:Georgia,serif;font-size:1.65rem;line-height:1.06;font-weight:400;margin-bottom:10px}
+.choice span{display:block;color:var(--muted);font-size:.88rem;line-height:1.55}
+.choice .choose{display:block;margin-top:15px;color:var(--gold);font-size:.72rem;text-transform:uppercase;letter-spacing:.09em}
+#choiceCalm:checked ~ .choice-grid label[for=choiceCalm],
+#choiceStorm:checked ~ .choice-grid label[for=choiceStorm]{
+  border-color:rgba(211,160,94,.72);background:rgba(211,160,94,.07)
+}
+.choice-reveal{
+  display:none;margin-top:20px;padding:16px 16px 16px 17px;border-left:3px solid var(--gold);
+  background:rgba(255,255,255,.025);font-family:Georgia,serif;font-size:1.08rem;line-height:1.42
+}
+.choice-reveal p{display:none;margin:0}
+#choiceCalm:checked ~ .choice-reveal,
+#choiceStorm:checked ~ .choice-reveal{display:block}
+#choiceCalm:checked ~ .choice-reveal .calm,
+#choiceStorm:checked ~ .choice-reveal .storm{display:block}
+
+/* article typography */
+.prose{font-family:Georgia,"Times New Roman",serif;color:#ded7cc}
+.prose p{font-size:clamp(1.16rem,5.1vw,1.5rem);line-height:1.58;margin-bottom:.88em}
+.prose .dropcap:first-letter{float:left;color:var(--gold);font-size:4.8rem;line-height:.74;margin:.16em .1em 0 0}
+.pull{
+  font-size:clamp(2rem,9.4vw,4.2rem)!important;line-height:1.04!important;color:#f3eadc;
+  margin:1.45em 0!important;letter-spacing:-.034em
+}
+.bridge{color:#bcb5ab}
+.bridge strong{color:#eee4d7;font-weight:400}
+
+/* scrollytelling */
+.scrolly{position:relative;padding:54px 0 18px;background:linear-gradient(#0b0d0f,#101315 42%,#0b0d0f)}
+.scrolly-head{padding-bottom:16px}
+.scrolly-stage{
+  position:sticky;top:0;height:50svh;display:grid;align-content:center;
+  z-index:20;pointer-events:none;
+  background:linear-gradient(180deg,#0b0d0f 0%,rgba(11,13,15,.99) 70%,rgba(11,13,15,.88) 84%,rgba(11,13,15,0) 100%)
+}
+.visual-card{
+  border:1px solid var(--line);border-radius:24px;
+  background:#0c0e10;box-shadow:0 22px 70px rgba(0,0,0,.42);padding:18px
+}
+.visual-title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;font-size:.74rem;color:var(--muted)}
+.visual-title strong{font-family:Georgia,serif;font-size:1.12rem;color:var(--paper);font-weight:400}
+.tracks{display:grid;gap:11px}
+.track{display:grid;grid-template-columns:72px 1fr 40px;gap:8px;align-items:center;font-size:.67rem;color:#aaa}
+.bar{height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.bar i{display:block;height:100%;width:var(--v,5%);border-radius:inherit;background:linear-gradient(90deg,var(--ember),#c66c4f);transition:width .58s cubic-bezier(.2,.8,.2,1)}
+.track.love .bar i{background:linear-gradient(90deg,var(--gold),#efd09f)}
+.track b{text-align:right;color:#d9d0c5;font-weight:600}
+.track.love b{color:var(--gold)}
+.equation{margin-top:14px;padding-top:13px;border-top:1px solid var(--line);font-family:Georgia,serif;font-size:1.2rem;line-height:1.14}
+.equation .equals{color:var(--gold);transition:.3s}
+.visual-card.broken .equation .equals{text-decoration:line-through;color:#8e8b86}
+.visual-card.broken .track.love .bar{outline:1px dashed rgba(211,160,94,.55);background:transparent}
+.visual-card.broken .track.love .bar i{width:0!important}
+.visual-card.broken .track.love b{font-size:.62rem}
+.story-steps{position:relative;z-index:1;padding-bottom:5svh}
+.story-step{min-height:44svh;display:grid;align-items:end;padding:22px 0}
+.story-step>div{
+  padding:15px 16px 15px 17px;border-left:1px solid rgba(255,255,255,.11);
+  background:linear-gradient(90deg,rgba(11,13,15,.94),rgba(11,13,15,.64),rgba(11,13,15,0));
+  max-width:34rem
+}
+.story-step h3{font-size:1.78rem;line-height:1.03;margin:0 0 8px}
+.story-step p{font-size:.88rem;line-height:1.5;color:var(--muted);margin:0}
+.story-step.active>div{border-left-color:var(--gold)}
+.no-js .scrolly-stage{position:relative;height:auto;padding:18px 0;background:none}
+.no-js .story-steps{padding-top:8px}
+.no-js .story-step{min-height:0;padding:10px 0}
+.no-js .story-step>div{background:none}
+
+/* meter */
+.meter{
+  background:radial-gradient(circle at 70% 0,rgba(158,70,52,.13),transparent 33%),#111416;
+  border:0
+}
+.meter-card{margin-top:26px;border:1px solid var(--line);border-radius:24px;padding:20px;background:rgba(0,0,0,.17)}
+.dial{height:156px;position:relative;overflow:hidden}
+.dial-arc{
+  position:absolute;width:280px;height:280px;left:50%;top:46px;transform:translateX(-50%);border-radius:50%;
+  background:repeating-conic-gradient(from 220deg,rgba(236,228,216,.46) 0 1deg,transparent 1deg 9deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 62%,#000 63% 65%,transparent 66%);
+  mask:radial-gradient(circle,transparent 0 62%,#000 63% 65%,transparent 66%)
+}
+.needle{position:absolute;width:104px;height:2px;left:50%;bottom:29px;transform-origin:0 50%;background:linear-gradient(90deg,var(--gold),#efd2a9);box-shadow:0 0 14px rgba(211,160,94,.45);transition:.2s}
+.hub{position:absolute;width:15px;height:15px;left:50%;bottom:22px;transform:translateX(-50%);background:var(--gold);border-radius:50%}
+.range-label{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:.8rem;margin:8px 0 6px}
+input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
+.metric{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-top:1px solid var(--line)}
+.metric strong{font-family:Georgia,serif;font-size:1.4rem;font-weight:400}
+.metric.unknown strong{color:var(--gold)}
+.meter-note{font-size:.85rem;line-height:1.5;color:var(--muted);min-height:2.6em;margin:7px 0 0}
+
+/* soft transition into and out of the light section */
+.factors{
+  position:relative;
+  color:var(--ink);
+  padding-top:170px!important;padding-bottom:170px!important;
+  background:
+    linear-gradient(
+      180deg,
+      #111416 0,
+      #5d5a55 48px,
+      #b8b0a5 105px,
+      #e7dfd3 165px,
+      #e7dfd3 calc(100% - 165px),
+      #b6aea3 calc(100% - 105px),
+      #595754 calc(100% - 48px),
+      #0b0d0f 100%
+    )
+}
+.factors .kicker{color:#884936}
+.factors h2{color:#171819}
+.factors .lede{color:#625d57}
+.factor-core{
+  width:154px;aspect-ratio:1;border:1px solid rgba(23,24,25,.16);border-radius:50%;
+  display:grid;place-items:center;margin:30px auto;
+  background:radial-gradient(circle,rgba(211,160,94,.27),transparent 58%)
+}
+.factor-core span{
+  width:90px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:#17191a;color:#eee5d8;
+  font-family:Georgia,serif;font-size:1.32rem;box-shadow:0 18px 38px rgba(0,0,0,.14)
+}
+.factor-tabs{position:relative}
+.factor-radio{position:absolute;opacity:0}
+.chips{display:flex;gap:8px;overflow:auto;padding:0 0 9px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;border:1px solid rgba(23,24,25,.2);border-radius:999px;padding:10px 13px;background:transparent;
+  color:var(--ink);font-size:.83rem;cursor:pointer
+}
+#f1:checked ~ .chips label[for=f1],
+#f2:checked ~ .chips label[for=f2],
+#f3:checked ~ .chips label[for=f3],
+#f4:checked ~ .chips label[for=f4],
+#f5:checked ~ .chips label[for=f5],
+#f6:checked ~ .chips label[for=f6]{background:var(--ink);color:#eee5d8}
+.factor-panels{
+  margin-top:12px;border:1px solid rgba(23,24,25,.14);border-radius:21px;padding:18px;background:rgba(255,255,255,.25);
+  min-height:172px
+}
+.factor-panel{display:none}
+.factor-panel small{text-transform:uppercase;letter-spacing:.12em;color:#884936;font-weight:750;font-size:.65rem}
+.factor-panel h3{font-size:1.65rem;line-height:1.05;margin:22px 0 8px}
+.factor-panel p{color:#625d57;margin:0;line-height:1.5}
+#f1:checked ~ .factor-panels .p1,
+#f2:checked ~ .factor-panels .p2,
+#f3:checked ~ .factor-panels .p3,
+#f4:checked ~ .factor-panels .p4,
+#f5:checked ~ .factor-panels .p5,
+#f6:checked ~ .factor-panels .p6{display:block}
+
+/* trap — native details, no JS required */
+.trap{background:#0c0e10;padding-top:58px;padding-bottom:58px}
+.romance{display:grid;gap:9px;margin-top:28px}
+.romance details{border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.025);overflow:hidden}
+.romance summary{
+  list-style:none;cursor:pointer;padding:20px 18px;font-size:1.58rem;line-height:1.06
+}
+.romance summary::-webkit-details-marker{display:none}
+.romance summary::after{
+  content:"доказательство любви?";display:block;margin-top:11px;color:#74716d;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:.61rem;
+  text-transform:uppercase;letter-spacing:.12em
+}
+.romance details[open]{border-color:rgba(211,160,94,.30)}
+.romance details[open] summary::after{content:"а если посмотреть иначе?";color:var(--gold)}
+.romance details p{margin:0;padding:0 18px 18px;color:#aaa49c;font-size:.87rem;line-height:1.5}
+
+/* paradox */
+.paradox{
+  min-height:66svh;display:grid;place-items:center;text-align:center;
+  background:radial-gradient(circle,rgba(211,160,94,.105),transparent 30%),#101214
+}
+.paradox h2{font-size:clamp(2.45rem,11vw,5.1rem)}
+.paradox-chain{display:flex;flex-wrap:wrap;justify-content:center;gap:7px 10px;margin-top:28px;color:#89857f;text-transform:uppercase;letter-spacing:.1em;font-size:.62rem}
+.paradox-chain i{width:22px;height:1px;background:#343536;align-self:center}
+
+/* flashlight */
+.flashlight{
+  position:relative;padding:86px 0 104px;
+  background:linear-gradient(180deg,#0b0d0f 0,#050607 16%,#050607 100%);
+  overflow:hidden
+}
+.flashlight::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(158,70,52,.05),transparent 20%),radial-gradient(circle at 80% 75%,rgba(211,160,94,.04),transparent 23%)}
+.light{
+  position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:radial-gradient(circle 155px at var(--x,50%) var(--y,50%),rgba(240,222,193,.28),rgba(211,160,94,.07) 45%,transparent 73%);
+  mix-blend-mode:screen;transition:opacity .25s
+}
+.flashlight.on .light{opacity:1}
+.flash-content{position:relative;z-index:2}
+.torch{min-height:48px;padding:11px 15px;border:1px solid rgba(255,255,255,.17);background:transparent;border-radius:999px;margin:10px 0 38px}
+.torch[aria-pressed=true]{border-color:var(--gold);color:var(--gold)}
+.questions{display:grid;gap:26px}
+.questions p{
+  font-family:Georgia,serif;font-size:clamp(1.62rem,8vw,3.6rem);line-height:1.08;
+  color:#ded5c8;margin:0;transition:.25s
+}
+.js .questions p{color:rgba(236,228,216,.13)}
+.js .flashlight.on .questions p{color:rgba(236,228,216,.24)}
+.js .questions p.lit{color:#f0e6d8!important;transform:translateX(4px)}
+.js .questions p:last-child{color:rgba(211,160,94,.20)}
+.js .questions p:last-child.lit{color:#e5b879!important}
+.no-js .torch{display:none}
+
+/* footer */
+.footer{border-top:1px solid var(--line);padding:25px 0 calc(34px + env(safe-area-inset-bottom));color:#807c76;font-size:.74rem}
+.footer .shell{display:flex;justify-content:space-between;gap:16px}
+.footer a{text-decoration:none;color:#d7d0c6}
+
+/* reveal only when JS actually runs */
+.reveal{opacity:1;transform:none}
+.js .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+.js .reveal.in{opacity:1;transform:none}
+
+@media(min-width:760px){
+  .section{padding:98px 0}.prose.section{padding:72px 0}
+  .choice-grid{grid-template-columns:1fr 1fr}.choice{min-height:290px;padding:26px}
+  .scrolly-stage{height:60svh}.visual-card{padding:27px}.story-step{min-height:58svh}
+  .meter-card{padding:30px}
+  .factors{padding-top:210px!important;padding-bottom:210px!important}
+  .romance summary{padding:28px;font-size:2.35rem}.romance details p{padding:0 28px 24px}
+  .flashlight{padding:125px 0}.questions{gap:34px}.hero-bg{background-position:center 45%}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .js .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
+<div class="sticky-thesis" id="stickyThesis">Вывод: <strong id="stickyText">ещё не сделан</strong></div>
+
+<header class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="shell hero-inner">
+    <div class="eyebrow">Интерактивное эссе</div>
+    <h1>Любовь<br><span>не измеряется</span><br>страданием</h1>
+    <p>Почему тревогу, ревность и невозможность жить без другого так легко принять за доказательство глубины чувств.</p>
+    <a class="start" href="#intuition">Начать читать <span>↓</span></a>
+    <noscript><div class="nojs-note">Этот просмотрщик не запускает JavaScript. Статья всё равно доступна целиком, а часть интерактивов работает без скриптов. Для полной версии — с анимацией шкал и «фонариком» — откройте этот же файл в обычном браузере.</div></noscript>
+  </div>
+</header>
+
+<main>
+<section class="section" id="intuition">
+  <div class="shell">
+    <div class="kicker">01 · Интуиция</div>
+    <h2>Кто из них любит сильнее?</h2>
+    <p class="lede">Одинаковые обстоятельства: у каждого любимый человек находится в городе под обстрелом. Выберите не анализируя слишком долго.</p>
+
+    <div class="choice-wrap">
+      <input class="choice-radio" type="radio" name="loveChoice" id="choiceCalm" value="calm">
+      <input class="choice-radio" type="radio" name="loveChoice" id="choiceStorm" value="storm">
+
+      <div class="choice-grid" role="group" aria-label="Кто любит сильнее">
+        <label class="choice" for="choiceCalm">
+          <small>A</small>
+          <strong>Боится, но продолжает жить</strong>
+          <span>Проверяет связь, волнуется, работает, ест, разговаривает с людьми и возвращается к своим делам.</span>
+          <b class="choose">Выбрать</b>
+        </label>
+        <label class="choice" for="choiceStorm">
+          <small>B</small>
+          <strong>Не находит себе места</strong>
+          <span>Не может сосредоточиться, постоянно проверяет телефон и прокручивает худшие сценарии.</span>
+          <b class="choose">Выбрать</b>
+        </label>
+      </div>
+
+      <div class="choice-reveal" aria-live="polite">
+        <p class="calm">Вы выбрали более спокойную реакцию. Но это всё ещё не число любви: мы увидели только то, как человек выдерживает тревогу.</p>
+        <p class="storm">Это самый интуитивный выбор: больше страдания кажется большей любовью. Но вы только что оценили интенсивность реакции — не величину любви.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section prose"><div class="shell">
+  <p class="dropcap">Мне кажется, в нашей культуре есть одна довольно странная идея о любви, которую мы настолько усвоили, что почти не замечаем её.</p>
+  <p>Мы привыкли измерять любовь интенсивностью переживаний.</p>
+  <p>Насколько сильно человек страдает после потери — настолько сильно он любил.</p>
+  <p>Насколько сильно тревожится за любимого — настолько тот ему дорог.</p>
+  <p>Насколько невозможно ему жить, есть, работать, спать, когда с близким что-то происходит, — настолько, кажется, любовь настоящая.</p>
+</div></section>
+
+<section class="scrolly" id="scrolly">
+  <div class="shell scrolly-head">
+    <div class="kicker">02 · Ошибка измерения</div>
+    <h2>Сначала интерфейс тоже поверит в эту логику.</h2>
+    <p class="lede">Листайте вниз. Посмотрите, как легко несколько разных процессов складываются в одну убедительную картинку.</p>
+  </div>
+
+  <div class="scrolly-stage">
+    <div class="shell">
+      <div class="visual-card broken" id="visualCard">
+        <div class="visual-title"><span>Наблюдаемая реакция</span><strong id="visualState">данных о любви нет</strong></div>
+        <div class="tracks">
+          <div class="track"><span>тревога</span><div class="bar"><i id="barAnxiety" style="--v:36%"></i></div><b id="nAnxiety">36</b></div>
+          <div class="track"><span>страдание</span><div class="bar"><i id="barPain" style="--v:32%"></i></div><b id="nPain">32</b></div>
+          <div class="track"><span>контроль</span><div class="bar"><i id="barControl" style="--v:28%"></i></div><b id="nControl">28</b></div>
+          <div class="track love"><span>любовь</span><div class="bar"><i id="barLove" style="--v:0%"></i></div><b id="nLove">неизв.</b></div>
+        </div>
+        <div class="equation"><span>больше страдания</span> <span class="equals">=</span> <span>больше любви?</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="story-steps shell">
+    <div class="story-step" data-stage="1"><div><h3>Тревога растёт.</h3><p>Человеку всё тяжелее. Пока это только описание его состояния.</p></div></div>
+    <div class="story-step" data-stage="2"><div><h3>Жизнь сужается вокруг угрозы.</h3><p>Работа, сон, еда и внимание начинают проигрывать мыслям о близком.</p></div></div>
+    <div class="story-step" data-stage="3"><div><h3>И здесь почти хочется поставить знак равенства.</h3><p>Если боль огромна, любовь тоже должна быть огромной. Именно так ощущается эта интуиция.</p></div></div>
+    <div class="story-step" data-stage="4"><div><h3>Но шкала ломается.</h3><p>Тревогу, страдание и потребность в контроле мы увидели. Величину любви — нет.</p></div></div>
+  </div>
+</section>
+
+<section class="section prose"><div class="shell">
+  <p class="bridge">То, что только что произошло на экране, и есть важная часть этой путаницы: <strong>мы увидели больше боли — и почти автоматически дорисовали больше любви.</strong></p>
+  <p>В этом есть почти неоспоримая внутренняя логика: если тебе настолько плохо, значит происходящее для тебя чрезвычайно важно. А если этот человек настолько важен — значит, ты очень сильно его любишь.</p>
+  <p class="pull">Но если посмотреть внимательнее, возникает проблема.</p>
+  <p>Сила реакции действительно что-то сообщает. Вопрос — что именно.</p>
+</div></section>
+
+<section class="section meter" id="meter"><div class="shell">
+  <div class="kicker">03 · Ложная шкала</div>
+  <h2>Страдание измерить можно. Любовь — нет.</h2>
+  <p class="lede">Подвигайте ползунок. Интенсивность переживания меняется, а один параметр всё равно остаётся неизвестным.</p>
+  <div class="meter-card reveal">
+    <div class="dial" aria-hidden="true"><div class="dial-arc"></div><div class="needle" id="needle"></div><div class="hub"></div></div>
+    <label class="range-label" for="range">
+      <span>Интенсивность страдания</span>
+      <output id="rangeValue" class="js-only">52%</output>
+    </label>
+    <input id="range" type="range" min="0" max="100" value="52">
+    <div class="metric"><span>Страдание</span><strong><span class="nojs-only">измеримо</span><span class="js-only" id="painReadout">52%</span></strong></div>
+    <div class="metric unknown"><span>Сила любви</span><strong>неизвестна</strong></div>
+    <p class="meter-note" id="meterNote">Мы получили число о переживании человека — но не о его любви.</p>
+  </div>
+</div></section>
+
+<section class="section factors" id="factors"><div class="shell">
+  <div class="kicker">04 · Что мы на самом деле видим</div>
+  <h2>Реакция говорит о человеке. Не обязательно — о любви.</h2>
+  <p class="lede">Выберите фактор. Каждый из них способен менять интенсивность реакции, не являясь шкалой любви.</p>
+
+  <div class="factor-core" aria-hidden="true"><span>любовь</span></div>
+
+  <div class="factor-tabs">
+    <input class="factor-radio" type="radio" name="factor" id="f1" checked>
+    <input class="factor-radio" type="radio" name="factor" id="f2">
+    <input class="factor-radio" type="radio" name="factor" id="f3">
+    <input class="factor-radio" type="radio" name="factor" id="f4">
+    <input class="factor-radio" type="radio" name="factor" id="f5">
+    <input class="factor-radio" type="radio" name="factor" id="f6">
+
+    <div class="chips">
+      <label class="chip" for="f1">неопределённость</label>
+      <label class="chip" for="f2">мысли</label>
+      <label class="chip" for="f3">гибкость</label>
+      <label class="chip" for="f4">опыт</label>
+      <label class="chip" for="f5">контроль</label>
+      <label class="chip" for="f6">чувствительность</label>
+    </div>
+
+    <div class="factor-panels">
+      <div class="factor-panel p1"><small>Сейчас подсвечено</small><h3>Переносимость неопределённости</h3><p>Насколько человек способен не знать, что происходит, и всё равно оставаться в контакте с реальностью.</p></div>
+      <div class="factor-panel p2"><small>Сейчас подсвечено</small><h3>Слияние с мыслями</h3><p>Насколько легко пугающий сценарий в голове начинает ощущаться как уже произошедший факт.</p></div>
+      <div class="factor-panel p3"><small>Сейчас подсвечено</small><h3>Психологическая гибкость</h3><p>Способность чувствовать сильные эмоции и при этом выбирать действия, которые важны здесь и сейчас.</p></div>
+      <div class="factor-panel p4"><small>Сейчас подсвечено</small><h3>Прошлый опыт</h3><p>Опыт потерь, нестабильности или безопасности влияет на реакцию нервной системы в похожих ситуациях.</p></div>
+      <div class="factor-panel p5"><small>Сейчас подсвечено</small><h3>Потребность в контроле</h3><p>Чем труднее переносится отсутствие контроля, тем сильнее может становиться тревога — даже при той же любви.</p></div>
+      <div class="factor-panel p6"><small>Сейчас подсвечено</small><h3>Чувствительность нервной системы</h3><p>Люди различаются по интенсивности и скорости эмоциональной реакции. Это тоже не шкала любви.</p></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="section prose"><div class="shell">
+  <p class="bridge">Всё это мы только что разложили на отдельные процессы. Они могут усиливать или ослаблять реакцию, <strong>не прибавляя и не убавляя любовь.</strong></p>
+  <p>То есть реакция действительно многое говорит о человеке: о том, как он переносит неопределённость, что делает со своими мыслями, насколько способен оставаться в контакте с сильными чувствами и продолжать действовать.</p>
+  <p class="pull">Но далеко не обязательно — о его любви.</p>
+</div></section>
+
+<section class="section trap" id="trap"><div class="shell">
+  <div class="kicker">05 · Ловушка</div>
+  <h2>Когда трудность справляться становится романтическим доказательством</h2>
+  <p class="lede">Откройте любую фразу. Она не станет менее эмоциональной — но изменится рамка, через которую мы на неё смотрим.</p>
+
+  <div class="romance">
+    <details><summary>«Он без меня не может»</summary><p>Это может звучать как исключительная любовь. Но может говорить и о трудности оставаться отдельным человеком без постоянной опоры на другого.</p></details>
+    <details><summary>«Она места себе не находит»</summary><p>Сильнейшая тревога показывает интенсивность переживания. Она сама по себе не сообщает, насколько глубоко человек способен любить.</p></details>
+    <details><summary>«Он с ума сходит от ревности»</summary><p>Ревность может быть связана с привязанностью, но также с угрозой, контролем, мыслями и непереносимостью неопределённости.</p></details>
+    <details><summary>«Она после расставания вообще перестала жить»</summary><p>Разрушение после потери может быть огромным. Но превращать степень разрушенности в шкалу любви — отдельный вывод, а не факт.</p></details>
+  </div>
+</div></section>
+
+<section class="section prose"><div class="shell">
+  <p>Если мы принимаем неспособность жить без другого человека за доказательство большой любви, тревогу — за её меру, а эмоциональное разрушение после потери — за свидетельство её глубины, то в поисках «настоящей любви» мы начинаем бессознательно отбирать совсем не тех людей.</p>
+  <p>Не тех, кто сильнее способен любить, а тех, кому сложнее справляться с собственными переживаниями.</p>
+  <p>Тех, кому труднее отделиться от своих мыслей, выдерживать неопределённость, дистанцию, изменение обстоятельств и потерю контроля.</p>
+  <p>Именно эти качества мы можем романтизировать и читать как: «Вот она — настоящая любовь».</p>
+  <p>Хотя всё это может совершенно ничего не говорить о способности человека любить.</p>
+</div></section>
+
+<section class="section paradox"><div class="shell reveal">
+  <div class="kicker">06 · Парадокс</div>
+  <h2>Мы ищем гарантию отношений именно там, где отношениям может стать труднее.</h2>
+  <div class="paradox-chain" aria-hidden="true"><span>неравнодушие</span><i></i><span>гибкость</span><i></i><span>отдельность</span><i></i><span>выдерживание</span></div>
+</div></section>
+
+<section class="section prose"><div class="shell">
+  <p>Мы ищем такую любовь именно потому, что хотим получить гарантию: если меня любят настолько сильно, значит отношения будут глубокими, надёжными и долгими.</p>
+  <p>Но качества, которые мы приняли за доказательство этой любви, могут как раз делать длительные хорошие отношения значительно сложнее.</p>
+  <p>Потому что отношения требуют не только неравнодушия.</p>
+  <p>Они требуют способности выдерживать тревогу и дистанцию. Не знать наверняка. Оставаться отдельным человеком. Переживать конфликты. Справляться с ревностью. Принимать изменения. Продолжать жить, даже когда рядом с любовью неизбежно появляются страх и боль.</p>
+  <p>Любовь действительно делает нас уязвимыми. Если мне дорог человек, возможность потерять его не может быть для меня безразличной.</p>
+  <p>Но степень моей разрушенности перед этой возможностью — ещё не мера моей любви.</p>
+  <p>Возможно, вообще одна из самых сложных вещей в любви — перестать измерять её тем, насколько плохо человеку без нас.</p>
+  <p class="pull">Потому что способность любить и способность выдерживать собственную любовь — это две разные способности.</p>
+</div></section>
+
+<section class="flashlight" id="flashlight">
+  <div class="light" id="light" aria-hidden="true"></div>
+  <div class="shell flash-content">
+    <div class="kicker">07 · Развернуть фонарик</div>
+    <h2>А теперь — не на отношения. На себя.</h2>
+    <p class="lede"><span class="js-only">Включите фонарик и ведите пальцем по экрану или касайтесь вопросов.</span><span class="nojs-only">Посмотрите на эти вопросы уже не как на теорию, а как на способ проверить собственные критерии любви.</span></p>
+    <button class="torch" id="torch" aria-pressed="false">Включить фонарик</button>
+
+    <div class="questions" id="questions">
+      <p>По каким признакам <strong>я сам</strong> понимаю, что меня любят?</p>
+      <p>Что именно я привык считать доказательством любви — спокойную надёжность другого или его неспособность без меня обойтись?</p>
+      <p>Не жду ли я тревоги, ревности, страдания, жертвенности именно потому, что без них мне трудно почувствовать собственную значимость?</p>
+      <p>И если однажды рядом окажется человек, который будет глубоко любить меня, но при этом не разрушаться от страха меня потерять, не цепляться за меня и оставаться способным жить свою жизнь, — смогу ли я распознать в этом любовь?</p>
+      <p>Или мне покажется, что её почему-то недостаточно?</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer"><div class="shell"><a href="#top">Наверх ↑</a><span>Любовь не измеряется страданием</span></div></footer>
+
+<script>
+(()=>{
+  const $=(s,c=document)=>c.querySelector(s);
+  const $$=(s,c=document)=>[...c.querySelectorAll(s)];
+
+  /* Reading progress */
+  const progress=$('#progress');
+  const updateProgress=()=>{
+    const d=document.documentElement;
+    const m=d.scrollHeight-innerHeight;
+    progress.style.width=((m>0?scrollY/m:0)*100).toFixed(2)+'%';
+  };
+  addEventListener('scroll',updateProgress,{passive:true});
+  updateProgress();
+
+  /* Reveal — progressive enhancement only */
+  const reveals=$$('.reveal');
+  if('IntersectionObserver' in window){
+    const revealObs=new IntersectionObserver(es=>es.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('in');revealObs.unobserve(e.target)}
+    }),{threshold:.12});
+    reveals.forEach(x=>revealObs.observe(x));
+  }else{
+    reveals.forEach(x=>x.classList.add('in'));
+  }
+
+  /* Choice: CSS handles the visible answer; JS only adds the persistent thesis */
+  const sticky=$('#stickyThesis');
+  const stickyText=$('#stickyText');
+  $$('input[name="loveChoice"]').forEach(r=>r.addEventListener('change',()=>{
+    sticky.classList.add('show');
+    stickyText.textContent=r.value==='storm'
+      ? '«страдает сильнее → любит сильнее»'
+      : '«спокойнее → возможно, любит не меньше»';
+  }));
+
+  /* Scrollytelling */
+  const visualCard=$('#visualCard');
+  const state=$('#visualState');
+  const bars={a:$('#barAnxiety'),p:$('#barPain'),c:$('#barControl'),l:$('#barLove')};
+  const nums={a:$('#nAnxiety'),p:$('#nPain'),c:$('#nControl'),l:$('#nLove')};
+  const stages={
+    1:{a:36,p:32,c:28,l:35,st:'напряжённая'},
+    2:{a:67,p:72,c:61,l:72,st:'захватывающая жизнь'},
+    3:{a:91,p:94,c:83,l:94,st:'разрушительная'},
+    4:{a:91,p:94,c:83,l:0,st:'данных о любви нет'}
+  };
+
+  function setStage(n){
+    const s=stages[n]||stages[1];
+    bars.a.style.setProperty('--v',s.a+'%');
+    bars.p.style.setProperty('--v',s.p+'%');
+    bars.c.style.setProperty('--v',s.c+'%');
+    bars.l.style.setProperty('--v',s.l+'%');
+    nums.a.textContent=s.a;
+    nums.p.textContent=s.p;
+    nums.c.textContent=s.c;
+    nums.l.textContent=n===4?'неизв.':s.l;
+    state.textContent=s.st;
+    visualCard.classList.toggle('broken',n===4);
+    $$('.story-step').forEach(x=>x.classList.toggle('active',Number(x.dataset.stage)===n));
+    if(n===4){
+      sticky.classList.add('show');
+      stickyText.textContent='страдание измеримо; любовь — нет';
+    }
+  }
+
+  visualCard.classList.remove('broken');
+  setStage(1);
+
+  if('IntersectionObserver' in window){
+    const stepObs=new IntersectionObserver(es=>es.forEach(e=>{
+      if(e.isIntersecting)setStage(Number(e.target.dataset.stage));
+    }),{rootMargin:'-34% 0px -44% 0px',threshold:0});
+    $$('.story-step').forEach(x=>stepObs.observe(x));
+  }
+
+  /* Meter */
+  const range=$('#range');
+  const rv=$('#rangeValue');
+  const pr=$('#painReadout');
+  const needle=$('#needle');
+  const note=$('#meterNote');
+  const meterMsgs=[
+    [0,24,'Низкое страдание не доказывает слабую любовь. Возможно, человек просто устойчивее.'],
+    [25,59,'Мы получили число о переживании человека — но не о его любви.'],
+    [60,84,'Высокая тревога может говорить о множестве процессов. Любовь — только одна из частей контекста.'],
+    [85,100,'Даже полное эмоциональное разрушение не становится автоматически доказательством «самой сильной любви».']
+  ];
+  function meter(){
+    const v=+range.value;
+    rv.value=v+'%';
+    rv.textContent=v+'%';
+    pr.textContent=v+'%';
+    needle.style.transform=`rotate(${-155+(v/100)*130}deg)`;
+    const m=meterMsgs.find(x=>v>=x[0]&&v<=x[1]);
+    note.textContent=m[2];
+  }
+  range.addEventListener('input',meter);
+  meter();
+
+  /* Keep selected factor chip centered when CSS-only tab changes */
+  $$('input[name="factor"]').forEach(r=>r.addEventListener('change',()=>{
+    const label=document.querySelector(`label[for="${r.id}"]`);
+    if(label)label.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  }));
+
+  /* Flashlight */
+  const fs=$('#flashlight');
+  const light=$('#light');
+  const torch=$('#torch');
+  const qs=$$('.questions p');
+  let on=false;
+
+  function setOn(v){
+    on=v;
+    fs.classList.toggle('on',v);
+    torch.setAttribute('aria-pressed',String(v));
+    torch.textContent=v?'Фонарик включён':'Включить фонарик';
+    if(!v)qs.forEach(q=>q.classList.remove('lit'));
+  }
+  torch.addEventListener('click',()=>setOn(!on));
+
+  function nearest(y){
+    if(!on)return;
+    let best=null,dist=Infinity;
+    qs.forEach(q=>{
+      const r=q.getBoundingClientRect();
+      const d=Math.abs(r.top+r.height/2-y);
+      if(d<dist){dist=d;best=q}
+    });
+    qs.forEach(q=>q.classList.toggle('lit',q===best));
+  }
+
+  function move(x,y){
+    if(!on)return;
+    const r=fs.getBoundingClientRect();
+    light.style.setProperty('--x',((x-r.left)/r.width*100)+'%');
+    light.style.setProperty('--y',((y-r.top)/r.height*100)+'%');
+    nearest(y);
+  }
+
+  fs.addEventListener('pointermove',e=>move(e.clientX,e.clientY));
+  fs.addEventListener('touchmove',e=>{
+    const t=e.touches[0];
+    if(t)move(t.clientX,t.clientY);
+  },{passive:true});
+
+  qs.forEach(q=>q.addEventListener('click',()=>{
+    if(!on)setOn(true);
+    qs.forEach(x=>x.classList.remove('lit'));
+    q.classList.add('lit');
+    const r=q.getBoundingClientRect(),s=fs.getBoundingClientRect();
+    light.style.setProperty('--x','50%');
+    light.style.setProperty('--y',((r.top+r.height/2-s.top)/s.height*100)+'%');
+  }));
+
+  /* Hide sticky conclusion once reflection starts */
+  if('IntersectionObserver' in window){
+    const finalObs=new IntersectionObserver(es=>es.forEach(e=>{
+      if(e.isIntersecting)sticky.classList.remove('show');
+    }),{threshold:.15});
+    finalObs.observe(fs);
+  }
+})();
+</script>
+</body>
+</html>
