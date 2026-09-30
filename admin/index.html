@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d0f">
+<title>LegendPsy — админ-панель</title>
+<style>
+:root{
+  --bg:#0b0d0f;--panel:#13171a;--panel2:#171c20;--text:#ece4d8;--muted:#a8a29a;
+  --line:rgba(236,228,216,.12);--gold:#d3a05e;--danger:#d56a63;--ok:#84b59f;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{min-height:100svh}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.wrap{width:min(1100px,calc(100% - 28px));margin:0 auto;padding:28px 0 64px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
+.brand{font-size:clamp(1.4rem,5vw,2.2rem);font-weight:750;letter-spacing:-.03em}
+.sub{color:var(--muted);font-size:.92rem}
+.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.auth{max-width:520px;margin:8vh auto 0}
+.auth h1{margin:0 0 10px;font-size:2rem}
+.auth p{color:var(--muted);line-height:1.55}
+.grid{display:grid;gap:12px}
+label{font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+input,textarea{
+  width:100%;border:1px solid var(--line);border-radius:14px;background:#0d1012;color:var(--text);
+  padding:13px 14px;outline:none
+}
+input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px rgba(211,160,94,.08)}
+.primary,.ghost,.danger{
+  border-radius:999px;padding:11px 15px;border:1px solid var(--line);background:transparent;color:var(--text)
+}
+.primary{border-color:rgba(211,160,94,.55);background:rgba(211,160,94,.12)}
+.danger{border-color:rgba(213,106,99,.4);color:#f4b0ab}
+.small{padding:8px 11px;font-size:.88rem}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.status{min-height:1.4em;margin-top:10px;color:var(--muted);font-size:.9rem}
+.setup-note{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+.hidden{display:none!important}
+.dashboard{display:grid;gap:18px}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search{flex:1;min-width:220px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter.active{border-color:rgba(211,160,94,.65);background:rgba(211,160,94,.12)}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{padding:10px 13px;border:1px solid var(--line);border-radius:14px;color:var(--muted)}
+.stat strong{color:var(--text)}
+.comments{display:grid;gap:12px}
+.comment{padding:16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.02)}
+.comment.hidden-comment{opacity:.62}
+.meta{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}
+.meta-left{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:.82rem}
+.badge{padding:4px 8px;border-radius:999px;border:1px solid var(--line);font-size:.75rem}
+.badge.visible{color:#b6ddca;border-color:rgba(132,181,159,.35)}
+.badge.hidden-badge{color:#d8b1ae;border-color:rgba(213,106,99,.35)}
+.body{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.58;margin-bottom:14px}
+.editbox{min-height:110px;margin-bottom:10px}
+.empty{padding:34px 8px;text-align:center;color:var(--muted)}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+@media(max-width:640px){
+  .wrap{width:min(100% - 18px,1100px);padding-top:16px}
+  .card{padding:16px;border-radius:18px}
+  .topbar{align-items:flex-start}
+  .comment .actions{width:100%}
+  .comment .actions button{flex:1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section id="authView" class="auth card">
+    <div class="brand">LegendPsy · Admin</div>
+    <p>Вход в административную панель комментариев.</p>
+
+    <form id="loginForm" class="grid">
+      <div>
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" type="email" autocomplete="username" required>
+      </div>
+      <div>
+        <label for="loginPassword">Пароль</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" minlength="8" required>
+      </div>
+      <button class="primary" type="submit">Войти</button>
+      <button id="forgotBtn" class="ghost" type="button">Забыли пароль?</button>
+    </form>
+
+    <div id="signupBlock" class="setup-note">
+      <p><strong>Первый запуск.</strong> Если аккаунта администратора ещё нет, сначала создай учётную запись. После регистрации я выдам ей права администратора.</p>
+      <button id="showSignupBtn" class="ghost" type="button">Создать первый аккаунт</button>
+
+      <form id="signupForm" class="grid hidden" style="margin-top:14px">
+        <div>
+          <label for="signupEmail">Email</label>
+          <input id="signupEmail" type="email" autocomplete="email" required>
+        </div>
+        <div>
+          <label for="signupPassword">Пароль</label>
+          <input id="signupPassword" type="password" autocomplete="new-password" minlength="12" required>
+        </div>
+        <div>
+          <label for="signupPassword2">Повтори пароль</label>
+          <input id="signupPassword2" type="password" autocomplete="new-password" minlength="12" required>
+        </div>
+        <button class="primary" type="submit">Создать аккаунт</button>
+      </form>
+    </div>
+
+    <p id="authStatus" class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section id="dashboardView" class="dashboard hidden">
+    <div class="topbar">
+      <div>
+        <div class="brand">Комментарии</div>
+        <div id="adminEmail" class="sub"></div>
+      </div>
+      <button id="logoutBtn" class="ghost small" type="button">Выйти</button>
+    </div>
+
+    <div class="card">
+      <div class="toolbar">
+        <input id="searchInput" class="search" type="search" placeholder="Поиск по комментариям…">
+        <div class="filters">
+          <button class="filter ghost small active" data-filter="all" type="button">Все</button>
+          <button class="filter ghost small" data-filter="visible" type="button">Видимые</button>
+          <button class="filter ghost small" data-filter="hidden" type="button">Скрытые</button>
+        </div>
+      </div>
+      <hr>
+      <div id="stats" class="stats"></div>
+    </div>
+
+    <div id="commentsList" class="comments"></div>
+  </section>
+</div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const SUPABASE_URL = "https://eswoqjxioavegjnhosbb.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Czx1d7slcJQgqhjOS0miWw_Na2Yrnvb";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+
+const $ = (s) => document.querySelector(s);
+const authView = $("#authView");
+const dashboardView = $("#dashboardView");
+const authStatus = $("#authStatus");
+const loginForm = $("#loginForm");
+const signupForm = $("#signupForm");
+const showSignupBtn = $("#showSignupBtn");
+const signupBlock = $("#signupBlock");
+const forgotBtn = $("#forgotBtn");
+const logoutBtn = $("#logoutBtn");
+const commentsList = $("#commentsList");
+const searchInput = $("#searchInput");
+const stats = $("#stats");
+const adminEmail = $("#adminEmail");
+
+let comments = [];
+let filter = "all";
+
+function setStatus(message){ authStatus.textContent = message || ""; }
+
+function formatDate(value){
+  try{
+    return new Intl.DateTimeFormat("ru-RU", {
+      day:"numeric", month:"long", year:"numeric", hour:"2-digit", minute:"2-digit"
+    }).format(new Date(value));
+  }catch(_){ return ""; }
+}
+
+function escapeText(value){
+  const div = document.createElement("div");
+  div.textContent = value ?? "";
+  return div.innerHTML;
+}
+
+async function isAdmin(){
+  const { data, error } = await supabase.rpc("is_current_admin");
+  if(error) return false;
+  return data === true;
+}
+
+async function refreshSetupVisibility(){
+  const { data, error } = await supabase.rpc("admin_is_initialized");
+  if(!error && data === true) signupBlock.classList.add("hidden");
+}
+
+async function showDashboard(session){
+  const allowed = await isAdmin();
+  if(!allowed){
+    authView.classList.remove("hidden");
+    dashboardView.classList.add("hidden");
+    setStatus("Аккаунт существует, но права администратора ещё не выданы.");
+    return;
+  }
+
+  authView.classList.add("hidden");
+  dashboardView.classList.remove("hidden");
+  adminEmail.textContent = session?.user?.email || "";
+  setStatus("");
+  await loadComments();
+}
+
+async function routeBySession(){
+  await refreshSetupVisibility();
+  const { data: { session } } = await supabase.auth.getSession();
+  if(session) await showDashboard(session);
+  else{
+    authView.classList.remove("hidden");
+    dashboardView.classList.add("hidden");
+  }
+}
+
+loginForm.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  setStatus("Вхожу…");
+  const email = $("#loginEmail").value.trim();
+  const password = $("#loginPassword").value;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if(error){
+    setStatus("Не удалось войти. Проверь email и пароль.");
+    return;
+  }
+  await showDashboard(data.session);
+});
+
+showSignupBtn.addEventListener("click", ()=>{
+  signupForm.classList.toggle("hidden");
+});
+
+signupForm.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const email = $("#signupEmail").value.trim();
+  const password = $("#signupPassword").value;
+  const password2 = $("#signupPassword2").value;
+
+  if(password !== password2){
+    setStatus("Пароли не совпадают.");
+    return;
+  }
+
+  setStatus("Создаю аккаунт…");
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo: window.location.href }
+  });
+
+  if(error){
+    setStatus("Не удалось создать аккаунт: " + error.message);
+    return;
+  }
+
+  if(data.session){
+    setStatus("Аккаунт создан. Теперь нужно выдать ему права администратора.");
+  }else{
+    setStatus("Аккаунт создан. Проверь почту и подтвердите email, затем вернись сюда и войди.");
+  }
+});
+
+forgotBtn.addEventListener("click", async ()=>{
+  const email = $("#loginEmail").value.trim();
+  if(!email){
+    setStatus("Сначала введи email.");
+    return;
+  }
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.href
+  });
+  setStatus(error ? "Не удалось отправить письмо." : "Ссылка для смены пароля отправлена на email.");
+});
+
+logoutBtn.addEventListener("click", async ()=>{
+  await supabase.auth.signOut();
+  comments = [];
+  authView.classList.remove("hidden");
+  dashboardView.classList.add("hidden");
+});
+
+async function loadComments(){
+  commentsList.innerHTML = '<div class="card empty">Загружаю…</div>';
+  const { data, error } = await supabase
+    .from("comments")
+    .select("id,article_id,body,created_at,is_visible")
+    .order("created_at", { ascending:false })
+    .limit(500);
+
+  if(error){
+    commentsList.innerHTML = '<div class="card empty">Не удалось загрузить комментарии.</div>';
+    return;
+  }
+  comments = data || [];
+  render();
+}
+
+function render(){
+  const q = searchInput.value.trim().toLowerCase();
+  const filtered = comments.filter(c=>{
+    const filterOk = filter==="all" || (filter==="visible" ? c.is_visible : !c.is_visible);
+    const searchOk = !q || c.body.toLowerCase().includes(q);
+    return filterOk && searchOk;
+  });
+
+  const visibleCount = comments.filter(c=>c.is_visible).length;
+  const hiddenCount = comments.length - visibleCount;
+  stats.innerHTML =
+    '<div class="stat">Всего: <strong>'+comments.length+'</strong></div>'+
+    '<div class="stat">Видимые: <strong>'+visibleCount+'</strong></div>'+
+    '<div class="stat">Скрытые: <strong>'+hiddenCount+'</strong></div>';
+
+  if(!filtered.length){
+    commentsList.innerHTML = '<div class="card empty">Ничего не найдено.</div>';
+    return;
+  }
+
+  commentsList.innerHTML = filtered.map(c=>`
+    <article class="comment ${c.is_visible ? "" : "hidden-comment"}" data-id="${c.id}">
+      <div class="meta">
+        <div class="meta-left">
+          <span>${formatDate(c.created_at)}</span>
+          <span class="badge ${c.is_visible ? "visible" : "hidden-badge"}">${c.is_visible ? "Видимый" : "Скрытый"}</span>
+        </div>
+        <span class="sub">${escapeText(c.article_id)}</span>
+      </div>
+      <div class="body" data-role="body">${escapeText(c.body)}</div>
+      <div class="actions">
+        <button class="ghost small" data-action="edit" type="button">Редактировать</button>
+        <button class="ghost small" data-action="visibility" type="button">${c.is_visible ? "Скрыть" : "Показать"}</button>
+        <button class="danger small" data-action="delete" type="button">Удалить</button>
+      </div>
+    </article>
+  `).join("");
+}
+
+searchInput.addEventListener("input", render);
+document.querySelectorAll(".filter").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    filter = btn.dataset.filter;
+    render();
+  });
+});
+
+commentsList.addEventListener("click", async (e)=>{
+  const button = e.target.closest("button[data-action]");
+  if(!button) return;
+  const article = button.closest(".comment");
+  const id = article.dataset.id;
+  const item = comments.find(c=>c.id===id);
+  if(!item) return;
+
+  if(button.dataset.action==="visibility"){
+    button.disabled = true;
+    const { data, error } = await supabase
+      .from("comments")
+      .update({ is_visible: !item.is_visible })
+      .eq("id", id)
+      .select("id,article_id,body,created_at,is_visible")
+      .single();
+
+    if(!error && data){
+      comments = comments.map(c=>c.id===id ? data : c);
+      render();
+    }else{
+      alert("Не удалось изменить видимость.");
+      button.disabled = false;
+    }
+    return;
+  }
+
+  if(button.dataset.action==="delete"){
+    if(!confirm("Удалить этот комментарий навсегда? Это действие нельзя отменить.")) return;
+    button.disabled = true;
+    const { error } = await supabase.from("comments").delete().eq("id", id);
+    if(!error){
+      comments = comments.filter(c=>c.id!==id);
+      render();
+    }else{
+      alert("Не удалось удалить комментарий.");
+      button.disabled = false;
+    }
+    return;
+  }
+
+  if(button.dataset.action==="edit"){
+    if(article.querySelector("textarea")) return;
+    const bodyEl = article.querySelector('[data-role="body"]');
+    bodyEl.classList.add("hidden");
+
+    const textarea = document.createElement("textarea");
+    textarea.className = "editbox";
+    textarea.maxLength = 2000;
+    textarea.value = item.body;
+
+    const save = document.createElement("button");
+    save.className = "primary small";
+    save.type = "button";
+    save.textContent = "Сохранить";
+
+    const cancel = document.createElement("button");
+    cancel.className = "ghost small";
+    cancel.type = "button";
+    cancel.textContent = "Отмена";
+
+    const row = document.createElement("div");
+    row.className = "actions";
+    row.append(save, cancel);
+
+    bodyEl.after(textarea, row);
+    textarea.focus();
+
+    cancel.addEventListener("click", ()=>{
+      textarea.remove();
+      row.remove();
+      bodyEl.classList.remove("hidden");
+    });
+
+    save.addEventListener("click", async ()=>{
+      const body = textarea.value.trim();
+      if(!body){ alert("Комментарий не может быть пустым."); return; }
+      save.disabled = true;
+
+      const { data, error } = await supabase
+        .from("comments")
+        .update({ body })
+        .eq("id", id)
+        .select("id,article_id,body,created_at,is_visible")
+        .single();
+
+      if(!error && data){
+        comments = comments.map(c=>c.id===id ? data : c);
+        render();
+      }else{
+        alert("Не удалось сохранить изменения.");
+        save.disabled = false;
+      }
+    });
+  }
+});
+
+supabase.auth.onAuthStateChange(async (event, session)=>{
+  if(event==="PASSWORD_RECOVERY" && session){
+    const next = prompt("Введите новый пароль (минимум 12 символов):");
+    if(next && next.length>=12){
+      const { error } = await supabase.auth.updateUser({ password: next });
+      alert(error ? "Не удалось сменить пароль." : "Пароль изменён.");
+    }
+  }
+});
+
+await routeBySession();
+</script>
+</body>
+</html>
