@@ -649,23 +649,166 @@ body.reading-locked .sticky-thesis{display:none!important}
 .comment-form textarea:focus{border-color:rgba(211,160,94,.72);box-shadow:0 0 0 3px rgba(211,160,94,.08)}
 .comment-form-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .comment-count{font-size:.76rem;color:rgba(236,228,216,.45)}
-.comment-submit{
+.comment-submit,
+.comment-cloud-open{
   appearance:none;border:1px solid rgba(211,160,94,.55);border-radius:999px;
   padding:11px 17px;background:rgba(211,160,94,.12);color:var(--paper);
   font:inherit;font-weight:650;cursor:pointer
 }
 .comment-submit:disabled{opacity:.45;cursor:default}
 .comment-status{min-height:1.3em;margin:8px 0 0;color:var(--muted);font-size:.88rem}
-.comment-divider{height:1px;background:var(--line);margin:16px 0 14px}
-.comments-list{display:grid;gap:14px}
-.comment-item{
-  padding:16px 17px;border:1px solid rgba(236,228,216,.1);border-radius:16px;
-  background:rgba(236,228,216,.025)
+.comment-cloud-open{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;margin-top:14px;min-height:50px;
+  opacity:1;transform:none;
+  transition:opacity .35s ease,transform .45s cubic-bezier(.16,1,.3,1),background .2s ease
 }
-.comment-meta{margin-bottom:8px;font-size:.72rem;color:rgba(236,228,216,.42);letter-spacing:.03em}
-.comment-body{white-space:pre-wrap;overflow-wrap:anywhere;color:rgba(236,228,216,.88);line-height:1.58}
-.comments-empty{margin:0;color:var(--muted);font-style:italic}
+.comment-cloud-open[hidden]{display:none}
+.comment-cloud-open.newly-unlocked{animation:commentCloudButtonIn .7s cubic-bezier(.16,1,.3,1) both}
+@keyframes commentCloudButtonIn{
+  from{opacity:0;transform:translateY(12px) scale(.98)}
+  to{opacity:1;transform:none}
+}
+@media(hover:hover) and (pointer:fine){
+  .comment-cloud-open:hover{background:rgba(211,160,94,.18)}
+}
 @media(min-width:760px){.comments-section{padding:52px 0 58px}}
+
+/* Full-screen cloud of reader comments. */
+.comment-cloud{
+  position:fixed;inset:0;z-index:6200;
+  background:
+    radial-gradient(circle at 50% 45%,rgba(211,160,94,.09),transparent 30%),
+    radial-gradient(circle at 18% 20%,rgba(158,70,52,.08),transparent 28%),
+    #050607;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .48s ease,visibility .48s ease;
+  overflow:hidden
+}
+.comment-cloud.open{opacity:1;visibility:visible;pointer-events:auto}
+.comment-cloud::before,
+.comment-cloud::after{
+  content:"";position:absolute;pointer-events:none;border-radius:50%;filter:blur(46px);opacity:.32
+}
+.comment-cloud::before{
+  width:38vmax;height:38vmax;left:-14vmax;top:-14vmax;
+  background:rgba(158,70,52,.16);animation:cloudGlowA 13s ease-in-out infinite alternate
+}
+.comment-cloud::after{
+  width:42vmax;height:42vmax;right:-18vmax;bottom:-18vmax;
+  background:rgba(211,160,94,.11);animation:cloudGlowB 16s ease-in-out infinite alternate
+}
+@keyframes cloudGlowA{to{transform:translate(13vw,10vh) scale(1.16)}}
+@keyframes cloudGlowB{to{transform:translate(-12vw,-9vh) scale(1.12)}}
+.comment-cloud-stage{position:absolute;inset:0;overflow:hidden}
+.comment-cloud-close{
+  position:absolute;z-index:1002;
+  top:max(14px,calc(8px + env(safe-area-inset-top)));right:14px;
+  width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(8,10,11,.58);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  color:#efe6da;font-size:1.35rem;display:grid;place-items:center;cursor:pointer
+}
+.comment-cloud-hint{
+  position:absolute;z-index:1001;left:50%;
+  bottom:max(15px,calc(9px + env(safe-area-inset-bottom)));
+  transform:translateX(-50%);
+  width:max-content;max-width:calc(100% - 36px);
+  color:rgba(236,228,216,.44);font-size:.68rem;letter-spacing:.03em;
+  text-align:center;pointer-events:none
+}
+.comment-cloud-note{
+  position:absolute;z-index:var(--z,1);
+  left:var(--x,50%);top:var(--y,50%);
+  width:var(--w,260px);max-width:78vw;
+  padding:14px 16px;border:1px solid rgba(236,228,216,.12);border-radius:18px;
+  background:linear-gradient(145deg,rgba(25,27,28,.78),rgba(10,12,13,.66));
+  box-shadow:0 22px 56px rgba(0,0,0,.30);
+  backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+  color:rgba(239,231,219,.82);
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:var(--fs,1rem);line-height:1.38;
+  text-align:left;cursor:pointer;
+  opacity:0;filter:blur(12px);
+  transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(.72);
+  transition:
+    opacity .8s cubic-bezier(.16,1,.3,1),
+    filter .95s cubic-bezier(.16,1,.3,1),
+    transform 1s cubic-bezier(.16,1,.3,1),
+    left 1.35s cubic-bezier(.16,1,.3,1),
+    top 1.35s cubic-bezier(.16,1,.3,1)
+}
+.comment-cloud-note.show{
+  opacity:var(--alpha,.76);filter:blur(0);
+  transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(var(--scale,1))
+}
+.comment-cloud-note.own{
+  z-index:900!important;
+  border-color:rgba(211,160,94,.50);
+  background:linear-gradient(145deg,rgba(68,48,28,.86),rgba(17,18,18,.82));
+  color:#f4eadb;box-shadow:0 0 0 1px rgba(211,160,94,.07),0 26px 80px rgba(0,0,0,.42),0 0 50px rgba(211,160,94,.10)
+}
+.comment-cloud-note p{
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;
+  overflow:hidden;margin:0
+}
+.comment-cloud-note small{
+  display:block;margin-top:8px;color:rgba(236,228,216,.38);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:.62rem;letter-spacing:.03em
+}
+.comment-cloud-note.own small{color:rgba(231,192,139,.72)}
+.comment-cloud-note.fade-out{
+  opacity:0!important;filter:blur(10px)!important;
+  transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(.82)!important
+}
+.comment-cloud-empty{
+  position:absolute;z-index:950;left:50%;top:62%;transform:translate(-50%,-50%);
+  color:rgba(236,228,216,.48);font-family:Georgia,serif;font-size:1rem;
+  text-align:center;opacity:0;transition:opacity .45s ease
+}
+.comment-cloud-empty.show{opacity:1}
+
+.comment-cloud-focus{
+  position:absolute;inset:0;z-index:1100;
+  display:grid;place-items:center;padding:24px;
+  background:rgba(3,4,5,.62);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .28s ease,visibility .28s ease
+}
+.comment-cloud-focus.open{opacity:1;visibility:visible;pointer-events:auto}
+.comment-cloud-focus-card{
+  position:relative;width:min(100%,680px);max-height:min(72svh,680px);overflow:auto;
+  padding:clamp(24px,5vw,40px);
+  border:1px solid rgba(211,160,94,.26);border-radius:28px;
+  background:linear-gradient(160deg,rgba(25,26,27,.97),rgba(8,10,11,.98));
+  box-shadow:0 34px 120px rgba(0,0,0,.56)
+}
+.comment-cloud-focus-text{
+  margin:0;color:#efe5d8;font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(1.35rem,4.6vw,2.15rem);line-height:1.42;white-space:pre-wrap;overflow-wrap:anywhere
+}
+.comment-cloud-focus-meta{margin-top:18px;color:#817b73;font-size:.72rem}
+.comment-cloud-focus-close{
+  position:absolute;top:10px;right:10px;width:36px;height:36px;
+  border-radius:50%;border:1px solid rgba(255,255,255,.13);
+  background:rgba(255,255,255,.04);color:#dcd3c6;font-size:1.1rem;cursor:pointer
+}
+
+@media(max-width:759px){
+  .comment-cloud-note{max-width:82vw;padding:13px 14px;border-radius:16px}
+  .comment-cloud-hint{font-size:.64rem}
+}
+@media(min-width:760px) and (max-width:1179px){
+  .comment-cloud-note{max-width:58vw;padding:16px 18px}
+}
+@media(min-width:1180px){
+  .comment-cloud-note{max-width:420px;padding:17px 19px}
+}
+@media(prefers-reduced-motion:reduce){
+  .comment-cloud::before,.comment-cloud::after{animation:none!important}
+  .comment-cloud-note{transition:opacity .15s ease,filter .15s ease!important}
+}
 
 /* Social / author */
 .social-section{
@@ -1442,10 +1585,9 @@ body.reading-locked .sticky-thesis{display:none!important}
         <p class="comment-status" id="commentStatus" role="status" aria-live="polite"></p>
       </form>
 
-      <div class="comment-divider" aria-hidden="true"></div>
-      <div class="comments-list" id="commentsList" aria-live="polite">
-        <p class="comments-empty">Загружаю сообщения…</p>
-      </div>
+      <button class="comment-cloud-open" id="commentCloudOpen" type="button" hidden>
+        Посмотреть, что оставили другие
+      </button>
     </div>
   </div>
 </section>
@@ -1490,6 +1632,21 @@ body.reading-locked .sticky-thesis{display:none!important}
 </main>
 
 <footer class="footer"><div class="shell"><a href="#top">Наверх ↑</a><span>Любовь не измеряется страданием</span></div></footer>
+
+<div class="comment-cloud" id="commentCloud" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Комментарии читателей">
+  <div class="comment-cloud-stage" id="commentCloudStage"></div>
+  <button class="comment-cloud-close" id="commentCloudClose" type="button" aria-label="Закрыть комментарии">×</button>
+  <div class="comment-cloud-hint">Коснитесь комментария, чтобы прочитать его целиком</div>
+  <div class="comment-cloud-empty" id="commentCloudEmpty">Пока здесь только ваш голос.</div>
+
+  <div class="comment-cloud-focus" id="commentCloudFocus" aria-hidden="true">
+    <div class="comment-cloud-focus-card">
+      <button class="comment-cloud-focus-close" id="commentCloudFocusClose" type="button" aria-label="Вернуться к облаку">×</button>
+      <p class="comment-cloud-focus-text" id="commentCloudFocusText"></p>
+      <div class="comment-cloud-focus-meta" id="commentCloudFocusMeta"></div>
+    </div>
+  </div>
+</div>
 
 <script>
 (()=>{
@@ -2110,24 +2267,33 @@ body.reading-locked .sticky-thesis{display:none!important}
     finalObs.observe(fs);
   }
 
-  /* Anonymous comments via Supabase */
-  const commentsList=$('#commentsList');
+  /* Anonymous comments via Supabase + animated comment cloud */
   const commentForm=$('#commentForm');
   const commentBody=$('#commentBody');
   const commentChars=$('#commentChars');
   const commentSubmit=$('#commentSubmit');
   const commentStatus=$('#commentStatus');
   const commentWebsite=$('#commentWebsite');
+  const commentCloudOpen=$('#commentCloudOpen');
+  const commentCloud=$('#commentCloud');
+  const commentCloudStage=$('#commentCloudStage');
+  const commentCloudClose=$('#commentCloudClose');
+  const commentCloudEmpty=$('#commentCloudEmpty');
+  const commentCloudFocus=$('#commentCloudFocus');
+  const commentCloudFocusText=$('#commentCloudFocusText');
+  const commentCloudFocusMeta=$('#commentCloudFocusMeta');
+  const commentCloudFocusClose=$('#commentCloudFocusClose');
 
   const SUPABASE_URL='https://eswoqjxioavegjnhosbb.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY='sb_publishable_Czx1d7slcJQgqhjOS0miWw_Na2Yrnvb';
   const COMMENTS_ARTICLE_ID='love-suffering-v1';
+  const COMMENT_CLOUD_SESSION_KEY='legendpsy_comment_cloud_unlocked_v1';
 
   const commentsEndpoint=()=>(
     SUPABASE_URL+
     '/rest/v1/comments?select=id,body,created_at&article_id=eq.'+
     encodeURIComponent(COMMENTS_ARTICLE_ID)+
-    '&order=created_at.asc'
+    '&order=created_at.desc&limit=160'
   );
 
   function formatCommentDate(value){
@@ -2138,49 +2304,291 @@ body.reading-locked .sticky-thesis{display:none!important}
     }catch(_){return '';}
   }
 
-  function renderComments(items){
-    if(!commentsList)return;
-    commentsList.replaceChildren();
-    if(!items?.length){
-      const p=document.createElement('p');
-      p.className='comments-empty';
-      p.textContent='Здесь пока тихо. Можно оставить первое сообщение.';
-      commentsList.appendChild(p);
-      return;
+  function shuffle(items){
+    const a=[...items];
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
     }
-    items.forEach(item=>{
-      const article=document.createElement('article');
-      article.className='comment-item';
-
-      const meta=document.createElement('div');
-      meta.className='comment-meta';
-      meta.textContent='Анонимно · '+formatCommentDate(item.created_at);
-
-      const body=document.createElement('div');
-      body.className='comment-body';
-      body.textContent=item.body;
-
-      article.append(meta,body);
-      commentsList.appendChild(article);
-    });
+    return a;
   }
 
-  async function loadComments(){
-    if(!commentsList)return;
-    try{
-      const response=await fetch(commentsEndpoint(),{
-        headers:{apikey:SUPABASE_PUBLISHABLE_KEY}
-      });
-      if(!response.ok)throw new Error('load '+response.status);
-      renderComments(await response.json());
-    }catch(err){
-      console.error('Comments load failed',err);
-      commentsList.innerHTML='<p class="comments-empty">Не удалось загрузить сообщения. Попробуйте обновить страницу позже.</p>';
+  let lastOwnComment='';
+  try{
+    lastOwnComment=sessionStorage.getItem(COMMENT_CLOUD_SESSION_KEY)||'';
+  }catch(_){}
+
+  function unlockCommentCloudButton(animate=false){
+    if(!commentCloudOpen)return;
+    commentCloudOpen.hidden=false;
+    if(animate){
+      commentCloudOpen.classList.remove('newly-unlocked');
+      void commentCloudOpen.offsetWidth;
+      commentCloudOpen.classList.add('newly-unlocked');
     }
   }
+
+  if(lastOwnComment)unlockCommentCloudButton(false);
 
   commentBody?.addEventListener('input',()=>{
     if(commentChars)commentChars.textContent=String(commentBody.value.length);
+  });
+
+  let cloudItems=[];
+  let cloudSpawnTimer=0;
+  let cloudReplaceTimer=0;
+  let cloudPaused=false;
+  let cloudSerial=0;
+  let cloudOverflow='';
+
+  function cloudCapacity(){
+    if(innerWidth<760)return 22;
+    if(innerWidth<1180)return 30;
+    return 40;
+  }
+
+  function cloudWidthFor(text){
+    const len=Math.min(420,Math.max(20,text.length));
+    if(innerWidth<760)return Math.round(170+Math.min(120,len*.38));
+    if(innerWidth<1180)return Math.round(220+Math.min(160,len*.42));
+    return Math.round(250+Math.min(180,len*.46));
+  }
+
+  function cloudFontFor(text){
+    const len=text.length;
+    if(innerWidth<760){
+      if(len<70)return '1.08rem';
+      if(len<180)return '.94rem';
+      return '.82rem';
+    }
+    if(innerWidth<1180){
+      if(len<70)return '1.2rem';
+      if(len<180)return '1.04rem';
+      return '.9rem';
+    }
+    if(len<70)return '1.28rem';
+    if(len<180)return '1.08rem';
+    return '.94rem';
+  }
+
+  function cloudPosition(){
+    const mobile=innerWidth<760;
+    const tablet=innerWidth>=760&&innerWidth<1180;
+    const x=mobile
+      ? 14+Math.random()*72
+      : tablet
+        ? 12+Math.random()*76
+        : 9+Math.random()*82;
+    const y=mobile
+      ? 14+Math.random()*72
+      : 11+Math.random()*78;
+    return {x,y};
+  }
+
+  function openCloudFocus(item,own=false){
+    if(!commentCloudFocus||!commentCloudFocusText||!commentCloudFocusMeta)return;
+    cloudPaused=true;
+    commentCloudFocusText.textContent=item.body||'';
+    commentCloudFocusMeta.textContent=own
+      ? 'Ваш комментарий'
+      : ('Анонимно'+(item.created_at?' · '+formatCommentDate(item.created_at):''));
+    commentCloudFocus.classList.add('open');
+    commentCloudFocus.setAttribute('aria-hidden','false');
+  }
+
+  function closeCloudFocus(){
+    cloudPaused=false;
+    commentCloudFocus?.classList.remove('open');
+    commentCloudFocus?.setAttribute('aria-hidden','true');
+  }
+
+  function makeCloudNote(item,{own=false,center=false}={}){
+    if(!commentCloudStage)return null;
+    const note=document.createElement('article');
+    note.className='comment-cloud-note'+(own?' own':'');
+    const pos=center?{x:50,y:48}:cloudPosition();
+    const rot=own?0:(Math.random()*8-4);
+    const scale=own?1.06:(.84+Math.random()*.30);
+    const alpha=own?1:(.48+Math.random()*.42);
+
+    note.style.setProperty('--x',pos.x+'%');
+    note.style.setProperty('--y',pos.y+'%');
+    note.style.setProperty('--rot',rot.toFixed(2)+'deg');
+    note.style.setProperty('--scale',scale.toFixed(2));
+    note.style.setProperty('--alpha',alpha.toFixed(2));
+    note.style.setProperty('--w',cloudWidthFor(item.body||'')+'px');
+    note.style.setProperty('--fs',cloudFontFor(item.body||''));
+    note.style.setProperty('--z',String(own?900:++cloudSerial));
+
+    const p=document.createElement('p');
+    p.textContent=item.body||'';
+
+    const small=document.createElement('small');
+    small.textContent=own
+      ? 'Ваш комментарий'
+      : ('Анонимно'+(item.created_at?' · '+formatCommentDate(item.created_at):''));
+
+    note.append(p,small);
+    note.addEventListener('click',e=>{
+      e.stopPropagation();
+      openCloudFocus(item,own);
+    });
+    commentCloudStage.appendChild(note);
+    requestAnimationFrame(()=>note.classList.add('show'));
+    cloudItems.push(note);
+    return note;
+  }
+
+  function removeCloudNote(note){
+    if(!note)return;
+    note.classList.add('fade-out');
+    setTimeout(()=>{
+      note.remove();
+      cloudItems=cloudItems.filter(x=>x!==note);
+    },720);
+  }
+
+  function clearCloudTimers(){
+    clearTimeout(cloudSpawnTimer);
+    clearInterval(cloudReplaceTimer);
+    cloudSpawnTimer=0;
+    cloudReplaceTimer=0;
+  }
+
+  function clearCloudStage(){
+    clearCloudTimers();
+    cloudItems=[];
+    cloudSerial=0;
+    commentCloudStage?.replaceChildren();
+    commentCloudEmpty?.classList.remove('show');
+  }
+
+  async function fetchCloudComments(){
+    const response=await fetch(commentsEndpoint(),{
+      headers:{apikey:SUPABASE_PUBLISHABLE_KEY}
+    });
+    if(!response.ok)throw new Error('load '+response.status);
+    return await response.json();
+  }
+
+  function startCloudSequence(items){
+    clearCloudStage();
+
+    const ownBody=lastOwnComment.trim();
+    const ownItem={body:ownBody,created_at:new Date().toISOString()};
+    const pool=shuffle((items||[]).filter(item=>{
+      const body=(item?.body||'').trim();
+      return body && (!ownBody || body!==ownBody);
+    }));
+
+    let ownNote=null;
+    if(ownBody){
+      ownNote=makeCloudNote(ownItem,{own:true,center:true});
+      setTimeout(()=>{
+        if(!ownNote?.isConnected)return;
+        const pos=cloudPosition();
+        ownNote.style.setProperty('--x',pos.x+'%');
+        ownNote.style.setProperty('--y',pos.y+'%');
+        ownNote.style.setProperty('--scale','.94');
+      },1500);
+    }
+
+    if(!pool.length){
+      setTimeout(()=>commentCloudEmpty?.classList.add('show'),1650);
+      return;
+    }
+
+    const capacity=cloudCapacity();
+    const initialCount=Math.min(capacity,pool.length);
+    const interval=innerWidth<760?330:innerWidth<1180?285:245;
+    let index=0;
+
+    function spawnNext(){
+      if(!commentCloud?.classList.contains('open'))return;
+      if(cloudPaused){
+        cloudSpawnTimer=setTimeout(spawnNext,260);
+        return;
+      }
+      if(index<initialCount){
+        makeCloudNote(pool[index++]);
+        cloudSpawnTimer=setTimeout(spawnNext,interval);
+        return;
+      }
+
+      if(pool.length>initialCount){
+        let replaceIndex=initialCount;
+        cloudReplaceTimer=setInterval(()=>{
+          if(cloudPaused||!commentCloud?.classList.contains('open'))return;
+          const replaceable=cloudItems.filter(el=>!el.classList.contains('own'));
+          if(replaceable.length)removeCloudNote(replaceable[0]);
+          makeCloudNote(pool[replaceIndex%pool.length]);
+          replaceIndex++;
+        },innerWidth<760?1450:1180);
+      }
+    }
+
+    cloudSpawnTimer=setTimeout(spawnNext,ownBody?850:180);
+  }
+
+  async function openCommentCloud(){
+    if(!commentCloud||!commentCloudStage)return;
+    cloudOverflow=document.body.style.overflow||'';
+    document.body.style.overflow='hidden';
+    commentCloud.classList.add('open');
+    commentCloud.setAttribute('aria-hidden','false');
+    closeCloudFocus();
+    clearCloudStage();
+
+    if(lastOwnComment){
+      makeCloudNote(
+        {body:lastOwnComment,created_at:new Date().toISOString()},
+        {own:true,center:true}
+      );
+    }
+
+    try{
+      const items=await fetchCloudComments();
+      startCloudSequence(items);
+    }catch(err){
+      console.error('Comments cloud load failed',err);
+      clearCloudStage();
+      if(lastOwnComment){
+        makeCloudNote(
+          {body:lastOwnComment,created_at:new Date().toISOString()},
+          {own:true,center:true}
+        );
+      }
+      if(commentCloudEmpty){
+        commentCloudEmpty.textContent='Не удалось загрузить другие комментарии.';
+        setTimeout(()=>commentCloudEmpty.classList.add('show'),500);
+      }
+    }
+  }
+
+  function closeCommentCloud(){
+    clearCloudTimers();
+    closeCloudFocus();
+    commentCloud?.classList.remove('open');
+    commentCloud?.setAttribute('aria-hidden','true');
+    document.body.style.overflow=cloudOverflow;
+    setTimeout(clearCloudStage,480);
+  }
+
+  commentCloudOpen?.addEventListener('click',openCommentCloud);
+  commentCloudClose?.addEventListener('click',closeCommentCloud);
+  commentCloudFocusClose?.addEventListener('click',e=>{
+    e.stopPropagation();
+    closeCloudFocus();
+  });
+  commentCloudFocus?.addEventListener('click',e=>{
+    if(e.target===commentCloudFocus)closeCloudFocus();
+  });
+  commentCloudStage?.addEventListener('click',()=>closeCloudFocus());
+
+  document.addEventListener('keydown',e=>{
+    if(e.key!=='Escape')return;
+    if(commentCloudFocus?.classList.contains('open'))closeCloudFocus();
+    else if(commentCloud?.classList.contains('open'))closeCommentCloud();
   });
 
   commentForm?.addEventListener('submit',async e=>{
@@ -2210,11 +2618,14 @@ body.reading-locked .sticky-thesis{display:none!important}
         throw new Error(code);
       }
 
+      lastOwnComment=body;
+      try{sessionStorage.setItem(COMMENT_CLOUD_SESSION_KEY,lastOwnComment)}catch(_){}
+
       commentBody.value='';
       if(commentWebsite)commentWebsite.value='';
       if(commentChars)commentChars.textContent='0';
       commentStatus.textContent='Сообщение сохранено. Спасибо.';
-      await loadComments();
+      unlockCommentCloudButton(true);
     }catch(err){
       console.error('Comment save failed',err);
       if(err?.message==='rate_limit'){
@@ -2231,7 +2642,6 @@ body.reading-locked .sticky-thesis{display:none!important}
     }
   });
 
-  loadComments();
 
   /* Sharing */
   const shareArticle=$('#shareArticle');
