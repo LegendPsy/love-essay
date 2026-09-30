@@ -739,7 +739,7 @@ body.reading-locked .sticky-thesis{display:none!important}
     position:fixed;
     z-index:3500;
     left:50%;
-    top:52svh;
+    top:56svh;
     width:min(calc(100% - 34px),390px);
     transform:translate(-50%,-50%) scale(.96);
     opacity:0;
@@ -1657,36 +1657,46 @@ body.reading-locked .sticky-thesis{display:none!important}
 
   const mobileRatingOverlay=document.querySelector('#mobileRatingOverlay');
   const mobileRatingMedia=window.matchMedia('(max-width:759px)');
-  const postAreaVisible=new Set();
+  const mobileRatingAnchor=document.querySelector('#commentsSection');
+  let mobileRatingRaf=0;
 
   function syncMobileRatingOverlay(){
-    if(!mobileRatingOverlay)return;
+    if(!mobileRatingOverlay||!mobileRatingAnchor)return;
+
+    const rect=mobileRatingAnchor.getBoundingClientRect();
+    const vh=Math.max(window.innerHeight||0,document.documentElement.clientHeight||0);
+
+    /*
+      On mobile, wait until the reader has actually scrolled well into
+      the blurred post-article area. This keeps the floating stars from
+      covering the final reflection text above it.
+    */
+    const deepEnoughIntoBlur=
+      rect.top<=vh*.30 &&
+      rect.bottom>=vh*.50;
+
     const shouldShow=
       mobileRatingMedia.matches &&
       document.body.classList.contains('gate-final') &&
-      postAreaVisible.size>0;
+      deepEnoughIntoBlur;
 
     mobileRatingOverlay.classList.toggle('is-visible',shouldShow);
     mobileRatingOverlay.setAttribute('aria-hidden',String(!shouldShow));
   }
 
-  if('IntersectionObserver' in window && mobileRatingOverlay){
-    const postAreaObserver=new IntersectionObserver(entries=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting)postAreaVisible.add(entry.target);
-        else postAreaVisible.delete(entry.target);
-      });
+  function scheduleMobileRatingOverlaySync(){
+    if(mobileRatingRaf)return;
+    mobileRatingRaf=requestAnimationFrame(()=>{
+      mobileRatingRaf=0;
       syncMobileRatingOverlay();
-    },{threshold:0,rootMargin:'-12% 0px -12% 0px'});
-
-    [
-      document.querySelector('#commentsSection'),
-      document.querySelector('#continue'),
-      document.querySelector('.footer')
-    ].filter(Boolean).forEach(el=>postAreaObserver.observe(el));
+    });
   }
 
-  mobileRatingMedia.addEventListener?.('change',syncMobileRatingOverlay);
+  addEventListener('scroll',scheduleMobileRatingOverlaySync,{passive:true});
+  addEventListener('resize',scheduleMobileRatingOverlaySync,{passive:true});
+  addEventListener('orientationchange',scheduleMobileRatingOverlaySync,{passive:true});
+  mobileRatingMedia.addEventListener?.('change',scheduleMobileRatingOverlaySync);
+  scheduleMobileRatingOverlaySync();
 
   document.querySelectorAll('input[name="loveChoice"]').forEach(r=>{
     r.addEventListener('change',()=>{
