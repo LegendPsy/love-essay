@@ -1189,10 +1189,10 @@ body.reading-locked .sticky-thesis{display:none!important}
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.1 3.1 0 0 0 0-1.4l7.05-4.11A2.99 2.99 0 1 0 15 5c0 .23.03.46.08.67L8.03 9.78a3 3 0 1 0 0 4.44l7.13 4.16c-.04.2-.06.41-.06.62a2.9 2.9 0 1 0 2.9-2.92Z"/></svg>
             Поделиться
           </button>
-          <a class="social-action" id="shareTelegram" href="#" target="_blank" rel="noopener noreferrer">
+          <button class="social-action" id="shareTelegram" type="button" aria-label="Отправить файл статьи в Telegram">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.8 3.6 18.6 19c-.24 1.09-.88 1.36-1.79.85l-4.87-3.59-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.96 9.02-8.15c.39-.35-.09-.55-.61-.2L6.22 12.72 1.42 11.2c-1.04-.33-1.06-1.04.22-1.54L20.4 2.43c.87-.32 1.63.2 1.4 1.17Z"/></svg>
-            Telegram
-          </a>
+            Telegram · файл
+          </button>
         </div>
         <p class="share-status" id="shareStatus" role="status" aria-live="polite"></p>
       </article>
@@ -1879,8 +1879,36 @@ body.reading-locked .sticky-thesis{display:none!important}
   const shareTitle='Любовь не измеряется страданием';
   const shareText='Интерактивное эссе о том, почему интенсивность страдания не является мерой любви.';
 
-  if(shareTelegram){
-    shareTelegram.href='https://t.me/share/url?url='+encodeURIComponent(shareUrl)+'&text='+encodeURIComponent(shareTitle);
+  const telegramFileUrl=new URL('share/essay-love.html',location.href).href;
+  let telegramFilePromise=null;
+
+  function prepareTelegramFile(){
+    if(telegramFilePromise)return telegramFilePromise;
+    telegramFilePromise=fetch(telegramFileUrl,{cache:'force-cache'})
+      .then(r=>{
+        if(!r.ok)throw new Error('file_'+r.status);
+        return r.blob();
+      })
+      .then(blob=>new File(
+        [blob],
+        'Эссе о любви.html',
+        {type:'text/html;charset=utf-8',lastModified:Date.now()}
+      ))
+      .catch(err=>{
+        telegramFilePromise=null;
+        throw err;
+      });
+    return telegramFilePromise;
+  }
+
+  if('IntersectionObserver' in window && shareTelegram){
+    const sharePrefetch=new IntersectionObserver(entries=>{
+      if(entries.some(e=>e.isIntersecting)){
+        prepareTelegramFile().catch(()=>{});
+        sharePrefetch.disconnect();
+      }
+    },{rootMargin:'450px 0px'});
+    sharePrefetch.observe(shareTelegram);
   }
 
   shareArticle?.addEventListener('click',async()=>{
@@ -1904,6 +1932,49 @@ body.reading-locked .sticky-thesis{display:none!important}
         }catch(_){
           window.prompt('Скопируйте ссылку на статью:',shareUrl);
         }
+      }
+    }
+  });
+
+  shareTelegram?.addEventListener('click',async()=>{
+    if(shareStatus)shareStatus.textContent='';
+
+    try{
+      const file=await prepareTelegramFile();
+
+      if(navigator.canShare?.({files:[file]}) && navigator.share){
+        await navigator.share({
+          files:[file],
+          title:shareTitle
+        });
+        return;
+      }
+
+      const a=document.createElement('a');
+      a.href=telegramFileUrl;
+      a.download='Эссе о любви.html';
+      a.rel='noopener';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      if(shareStatus){
+        shareStatus.textContent='Браузер не умеет отправлять HTML-файл напрямую. Файл скачан — его можно прикрепить в Telegram.';
+      }
+    }catch(err){
+      if(err?.name==='AbortError')return;
+      console.error('Telegram file share failed',err);
+
+      const a=document.createElement('a');
+      a.href=telegramFileUrl;
+      a.download='Эссе о любви.html';
+      a.rel='noopener';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      if(shareStatus){
+        shareStatus.textContent='Не удалось открыть меню отправки. Файл скачан — прикрепите его в Telegram.';
       }
     }
   });
