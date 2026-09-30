@@ -708,10 +708,10 @@ body.reading-locked .sticky-thesis{display:none!important}
 }
 
 
-/* Mobile blurred continuation + floating rating */
+/* Touch-device blurred continuation + floating rating */
 .mobile-rating-overlay{display:none}
 
-@media (max-width:759px){
+@media (max-width:759px), (min-width:760px) and (max-width:1400px) and (hover:none) and (pointer:coarse){
   .article-finale .rating-stars{display:none}
 
   body.gate-final #commentsSection>.shell,
@@ -1020,6 +1020,14 @@ body.reading-locked .sticky-thesis{display:none!important}
 
 /* Tablet stability: touch devices should not inherit desktop-only assumptions. */
 @media (min-width:760px) and (max-width:1400px) and (hover:none) and (pointer:coarse){
+  .mobile-rating-overlay{
+    width:min(calc(100% - 72px),520px);
+    top:55svh
+  }
+  .mobile-rating-star{
+    font-size:clamp(3.25rem,6.2vw,4.6rem)
+  }
+
   body.reading-locked{
     height:auto;
     min-height:100svh;
@@ -1656,7 +1664,7 @@ body.reading-locked .sticky-thesis{display:none!important}
   setPostArticleLocked(document.body.classList.contains('gate-final'));
 
   const mobileRatingOverlay=document.querySelector('#mobileRatingOverlay');
-  const mobileRatingMedia=window.matchMedia('(max-width:759px)');
+  const mobileRatingMedia=window.matchMedia('(max-width:759px), (min-width:760px) and (max-width:1400px) and (hover:none) and (pointer:coarse)');
   const mobileRatingAnchor=document.querySelector('#commentsSection');
   let mobileRatingRaf=0;
 
@@ -1667,9 +1675,9 @@ body.reading-locked .sticky-thesis{display:none!important}
     const vh=Math.max(window.innerHeight||0,document.documentElement.clientHeight||0);
 
     /*
-      On mobile, wait until the reader has actually scrolled well into
-      the blurred post-article area. This keeps the floating stars from
-      covering the final reflection text above it.
+      On phones and touch tablets, wait until the reader has actually
+      scrolled well into the blurred post-article area. This keeps the
+      floating stars from covering the final reflection text above it.
     */
     const deepEnoughIntoBlur=
       rect.top<=vh*.30 &&
