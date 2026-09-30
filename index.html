@@ -708,6 +708,91 @@ body.reading-locked .sticky-thesis{display:none!important}
 }
 
 
+/* Mobile blurred continuation + floating rating */
+.mobile-rating-overlay{display:none}
+
+@media (max-width:759px){
+  .article-finale .rating-stars{display:none}
+
+  body.gate-final #commentsSection>.shell,
+  body.gate-final #continue>.shell,
+  body.gate-final .footer>.shell{
+    filter:blur(15px) saturate(.62) brightness(.72);
+    opacity:.52;
+    transform:none
+  }
+
+  body.post-reveal #commentsSection>.shell,
+  body.post-reveal #continue>.shell,
+  body.post-reveal .footer>.shell{
+    animation:postRevealGlowMobile 1.05s cubic-bezier(.16,1,.3,1) both
+  }
+
+  @keyframes postRevealGlowMobile{
+    0%{filter:blur(15px) saturate(.62) brightness(.72);opacity:.52}
+    62%{filter:blur(2px) saturate(1.05) brightness(1.05);opacity:1}
+    100%{filter:none;opacity:1}
+  }
+
+  .mobile-rating-overlay{
+    display:block;
+    position:fixed;
+    z-index:3500;
+    left:50%;
+    top:52svh;
+    width:min(calc(100% - 34px),390px);
+    transform:translate(-50%,-50%) scale(.96);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:
+      opacity .28s ease,
+      transform .42s cubic-bezier(.16,1,.3,1),
+      visibility .28s ease
+  }
+  .mobile-rating-overlay::before{
+    content:"";
+    position:absolute;
+    inset:-42px -28px;
+    z-index:-1;
+    border-radius:999px;
+    background:radial-gradient(circle at 50% 50%,rgba(5,6,7,.78),rgba(5,6,7,.34) 46%,transparent 72%);
+    filter:blur(10px);
+    pointer-events:none
+  }
+  body.gate-final .mobile-rating-overlay.is-visible{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transform:translate(-50%,-50%) scale(1)
+  }
+  .mobile-rating-overlay.is-complete{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+    transform:translate(-50%,-50%) scale(1.08)!important
+  }
+  .mobile-rating-stars{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:2px;
+    width:100%
+  }
+  .mobile-rating-star{
+    font-size:clamp(2.9rem,13vw,4rem);
+    color:rgba(211,160,94,.34);
+    text-shadow:0 0 18px rgba(211,160,94,.12)
+  }
+  .mobile-rating-star.preview,
+  .mobile-rating-star.selected{
+    color:#d3a05e;
+    text-shadow:
+      0 0 18px rgba(211,160,94,.30),
+      0 0 38px rgba(211,160,94,.12)
+  }
+}
+
 /* Responsive layout system: phone / tablet / desktop */
 .pointer-instruction{display:none}
 
@@ -1321,6 +1406,15 @@ body.reading-locked .sticky-thesis{display:none!important}
 </section>
 
 <section class="comments-section" id="commentsSection">
+  <div class="mobile-rating-overlay" id="mobileRatingOverlay" aria-hidden="true">
+    <div class="mobile-rating-stars" role="group" aria-label="Оценка статьи от одной до пяти звёзд">
+      <button class="rating-star mobile-rating-star" type="button" data-rating="1" aria-label="1 звезда" aria-pressed="false">★</button>
+      <button class="rating-star mobile-rating-star" type="button" data-rating="2" aria-label="2 звезды" aria-pressed="false">★</button>
+      <button class="rating-star mobile-rating-star" type="button" data-rating="3" aria-label="3 звезды" aria-pressed="false">★</button>
+      <button class="rating-star mobile-rating-star" type="button" data-rating="4" aria-label="4 звезды" aria-pressed="false">★</button>
+      <button class="rating-star mobile-rating-star" type="button" data-rating="5" aria-label="5 звёзд" aria-pressed="false">★</button>
+    </div>
+  </div>
   <div class="shell">
     <div class="comments-card">
           <h2>Оставить что-то после себя</h2>
@@ -1542,9 +1636,9 @@ body.reading-locked .sticky-thesis{display:none!important}
   }
 
   const lockedPostSections=[
-    document.querySelector('#commentsSection'),
-    document.querySelector('#continue'),
-    document.querySelector('.footer')
+    document.querySelector('#commentsSection>.shell'),
+    document.querySelector('#continue>.shell'),
+    document.querySelector('.footer>.shell')
   ].filter(Boolean);
 
   function setPostArticleLocked(locked){
@@ -1560,6 +1654,39 @@ body.reading-locked .sticky-thesis{display:none!important}
   }
 
   setPostArticleLocked(document.body.classList.contains('gate-final'));
+
+  const mobileRatingOverlay=document.querySelector('#mobileRatingOverlay');
+  const mobileRatingMedia=window.matchMedia('(max-width:759px)');
+  const postAreaVisible=new Set();
+
+  function syncMobileRatingOverlay(){
+    if(!mobileRatingOverlay)return;
+    const shouldShow=
+      mobileRatingMedia.matches &&
+      document.body.classList.contains('gate-final') &&
+      postAreaVisible.size>0;
+
+    mobileRatingOverlay.classList.toggle('is-visible',shouldShow);
+    mobileRatingOverlay.setAttribute('aria-hidden',String(!shouldShow));
+  }
+
+  if('IntersectionObserver' in window && mobileRatingOverlay){
+    const postAreaObserver=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting)postAreaVisible.add(entry.target);
+        else postAreaVisible.delete(entry.target);
+      });
+      syncMobileRatingOverlay();
+    },{threshold:0,rootMargin:'-12% 0px -12% 0px'});
+
+    [
+      document.querySelector('#commentsSection'),
+      document.querySelector('#continue'),
+      document.querySelector('.footer')
+    ].filter(Boolean).forEach(el=>postAreaObserver.observe(el));
+  }
+
+  mobileRatingMedia.addEventListener?.('change',syncMobileRatingOverlay);
 
   document.querySelectorAll('input[name="loveChoice"]').forEach(r=>{
     r.addEventListener('change',()=>{
@@ -1798,18 +1925,25 @@ body.reading-locked .sticky-thesis{display:none!important}
         if(!response.ok)throw new Error(result?.error||('rating_'+response.status));
 
         try{localStorage.setItem('legendpsy_rating_love_suffering_v1',String(rating))}catch(_){}
+        mobileRatingOverlay?.classList.add('is-complete');
         setPostArticleLocked(false);
         document.body.classList.add('post-reveal');
         releaseGate('gate-final',null,'commentsSection');
-        setTimeout(()=>document.body.classList.remove('post-reveal'),1250);
+        syncMobileRatingOverlay();
+        setTimeout(()=>{
+          document.body.classList.remove('post-reveal');
+          mobileRatingOverlay?.classList.remove('is-visible');
+        },1250);
       }catch(err){
         console.error('Rating save failed',err);
         ratingSaving=false;
+        mobileRatingOverlay?.classList.remove('is-complete');
         ratingStars.forEach(x=>{
           x.disabled=false;
           x.classList.remove('selected');
           x.setAttribute('aria-pressed','false');
         });
+        syncMobileRatingOverlay();
       }
     });
   });
