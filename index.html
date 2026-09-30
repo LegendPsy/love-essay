@@ -7,6 +7,11 @@
 <meta name="color-scheme" content="dark">
 <title>Любовь не измеряется страданием</title>
 <meta name="description" content="Интерактивное эссе о том, почему интенсивность страдания не является мерой любви.">
+<meta property="og:title" content="Любовь не измеряется страданием">
+<meta property="og:description" content="Интерактивное эссе о том, почему интенсивность страдания не является мерой любви.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://legendpsy.github.io/love-essay/">
+<meta name="twitter:card" content="summary">
 <script>
 document.documentElement.classList.remove('no-js');
 document.documentElement.classList.add('js');
@@ -560,6 +565,45 @@ body.reading-locked .sticky-thesis{display:none!important}
 .comments-empty{color:var(--muted);font-style:italic}
 @media(min-width:760px){.comments-section{padding:112px 0 124px}}
 
+/* Social / author / booking */
+.social-section{
+  padding:0 0 104px;
+  background:linear-gradient(180deg,#090a0b,#0b0d0f);
+}
+.social-wrap{max-width:920px;margin:0 auto}
+.social-head{margin-bottom:22px}
+.social-head h2{margin:7px 0 10px;font-size:clamp(2.25rem,8vw,4.6rem);line-height:.96}
+.social-head p{margin:0;color:var(--muted);max-width:680px;line-height:1.65}
+.social-grid{display:grid;gap:14px}
+.social-card{
+  border:1px solid rgba(236,228,216,.12);
+  border-radius:22px;padding:clamp(19px,4.5vw,28px);
+  background:
+    linear-gradient(145deg,rgba(236,228,216,.045),rgba(236,228,216,.018));
+  box-shadow:0 20px 60px rgba(0,0,0,.16)
+}
+.social-card-title{font-size:1.18rem;font-weight:720;margin:0 0 6px}
+.social-card p{margin:0 0 17px;color:var(--muted);line-height:1.55}
+.social-actions{display:flex;gap:9px;flex-wrap:wrap}
+.social-action{
+  min-height:45px;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 15px;border-radius:999px;text-decoration:none;
+  border:1px solid rgba(236,228,216,.14);background:rgba(255,255,255,.035);
+  color:var(--paper);font-weight:650;line-height:1.2;cursor:pointer
+}
+.social-action.primary{
+  border-color:rgba(211,160,94,.54);background:rgba(211,160,94,.11)
+}
+.social-action:hover,.social-action:focus-visible{border-color:rgba(211,160,94,.65);outline:none}
+.social-action svg{width:18px;height:18px;flex:0 0 auto}
+.share-status{margin:11px 0 0!important;min-height:1.25em;font-size:.82rem;color:rgba(236,228,216,.52)!important}
+@media(min-width:760px){
+  .social-section{padding-bottom:130px}
+  .social-grid{grid-template-columns:repeat(3,1fr)}
+  .social-card{display:flex;flex-direction:column}
+  .social-card .social-actions{margin-top:auto}
+}
+
 </style>
 </head>
 <body class="reading-locked gate-choice">
@@ -859,6 +903,58 @@ body.reading-locked .sticky-thesis{display:none!important}
       <div class="comments-list" id="commentsList" aria-live="polite">
         <p class="comments-empty">Загружаю сообщения…</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="social-section" id="continue">
+  <div class="shell social-wrap">
+    <div class="social-head">
+      <div class="kicker">09 · Продолжить</div>
+      <h2>Если хочется передать дальше</h2>
+      <p>Поделиться статьёй, узнать больше об авторе или написать напрямую.</p>
+    </div>
+
+    <div class="social-grid">
+      <article class="social-card">
+        <h3 class="social-card-title">Поделиться статьёй</h3>
+        <p>Отправить ссылку другу или открыть системное меню любого доступного мессенджера.</p>
+        <div class="social-actions">
+          <button class="social-action primary" id="shareArticle" type="button" aria-label="Поделиться статьёй">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.1 3.1 0 0 0 0-1.4l7.05-4.11A2.99 2.99 0 1 0 15 5c0 .23.03.46.08.67L8.03 9.78a3 3 0 1 0 0 4.44l7.13 4.16c-.04.2-.06.41-.06.62a2.9 2.9 0 1 0 2.9-2.92Z"/></svg>
+            Поделиться
+          </button>
+          <a class="social-action" id="shareTelegram" href="#" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.8 3.6 18.6 19c-.24 1.09-.88 1.36-1.79.85l-4.87-3.59-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.96 9.02-8.15c.39-.35-.09-.55-.61-.2L6.22 12.72 1.42 11.2c-1.04-.33-1.06-1.04.22-1.54L20.4 2.43c.87-.32 1.63.2 1.4 1.17Z"/></svg>
+            Telegram
+          </a>
+        </div>
+        <p class="share-status" id="shareStatus" role="status" aria-live="polite"></p>
+      </article>
+
+      <article class="social-card">
+        <h3 class="social-card-title">Об авторе</h3>
+        <p>Сайт и профессиональный профиль Алексея Давыдыча.</p>
+        <div class="social-actions">
+          <a class="social-action primary" href="https://alekseipsychology.tilda.ws/" target="_blank" rel="noopener noreferrer">Сайт автора</a>
+          <a class="social-action" href="https://www.b17.ru/davydych_aleksey/?prt=724069" target="_blank" rel="noopener noreferrer">Профиль B17</a>
+        </div>
+      </article>
+
+      <article class="social-card">
+        <h3 class="social-card-title">Записаться на сессию</h3>
+        <p>Можно написать напрямую и договориться о первой встрече.</p>
+        <div class="social-actions">
+          <a class="social-action primary" href="https://t.me/lexej" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.8 3.6 18.6 19c-.24 1.09-.88 1.36-1.79.85l-4.87-3.59-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.96 9.02-8.15c.39-.35-.09-.55-.61-.2L6.22 12.72 1.42 11.2c-1.04-.33-1.06-1.04.22-1.54L20.4 2.43c.87-.32 1.63.2 1.4 1.17Z"/></svg>
+            Telegram
+          </a>
+          <a class="social-action" href="https://wa.me/79182782241?text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82%2C%20%D1%8F%20%D1%85%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BF%D0%B5%D1%80%D0%B2%D1%83%D1%8E%20%D0%B2%D1%81%D1%82%D1%80%D0%B5%D1%87%D1%83%20%D0%B8%20%D0%BF%D0%BE%D0%BE%D0%B1%D1%89%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BB%D0%B8%D1%87%D0%BD%D0%BE." target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.5 3.5A11.8 11.8 0 0 0 2 17.7L.4 23.5l5.9-1.55A11.78 11.78 0 0 0 12 23.4h.01A11.8 11.8 0 0 0 20.5 3.5Zm-8.49 17.91h-.01a9.8 9.8 0 0 1-5-1.37l-.36-.21-3.5.92.94-3.41-.23-.35A9.81 9.81 0 1 1 12 21.41Zm5.38-7.34c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.66.15-.2.3-.76.96-.93 1.16-.17.2-.34.22-.63.07-.3-.15-1.25-.46-2.38-1.47a8.93 8.93 0 0 1-1.65-2.05c-.17-.3-.02-.45.13-.6.13-.13.3-.34.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.91-2.19-.24-.57-.48-.49-.66-.5h-.57c-.2 0-.52.08-.79.37-.27.3-1.03 1-1.03 2.45 0 1.44 1.05 2.84 1.2 3.04.15.2 2.07 3.16 5.01 4.43.7.3 1.25.48 1.67.62.7.22 1.34.19 1.85.12.56-.08 1.75-.72 2-1.41.24-.7.24-1.3.17-1.42-.08-.12-.27-.2-.57-.35Z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </article>
     </div>
   </div>
 </section>
@@ -1445,6 +1541,43 @@ body.reading-locked .sticky-thesis{display:none!important}
   });
 
   loadComments();
+
+  /* Sharing */
+  const shareArticle=$('#shareArticle');
+  const shareTelegram=$('#shareTelegram');
+  const shareStatus=$('#shareStatus');
+  const shareUrl=location.href.split('#')[0];
+  const shareTitle='Любовь не измеряется страданием';
+  const shareText='Интерактивное эссе о том, почему интенсивность страдания не является мерой любви.';
+
+  if(shareTelegram){
+    shareTelegram.href='https://t.me/share/url?url='+encodeURIComponent(shareUrl)+'&text='+encodeURIComponent(shareTitle);
+  }
+
+  shareArticle?.addEventListener('click',async()=>{
+    if(shareStatus)shareStatus.textContent='';
+    try{
+      if(navigator.share){
+        await navigator.share({title:shareTitle,text:shareText,url:shareUrl});
+        return;
+      }
+      if(navigator.clipboard?.writeText){
+        await navigator.clipboard.writeText(shareUrl);
+        if(shareStatus)shareStatus.textContent='Ссылка скопирована.';
+        return;
+      }
+      window.prompt('Скопируйте ссылку на статью:',shareUrl);
+    }catch(err){
+      if(err?.name!=='AbortError'){
+        try{
+          await navigator.clipboard?.writeText(shareUrl);
+          if(shareStatus)shareStatus.textContent='Ссылка скопирована.';
+        }catch(_){
+          window.prompt('Скопируйте ссылку на статью:',shareUrl);
+        }
+      }
+    }
+  });
 
   })();
 </script>
