@@ -198,15 +198,16 @@ p{margin:0 0 .95em}
 body.gate-choice #intuition ~ *,
 body.gate-meter #meter ~ *,
 body.gate-factors #factors ~ *,
-body.gate-trap #trap ~ *,
-body.gate-flashlight #flashlight ~ *,
-body.gate-rating #ratingGate ~ *{display:none!important}
+body.gate-trap #trap ~ *{display:none!important}
+
+body.gate-flashlight #commentsSection,
+body.gate-flashlight #commentsSection ~ *{display:none!important}
+
 body.gate-choice footer,
 body.gate-meter footer,
 body.gate-factors footer,
 body.gate-trap footer,
-body.gate-flashlight footer,
-body.gate-rating footer{display:none!important}
+body.gate-flashlight footer{display:none!important}
 
 body.gate-choice [data-gate-hint="choice"],
 body.gate-meter [data-gate-hint="meter"],
@@ -380,13 +381,8 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 .rating-choice[aria-pressed="true"]{
   border-color:rgba(211,160,94,.78);background:rgba(211,160,94,.14);color:#f3dfc3
 }
+.rating-choice:disabled{opacity:.34;cursor:default}
 .rating-labels{display:flex;justify-content:space-between;gap:14px;color:rgba(236,228,216,.46);font-size:.72rem}
-.rating-submit{
-  width:100%;min-height:52px;margin-top:20px;border-radius:999px;
-  border:1px solid rgba(211,160,94,.58);background:rgba(211,160,94,.12);
-  color:var(--paper);font-weight:760;cursor:pointer
-}
-.rating-submit:disabled{opacity:.38;cursor:default}
 .rating-status{min-height:1.35em;margin:11px 0 0;color:var(--muted);font-size:.88rem}
 @media(min-width:760px){
   .rating-section{padding:108px 0}
@@ -813,8 +809,8 @@ body.reading-locked .sticky-thesis{display:none!important}
 }
 
 @media (hover:hover) and (pointer:fine){
-  .social-action,.choice,.chip,.torch,.comment-submit,.rating-choice,.rating-submit{transition:transform .18s ease,border-color .18s ease,background .18s ease}
-  .social-action:hover,.choice:hover,.chip:hover,.torch:hover,.comment-submit:hover,.rating-choice:hover,.rating-submit:not(:disabled):hover{transform:translateY(-2px)}
+  .social-action,.choice,.chip,.torch,.comment-submit,.rating-choice{transition:transform .18s ease,border-color .18s ease,background .18s ease}
+  .social-action:hover,.choice:hover,.chip:hover,.torch:hover,.comment-submit:hover,.rating-choice:not(:disabled):hover{transform:translateY(-2px)}
 }
 
 /* Very wide screens: preserve composition instead of endlessly scaling text and imagery. */
@@ -1096,7 +1092,7 @@ body.reading-locked .sticky-thesis{display:none!important}
       <p>И если однажды рядом окажется человек, который будет глубоко любить меня, но при этом не разрушаться от страха меня потерять, не цепляться за меня и оставаться способным жить свою жизнь, — смогу ли я распознать в этом любовь?</p>
       <p>Или мне покажется, что её почему-то недостаточно?</p>
     </div>
-    <div class="gate-hint" data-gate-hint="flashlight">Включите фонарик и проведите им по вопросам, чтобы закончить статью.</div>
+    <div class="gate-hint" data-gate-hint="flashlight">Включите фонарик. Он останется включённым, пока вы не дойдёте до оценки статьи.</div>
   </div>
 </section>
 
@@ -1105,17 +1101,16 @@ body.reading-locked .sticky-thesis{display:none!important}
     <div class="rating-card">
       <div class="kicker">08 · Оценить статью</div>
       <h2>Как вам эта статья?</h2>
-      <p class="rating-intro">Поставьте оценку от 1 до 5. После этого откроются комментарии, возможность поделиться и страницы автора.</p>
+      <p class="rating-intro">Выберите оценку от 1 до 5. Одного нажатия достаточно — после него откроется следующий раздел.</p>
       <div class="rating-scale" id="ratingScale" role="group" aria-label="Оценка статьи от 1 до 5">
-        <button class="rating-choice" type="button" data-rating="1" aria-pressed="false">1</button>
-        <button class="rating-choice" type="button" data-rating="2" aria-pressed="false">2</button>
-        <button class="rating-choice" type="button" data-rating="3" aria-pressed="false">3</button>
-        <button class="rating-choice" type="button" data-rating="4" aria-pressed="false">4</button>
-        <button class="rating-choice" type="button" data-rating="5" aria-pressed="false">5</button>
+        <button class="rating-choice" type="button" data-rating="1" aria-pressed="false" disabled>1</button>
+        <button class="rating-choice" type="button" data-rating="2" aria-pressed="false" disabled>2</button>
+        <button class="rating-choice" type="button" data-rating="3" aria-pressed="false" disabled>3</button>
+        <button class="rating-choice" type="button" data-rating="4" aria-pressed="false" disabled>4</button>
+        <button class="rating-choice" type="button" data-rating="5" aria-pressed="false" disabled>5</button>
       </div>
-      <div class="rating-labels"><span>низкая оценка</span><span>высокая оценка</span></div>
-      <button class="rating-submit" id="ratingSubmit" type="button" disabled>Оценить статью</button>
-      <p class="rating-status" id="ratingStatus" role="status" aria-live="polite"></p>
+      <div class="rating-labels"><span>1</span><span>5</span></div>
+      <p class="rating-status" id="ratingStatus" role="status" aria-live="polite">Сначала включите фонарик и пройдите с ним до конца.</p>
     </div>
   </div>
 </section>
@@ -1457,24 +1452,39 @@ body.reading-locked .sticky-thesis{display:none!important}
   const fs=$('#flashlight');
   const light=$('#light');
   const torch=$('#torch');
-  const qs=$('.questions p');
+  const qs=$$('.questions p');
+  const ratingChoices=$$('.rating-choice');
+  const ratingStatus=$('#ratingStatus');
   let on=false;
-  let flashlightUsed=false;
+  let ratingSaving=false;
+
+  function setRatingEnabled(enabled){
+    ratingChoices.forEach(btn=>{btn.disabled=!enabled});
+    if(ratingStatus){
+      ratingStatus.textContent=enabled
+        ? 'Нажмите на оценку — подтверждение не потребуется.'
+        : 'Сначала включите фонарик и пройдите с ним до конца.';
+    }
+  }
 
   function setOn(v){
     on=v;
     fs.classList.toggle('on',v);
     torch.setAttribute('aria-pressed',String(v));
     torch.textContent=v?'Фонарик включён':'Включить фонарик';
-    if(!v)qs.forEach(q=>q.classList.remove('lit'));
+    if(v){
+      /* Once started, the flashlight stays on until the reader rates the article. */
+      torch.disabled=true;
+      setRatingEnabled(true);
+    }else{
+      torch.disabled=false;
+      qs.forEach(q=>q.classList.remove('lit'));
+    }
   }
-  torch.addEventListener('click',()=>setOn(!on));
 
-  function markFlashlightUsed(){
-    if(!on||flashlightUsed)return;
-    flashlightUsed=true;
-    releaseGate('gate-flashlight','gate-rating','ratingGate');
-  }
+  torch.addEventListener('click',()=>{
+    if(!on)setOn(true);
+  });
 
   function nearest(y){
     if(!on)return;
@@ -1493,7 +1503,6 @@ body.reading-locked .sticky-thesis{display:none!important}
     light.style.setProperty('--x',((x-r.left)/r.width*100)+'%');
     light.style.setProperty('--y',((y-r.top)/r.height*100)+'%');
     nearest(y);
-    markFlashlightUsed();
   }
 
   fs.addEventListener('pointermove',e=>move(e.clientX,e.clientY));
@@ -1509,15 +1518,9 @@ body.reading-locked .sticky-thesis{display:none!important}
     const r=q.getBoundingClientRect(),s=fs.getBoundingClientRect();
     light.style.setProperty('--x','50%');
     light.style.setProperty('--y',((r.top+r.height/2-s.top)/s.height*100)+'%');
-    markFlashlightUsed();
   }));
 
-  /* Rating gate */
-  const ratingChoices=$('.rating-choice');
-  const ratingSubmit=$('#ratingSubmit');
-  const ratingStatus=$('#ratingStatus');
-  let selectedRating=0;
-
+  /* Rating: tapping 1–5 is the submission. No extra confirmation button. */
   function getRatingClientId(){
     const key='legendpsy_rating_client_v1';
     let id='';
@@ -1530,42 +1533,57 @@ body.reading-locked .sticky-thesis{display:none!important}
     return id;
   }
 
-  ratingChoices.forEach(btn=>btn.addEventListener('click',()=>{
-    selectedRating=Number(btn.dataset.rating)||0;
-    ratingChoices.forEach(x=>x.setAttribute('aria-pressed',String(x===btn)));
-    ratingSubmit.disabled=!selectedRating;
-    ratingStatus.textContent='';
-  }));
+  setRatingEnabled(false);
 
-  ratingSubmit?.addEventListener('click',async()=>{
-    if(!selectedRating)return;
-    ratingSubmit.disabled=true;
+  ratingChoices.forEach(btn=>btn.addEventListener('click',async()=>{
+    if(!on||ratingSaving||btn.disabled)return;
+
+    const rating=Number(btn.dataset.rating)||0;
+    if(!rating)return;
+
+    ratingSaving=true;
+    ratingChoices.forEach(x=>{
+      x.disabled=true;
+      x.setAttribute('aria-pressed',String(x===btn));
+    });
+
+    /* The flashlight switches off immediately on the rating tap. */
+    setOn(false);
+    ratingChoices.forEach(x=>x.disabled=true);
     ratingStatus.textContent='Сохраняю оценку…';
+
     try{
       const response=await fetch(SUPABASE_URL+'/functions/v1/submit-rating',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
           article_id:COMMENTS_ARTICLE_ID,
-          rating:selectedRating,
+          rating,
           client_id:getRatingClientId()
         })
       });
+
       let result={};
       try{result=await response.json()}catch(_){}
       if(!response.ok)throw new Error(result?.error||('rating_'+response.status));
 
-      try{localStorage.setItem('legendpsy_rating_love_suffering_v1',String(selectedRating))}catch(_){}
-      ratingStatus.textContent='Спасибо. Оценка сохранена.';
-      releaseGate('gate-rating',null,'commentsSection');
+      try{localStorage.setItem('legendpsy_rating_love_suffering_v1',String(rating))}catch(_){}
+      ratingStatus.textContent='Спасибо.';
+      releaseGate('gate-flashlight',null,'commentsSection');
+
+      requestAnimationFrame(()=>{
+        document.querySelector('#commentsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+      });
     }catch(err){
       console.error('Rating save failed',err);
+      ratingSaving=false;
+      setOn(true);
+      ratingChoices.forEach(x=>x.disabled=false);
       ratingStatus.textContent=err?.message==='rate_limit'
         ? 'Слишком много попыток. Попробуйте немного позже.'
         : 'Не удалось сохранить оценку. Попробуйте ещё раз.';
-      ratingSubmit.disabled=false;
     }
-  });
+  }));
 
 
 
