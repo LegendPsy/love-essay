@@ -1832,12 +1832,12 @@ body.reading-locked .sticky-thesis{display:none!important}
     const vh=Math.max(window.innerHeight||0,document.documentElement.clientHeight||0);
 
     /*
-      On phones and touch tablets, wait until the reader has actually
-      scrolled well into the blurred post-article area. This keeps the
-      floating stars from covering the final reflection text above it.
+      On phones and touch tablets, show the rating after the blurred
+      continuation is clearly established, but before the reader has
+      scrolled too far into it.
     */
     const deepEnoughIntoBlur=
-      rect.top<=vh*.30 &&
+      rect.top<=vh*.48 &&
       rect.bottom>=vh*.50;
 
     const shouldShow=
