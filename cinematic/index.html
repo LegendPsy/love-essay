@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="ru" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#08090b">
+  <meta name="color-scheme" content="dark">
+  <title>Любовь не измеряется страданием — cinematic edition</title>
+  <meta name="description" content="Кинематографическое интерактивное веб-эссе о том, почему интенсивность страдания не является мерой любви.">
+  <meta property="og:title" content="Любовь не измеряется страданием">
+  <meta property="og:description" content="Кинематографическое интерактивное веб-эссе.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://legendpsy.github.io/love-essay/cinematic/">
+  <script>document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="shader" class="shader" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <aside class="progress" aria-label="Прогресс чтения">
+    <span class="progress__line"><i id="progressFill"></i></span>
+    <span class="progress__dot" id="progressDot"></span>
+  </aside>
+
+  <header class="hero scene" id="top" data-scene="hero">
+    <div class="hero__image-wrap" aria-hidden="true">
+      <img class="hero__image" src="assets/hero.jpg" width="1200" height="1499" alt="" fetchpriority="high" decoding="async">
+      <div class="hero__image-light"></div>
+    </div>
+    <div class="shell hero__content">
+      <p class="eyebrow">Интерактивное эссе</p>
+      <h1 aria-label="Любовь не измеряется страданием">
+        <span>Любовь</span>
+        <span>не измеряется</span>
+        <span>страданием</span>
+      </h1>
+      <p class="hero__lead">Почему сильная боль рядом с любовью так легко становится для нас доказательством самой любви — и почему это измерение может обманывать.</p>
+      <button class="hero__start" id="startBtn" type="button">
+        <span>Начать</span>
+        <i aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="scroll-cue" aria-hidden="true"><span></span></div>
+  </header>
+
+  <main>
+    <section class="scene intro" id="intuition" data-scene="intuition">
+      <div class="shell">
+        <div class="section-head reveal">
+          <p class="overline">Первый импульс</p>
+          <h2>Кто из них любит сильнее?</h2>
+          <p>Одинаковые обстоятельства: у каждого любимый человек находится в городе под обстрелом. Выберите не анализируя слишком долго.</p>
+        </div>
+
+        <div class="choice-grid">
+          <button class="choice-card reveal" type="button" data-choice="calm">
+            <span class="choice-card__letter">A</span>
+            <strong>Боится, но продолжает жить</strong>
+            <p>Проверяет связь, волнуется, работает, ест, разговаривает с людьми и возвращается к своим делам.</p>
+            <span class="choice-card__cta">Выбрать</span>
+          </button>
+
+          <button class="choice-card reveal" type="button" data-choice="intense">
+            <span class="choice-card__letter">B</span>
+            <strong>Не находит себе места</strong>
+            <p>Не может сосредоточиться, постоянно проверяет телефон и прокручивает худшие сценарии.</p>
+            <span class="choice-card__cta">Выбрать</span>
+          </button>
+        </div>
+
+        <div class="choice-result" id="choiceResult" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="scene reaction" id="reaction" data-scene="reaction">
+      <div class="reaction__sticky">
+        <div class="shell reaction__layout">
+          <div class="reaction__copy">
+            <p class="overline">Наблюдаемая реакция</p>
+            <h2>Сначала интерфейс тоже поддастся этой логике.</h2>
+            <p>Листайте вниз. Посмотрите, как легко сильная реакция начинает казаться доказательством любви.</p>
+          </div>
+
+          <div class="instrument" aria-label="Изменение интенсивности переживания">
+            <div class="instrument__row">
+              <span>тревога</span>
+              <i><b data-bar="anxiety"></b></i>
+              <output data-out="anxiety">36</output>
+            </div>
+            <div class="instrument__row">
+              <span>страдание</span>
+              <i><b data-bar="pain"></b></i>
+              <output data-out="pain">32</output>
+            </div>
+            <div class="instrument__row">
+              <span>контроль</span>
+              <i><b data-bar="control"></b></i>
+              <output data-out="control">28</output>
+            </div>
+            <div class="instrument__row instrument__row--unknown">
+              <span>любовь</span>
+              <i><b></b></i>
+              <output>неизв.</output>
+            </div>
+            <div class="equation" id="equation">
+              <span>больше страдания</span><em>=</em><span>больше любви?</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reaction__steps shell">
+        <article class="reaction-step" data-step="0">
+          <h3>Тревога растёт.</h3>
+          <p>Человеку всё тяжелее. Пока это только описание его состояния.</p>
+        </article>
+        <article class="reaction-step" data-step="1">
+          <h3>Жизнь сужается вокруг угрозы.</h3>
+          <p>Работа, сон, еда и внимание начинают проигрывать мыслям о близком.</p>
+        </article>
+        <article class="reaction-step" data-step="2">
+          <h3>И здесь почти хочется поставить знак равенства.</h3>
+          <p>Если боль огромна, любовь тоже должна быть огромной. Именно так ощущается эта интуиция.</p>
+        </article>
+        <article class="reaction-step reaction-step--break" data-step="3">
+          <h3>Но шкала ломается.</h3>
+          <p>Тревогу, страдание и потребность в контроле мы увидели. Величину любви — нет.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="scene fracture" id="fracture" data-scene="fracture">
+      <div class="shell fracture__inner">
+        <p class="overline reveal">Ошибка измерения</p>
+        <div class="fracture-word" id="fractureWord" aria-label="Страдание не равно любовь">
+          <span>страдание</span>
+          <b>≠</b>
+          <span>любовь</span>
+        </div>
+        <p class="fracture__caption reveal">Можно измерять интенсивность реакции. Нельзя из неё вычислить глубину любви.</p>
+      </div>
+    </section>
+
+    <section class="scene meter" id="meter" data-scene="meter">
+      <div class="shell meter__layout">
+        <div class="section-head reveal">
+          <p class="overline">Ложная шкала</p>
+          <h2>Интенсивность переживания может меняться. Но любовь по нему не вычислить.</h2>
+          <p>Подвигайте ползунок. Реакция меняется, но она по‑прежнему не превращается в доказательство любви.</p>
+        </div>
+
+        <div class="dial-card reveal">
+          <div class="dial-card__label">Интенсивность переживания</div>
+          <div class="dial" aria-hidden="true">
+            <span class="dial__halo"></span>
+            <i class="dial__needle" id="dialNeedle"></i>
+            <b class="dial__hub"></b>
+            <output id="dialValue">52%</output>
+          </div>
+          <input id="intensityRange" type="range" min="0" max="100" value="52" aria-label="Интенсивность переживания">
+          <div class="dial-card__bottom">
+            <span>Сила любви</span>
+            <strong>неизвестна</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene orbit" id="orbit" data-scene="orbit">
+      <div class="shell orbit__layout">
+        <div class="section-head reveal">
+          <p class="overline">Что мы на самом деле видим</p>
+          <h2>Реакция говорит о человеке. Не обязательно — о любви.</h2>
+          <p>Каждый фактор способен менять интенсивность реакции, не являясь шкалой любви.</p>
+        </div>
+
+        <div class="orbit-stage reveal" id="orbitStage">
+          <div class="orbit-ring orbit-ring--a"></div>
+          <div class="orbit-ring orbit-ring--b"></div>
+          <button class="orbit-core" type="button" data-factor="love"><span>любовь</span></button>
+
+          <button class="orbit-node" style="--a:0deg;--r:1" data-factor="uncertainty">неопределённость</button>
+          <button class="orbit-node" style="--a:58deg;--r:1" data-factor="thoughts">мысли</button>
+          <button class="orbit-node" style="--a:124deg;--r:1" data-factor="flexibility">гибкость</button>
+          <button class="orbit-node" style="--a:186deg;--r:1" data-factor="experience">опыт</button>
+          <button class="orbit-node" style="--a:244deg;--r:1" data-factor="control">контроль</button>
+          <button class="orbit-node" style="--a:310deg;--r:1" data-factor="sensitivity">чувствительность</button>
+
+          <div class="factor-card" id="factorCard">
+            <small>Выберите фактор</small>
+            <h3>Любовь остаётся отдельной переменной</h3>
+            <p>Интенсивность реакции может быть связана со множеством процессов. Ни один из них сам по себе не измеряет любовь.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene trap" id="trap" data-scene="trap">
+      <div class="shell">
+        <div class="section-head reveal">
+          <p class="overline">Ловушка</p>
+          <h2>Когда трудность справляться становится романтическим доказательством</h2>
+          <p>Откройте фразу. Она не станет менее эмоциональной — но изменится рамка, через которую мы на неё смотрим.</p>
+        </div>
+
+        <div class="trap-grid">
+          <details class="trap-card reveal">
+            <summary>«Он без меня не может»</summary>
+            <p>Это может звучать как исключительная любовь. Но может говорить и о трудности оставаться отдельным человеком без постоянной опоры на другого.</p>
+          </details>
+          <details class="trap-card reveal">
+            <summary>«Она места себе не находит»</summary>
+            <p>Сильнейшая тревога показывает интенсивность переживания. Она сама по себе не сообщает, насколько глубоко человек способен любить.</p>
+          </details>
+          <details class="trap-card reveal">
+            <summary>«Он с ума сходит от ревности»</summary>
+            <p>Ревность может быть связана с привязанностью, но также с угрозой, контролем, мыслями и непереносимостью неопределённости.</p>
+          </details>
+          <details class="trap-card reveal">
+            <summary>«Она после расставания вообще перестала жить»</summary>
+            <p>Разрушение после потери может быть огромным. Но превращать степень разрушенности в шкалу любви — отдельный вывод, а не факт.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene prose-flow" data-scene="prose">
+      <div class="shell prose">
+        <p class="reveal">Если мы принимаем неспособность жить без другого человека за доказательство большой любви, тревогу — за её меру, а эмоциональное разрушение после потери — за свидетельство её глубины, то в поисках «настоящей любви» мы начинаем бессознательно отбирать совсем не тех людей.</p>
+        <p class="reveal">Не тех, кто сильнее способен любить, а тех, кому сложнее справляться с собственными переживаниями.</p>
+        <p class="reveal">Тех, кому труднее отделиться от своих мыслей, выдерживать неопределённость, дистанцию, изменение обстоятельств и потерю контроля.</p>
+        <p class="reveal">Именно эти качества мы можем романтизировать и читать как: «Вот она — настоящая любовь».</p>
+        <p class="reveal">Хотя всё это может совершенно ничего не говорить о способности человека любить.</p>
+      </div>
+    </section>
+
+    <section class="scene paradox" id="paradox" data-scene="paradox">
+      <div class="shell paradox__inner">
+        <h2 class="reveal">Мы ищем гарантию отношений именно там, где отношениям может стать труднее.</h2>
+        <div class="paradox-chain reveal" aria-hidden="true">
+          <span>неравнодушие</span><i></i><span>гибкость</span><i></i><span>отдельность</span><i></i><span>выдерживание</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene prose-flow prose-flow--light" data-scene="prose">
+      <div class="shell prose">
+        <p class="reveal">Мы ищем такую любовь именно потому, что хотим получить гарантию: если меня любят настолько сильно, значит отношения будут глубокими, надёжными и долгими.</p>
+        <p class="reveal">Но качества, которые мы приняли за доказательство этой любви, могут как раз делать длительные хорошие отношения значительно сложнее.</p>
+        <p class="reveal">Потому что отношения требуют не только неравнодушия.</p>
+        <p class="reveal">Они требуют способности выдерживать тревогу и дистанцию. Не знать наверняка. Оставаться отдельным человеком. Переживать конфликты. Справляться с ревностью. Принимать изменения. Продолжать жить, даже когда рядом с любовью неизбежно появляются страх и боль.</p>
+        <p class="reveal">Любовь действительно делает нас уязвимыми. Если мне дорог человек, возможность потерять его не может быть для меня безразличной.</p>
+        <p class="reveal">Но степень моей разрушенности перед этой возможностью — ещё не мера моей любви.</p>
+        <p class="reveal">Возможно, вообще одна из самых сложных вещей в любви — перестать измерять её тем, насколько плохо человеку без нас.</p>
+        <p class="pull reveal">Потому что способность любить и способность выдерживать собственную любовь — это две разные способности.</p>
+      </div>
+    </section>
+
+    <section class="scene flashlight" id="flashlight" data-scene="flashlight">
+      <div class="flashlight__beam" id="flashBeam" aria-hidden="true"></div>
+      <div class="shell flashlight__inner">
+        <div class="section-head reveal">
+          <p class="overline">Финал</p>
+          <h2>А теперь — не на отношения. На себя.</h2>
+          <p>Если хочется, включите свет и задержитесь на вопросах. Это не обязательный тест — только способ посмотреть на собственные критерии любви.</p>
+        </div>
+
+        <button class="torch" id="torchBtn" type="button" aria-pressed="false"><span></span>Включить свет</button>
+
+        <div class="questions" id="questions">
+          <p class="question reveal">По каким признакам <strong>я сам</strong> понимаю, что меня любят?</p>
+          <p class="question reveal">Что именно я привык считать доказательством любви — спокойную надёжность другого или его неспособность без меня обойтись?</p>
+          <p class="question reveal">Не жду ли я тревоги, ревности, страдания, жертвенности именно потому, что без них мне трудно почувствовать собственную значимость?</p>
+          <p class="question reveal">И если однажды рядом окажется человек, который будет глубоко любить меня, но при этом не разрушаться от страха меня потерять, не цепляться за меня и оставаться способным жить свою жизнь, — смогу ли я распознать в этом любовь?</p>
+          <p class="question reveal">Или мне покажется, что её почему-то недостаточно?</p>
+        </div>
+
+        <div class="finale reveal">
+          <p>Благодарю за проявленный интерес и уделённое время</p>
+          <div class="stars" id="stars" aria-label="Оценить статью">
+            <button type="button" data-rating="1" aria-label="1 звезда">★</button>
+            <button type="button" data-rating="2" aria-label="2 звезды">★</button>
+            <button type="button" data-rating="3" aria-label="3 звезды">★</button>
+            <button type="button" data-rating="4" aria-label="4 звезды">★</button>
+            <button type="button" data-rating="5" aria-label="5 звёзд">★</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene epilogue" id="epilogue" data-scene="epilogue">
+      <div class="epilogue__veil" aria-hidden="true"></div>
+      <div class="shell epilogue__inner">
+        <article class="epilogue-card">
+          <h3>Поделиться</h3>
+          <p>Если эта мысль может оказаться полезной кому-то ещё.</p>
+          <button type="button" id="shareBtn">Поделиться ссылкой</button>
+        </article>
+        <article class="epilogue-card">
+          <h3>Об авторе</h3>
+          <p>Алексей Давыдыч · психолог-консультант.</p>
+          <div class="epilogue-links">
+            <a href="https://alekseipsychology.tilda.ws/" target="_blank" rel="noopener noreferrer">Сайт</a>
+            <a href="https://www.b17.ru/davydych_aleksey/?prt=724069" target="_blank" rel="noopener noreferrer">B17</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">Любовь не измеряется страданием</div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
