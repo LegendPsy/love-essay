@@ -1845,16 +1845,15 @@ body.reading-locked .sticky-thesis{display:none!important}
 
     const coverRect=mobileRatingCover.getBoundingClientRect();
     const overlayRect=mobileRatingOverlay.getBoundingClientRect();
-    const revealLine=overlayRect.top+(overlayRect.height/2);
 
     /*
-      The rating is armed only once the flashlight section itself has
-      reached the rating's screen position. Before that it does not exist
-      visually at all. From that point on it sits underneath the flashlight
-      section and is naturally uncovered by its lower edge.
+      Arm the rating only after the flashlight section has already crossed
+      the TOP edge of the floating rating. Using the rating's centre caused
+      a narrow scroll interval where its upper part could peek out above
+      the flashlight section.
     */
     const reachedFlashlight=
-      coverRect.top<=revealLine;
+      coverRect.top<=overlayRect.top;
 
     const shouldShow=
       mobileRatingMedia.matches &&
