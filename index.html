@@ -286,65 +286,145 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 .metric.unknown strong{color:var(--gold)}
 .meter-note{font-size:.85rem;line-height:1.5;color:var(--muted);min-height:2.6em;margin:7px 0 0}
 
-/* soft transition into and out of the light section */
+/* Cinematic fracture: the false equation physically comes apart while scrolling */
+.fracture-scene{
+  position:relative;min-height:155svh;
+  background:
+    radial-gradient(circle at 50% 45%,rgba(158,70,52,.10),transparent 34%),
+    #08090b;
+  overflow:clip
+}
+.fracture-sticky{
+  position:sticky;top:0;min-height:100svh;
+  display:grid;place-items:center
+}
+.fracture-shell{text-align:center}
+.fracture-words{
+  display:flex;align-items:center;justify-content:center;
+  gap:clamp(14px,4vw,56px);
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(3.2rem,10vw,8.4rem);
+  line-height:.9;letter-spacing:-.055em;
+  perspective:900px
+}
+.fracture-part,.fracture-sign{
+  display:inline-block;will-change:transform,filter,opacity
+}
+.fracture-sign{
+  color:var(--gold);font-weight:400;
+  text-shadow:0 0 28px rgba(211,160,94,.26)
+}
+.fracture-caption{
+  width:min(690px,92%);margin:38px auto 0;
+  color:#aaa49c;font-size:clamp(.98rem,2.3vw,1.12rem);line-height:1.6
+}
+
+/* Orbit factors — transplanted from the cinematic experiment, adapted for the main site */
 .factors{
   position:relative;
-  color:var(--ink);
-  padding-top:170px!important;padding-bottom:170px!important;
+  color:var(--paper);
+  padding-top:120px!important;padding-bottom:145px!important;
   background:
-    linear-gradient(
-      180deg,
-      #111416 0,
-      #5d5a55 48px,
-      #b8b0a5 105px,
-      #e7dfd3 165px,
-      #e7dfd3 calc(100% - 165px),
-      #b6aea3 calc(100% - 105px),
-      #595754 calc(100% - 48px),
-      #0b0d0f 100%
-    )
+    radial-gradient(circle at 68% 36%,rgba(211,160,94,.075),transparent 28%),
+    linear-gradient(180deg,#08090b,#0a0c0f 42%,#0b0d0f 100%)
 }
-.factors .kicker{color:#884936}
-.factors h2{color:#171819}
-.factors .lede{color:#625d57}
-.factor-copy,.factor-interactive{display:contents}
-.factor-core{
-  width:154px;aspect-ratio:1;border:1px solid rgba(23,24,25,.16);border-radius:50%;
-  display:grid;place-items:center;margin:30px auto;
-  background:radial-gradient(circle,rgba(211,160,94,.27),transparent 58%)
+.factors h2{color:var(--paper)}
+.factors .lede{color:#aaa49c}
+.factor-copy{max-width:780px}
+.factor-orbit-module{
+  margin-top:38px;padding:18px;
+  border:1px solid rgba(236,228,216,.11);
+  border-radius:32px;
+  background:
+    radial-gradient(circle at 50% 38%,rgba(211,160,94,.07),transparent 28%),
+    rgba(255,255,255,.012);
+  box-shadow:0 34px 90px rgba(0,0,0,.24)
 }
-.factor-core span{
-  width:90px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:#17191a;color:#eee5d8;
-  font-family:Georgia,serif;font-size:1.32rem;box-shadow:0 18px 38px rgba(0,0,0,.14)
+.factor-orbit-stage{
+  position:relative;height:430px;
+  border-radius:24px;
+  overflow:hidden;
+  touch-action:pan-y;
+  user-select:none;-webkit-user-select:none
 }
-.factor-tabs{position:relative}
-.factor-radio{position:absolute;opacity:0}
-.chips{display:flex;gap:8px;overflow:auto;padding:0 0 9px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.chips::-webkit-scrollbar{display:none}
-.chip{
-  flex:0 0 auto;border:1px solid rgba(23,24,25,.2);border-radius:999px;padding:10px 13px;background:transparent;
-  color:var(--ink);font-size:.83rem;cursor:pointer
+.factor-orbit-ring{
+  position:absolute;left:50%;top:50%;
+  border:1px solid rgba(236,228,216,.095);
+  border-radius:50%;transform:translate(-50%,-50%);
+  pointer-events:none
 }
-#f1:checked ~ .chips label[for=f1],
-#f2:checked ~ .chips label[for=f2],
-#f3:checked ~ .chips label[for=f3],
-#f4:checked ~ .chips label[for=f4],
-#f5:checked ~ .chips label[for=f5],
-#f6:checked ~ .chips label[for=f6]{background:var(--ink);color:#eee5d8}
-.factor-panels{
-  margin-top:12px;border:1px solid rgba(23,24,25,.14);border-radius:21px;padding:18px;background:rgba(255,255,255,.25);
-  min-height:172px
+.factor-orbit-ring--inner{width:260px;height:260px}
+.factor-orbit-ring--outer{
+  width:360px;height:360px;
+  border-style:dashed;opacity:.48
 }
-.factor-panel{display:none}
-.factor-panel small{text-transform:uppercase;letter-spacing:.12em;color:#884936;font-weight:750;font-size:.65rem}
-.factor-panel h3{font-size:1.65rem;line-height:1.05;margin:22px 0 8px}
-.factor-panel p{color:#625d57;margin:0;line-height:1.5}
-#f1:checked ~ .factor-panels .p1,
-#f2:checked ~ .factor-panels .p2,
-#f3:checked ~ .factor-panels .p3,
-#f4:checked ~ .factor-panels .p4,
-#f5:checked ~ .factor-panels .p5,
-#f6:checked ~ .factor-panels .p6{display:block}
+.factor-orbit-core{
+  position:absolute;left:50%;top:50%;
+  width:132px;aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  display:grid;place-items:center;
+  border:1px solid rgba(211,160,94,.48);
+  border-radius:50%;
+  background:
+    radial-gradient(circle,rgba(211,160,94,.22),rgba(211,160,94,.06) 58%,rgba(8,9,11,.68) 59%);
+  box-shadow:0 0 54px rgba(211,160,94,.11)
+}
+.factor-orbit-core span{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.65rem;color:#eee5d8
+}
+.factor-orbit-node{
+  position:absolute;left:50%;top:50%;
+  z-index:3;
+  appearance:none;-webkit-appearance:none;
+  border:1px solid rgba(236,228,216,.16);
+  border-radius:999px;padding:9px 13px;
+  background:#111418;color:#c4bcb2;
+  font-size:.76rem;line-height:1;white-space:nowrap;
+  cursor:pointer;
+  transform:translate(-50%,-50%);
+  transition:
+    border-color .22s ease,
+    background .22s ease,
+    color .22s ease,
+    box-shadow .22s ease
+}
+.factor-orbit-node.is-active{
+  color:#f3e7d7;
+  border-color:rgba(211,160,94,.72);
+  background:rgba(211,160,94,.13);
+  box-shadow:0 0 24px rgba(211,160,94,.13)
+}
+.factor-orbit-node:focus-visible{
+  outline:1px solid rgba(211,160,94,.85);outline-offset:4px
+}
+.factor-orbit-card{
+  position:relative;
+  margin-top:8px;padding:24px 22px;
+  border:1px solid rgba(236,228,216,.11);
+  border-radius:22px;
+  background:rgba(5,6,7,.72);
+  min-height:190px
+}
+.factor-orbit-card small{
+  display:block;margin-bottom:17px;
+  color:var(--gold);font-size:.66rem;font-weight:750;
+  text-transform:uppercase;letter-spacing:.14em
+}
+.factor-orbit-card h3{
+  margin:0 0 12px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(1.8rem,7vw,2.55rem);
+  line-height:1.08;font-weight:400;color:#eee5d8
+}
+.factor-orbit-card p{
+  margin:0;color:#aaa49c;line-height:1.55
+}
+.factor-orbit-help{
+  margin:13px 4px 0;color:#78746e;
+  font-size:.72rem;line-height:1.45;text-align:center
+}
+.factor-orbit-module .gate-hint{margin-top:13px}
 
 /* trap — native details, no JS required */
 .trap{background:#0c0e10;padding-top:58px;padding-bottom:58px}
@@ -448,6 +528,25 @@ input[type=range]{width:100%;height:40px;accent-color:var(--gold)}
 @media(min-width:760px){
   .article-finale{margin-top:34px;padding-top:22px}
 }
+
+@media(max-width:759px){
+  .fracture-scene{min-height:145svh}
+  .fracture-words{
+    flex-direction:column;
+    gap:10px;
+    font-size:clamp(3.3rem,17vw,5.8rem)
+  }
+  .fracture-caption{margin-top:34px}
+  .factor-orbit-module{padding:14px}
+  .factor-orbit-stage{height:410px}
+  .factor-orbit-ring--inner{width:238px;height:238px}
+  .factor-orbit-ring--outer{width:330px;height:330px}
+  .factor-orbit-core{width:118px}
+  .factor-orbit-core span{font-size:1.5rem}
+  .factor-orbit-node{font-size:.69rem;padding:8px 10px}
+  .factor-orbit-card{margin-top:6px;min-height:0}
+}
+
 
 
 
@@ -967,9 +1066,12 @@ body.reading-locked .sticky-thesis{display:none!important}
   .scrolly-head{max-width:780px}
   .visual-card{padding:22px}
   .story-step{min-height:50svh}
-  .factor-core{width:176px}
-  .factor-core span{width:102px}
-  .chips{flex-wrap:wrap;overflow:visible}
+  .factor-orbit-module{padding:22px}
+  .factor-orbit-stage{height:500px}
+  .factor-orbit-ring--inner{width:320px;height:320px}
+  .factor-orbit-ring--outer{width:440px;height:440px}
+  .factor-orbit-core{width:150px}
+  .factor-orbit-node{font-size:.8rem;padding:10px 14px}
   .romance{grid-template-columns:1fr 1fr;gap:12px}
   .paradox .shell{max-width:840px}
   .flash-content{max-width:860px}
@@ -1062,44 +1164,33 @@ body.reading-locked .sticky-thesis{display:none!important}
   .needle{width:128px;bottom:34px}
   .hub{bottom:27px}
 
-  /* Factors: balanced copy + one coherent interactive module. */
-  .factors{padding-top:205px!important;padding-bottom:205px!important}
+  /* Cinematic orbit transplanted into the main desktop composition. */
+  .fracture-scene{min-height:175svh}
+  .fracture-words{font-size:clamp(5.8rem,8vw,9rem)}
+  .fracture-caption{margin-top:48px}
+
+  .factors{padding-top:150px!important;padding-bottom:165px!important}
   .factors .shell{
     max-width:1140px;display:grid;
-    grid-template-columns:minmax(0,.92fr) minmax(500px,1.08fr);
-    gap:88px;align-items:center
+    grid-template-columns:minmax(0,.82fr) minmax(560px,1.18fr);
+    gap:78px;align-items:center
   }
-  .factor-copy,.factor-interactive{display:block}
-  .factor-copy{max-width:520px;padding:8px 0 12px}
+  .factor-copy{max-width:470px}
   .factor-copy h2{
-    font-size:clamp(4.2rem,5.15vw,5.9rem);
-    line-height:.91;margin:12px 0 26px
+    font-size:clamp(4.1rem,5vw,5.7rem);
+    line-height:.92;margin:0 0 28px
   }
-  .factor-copy .lede{max-width:450px;margin:0}
-  .factor-interactive{
-    position:relative;padding:34px 34px 30px;
-    border:1px solid rgba(23,24,25,.14);border-radius:32px;
-    background:rgba(255,255,255,.18);
-    box-shadow:0 28px 70px rgba(65,54,42,.08)
-  }
-  .factor-core{
-    width:174px;margin:0 auto 30px;
-    background:radial-gradient(circle,rgba(211,160,94,.24),transparent 62%)
-  }
-  .factor-core span{width:104px;font-size:1.4rem}
-  .factor-tabs{width:100%}
-  .chips{
-    justify-content:center;flex-wrap:wrap;overflow:visible;
-    gap:9px;padding:0 0 15px
-  }
-  .chip{padding:10px 14px;font-size:.84rem}
-  .factor-panels{
-    min-height:196px;margin-top:0;padding:25px 27px;
-    background:rgba(255,255,255,.31)
-  }
-  .factor-panel h3{font-size:1.95rem;margin-top:18px}
-  .factor-panel p{font-size:.94rem}
-  .factor-interactive .gate-hint{margin:15px auto 0}
+  .factor-copy .lede{max-width:430px}
+  .factor-orbit-module{margin-top:0;padding:22px 24px 24px}
+  .factor-orbit-stage{height:500px}
+  .factor-orbit-ring--inner{width:330px;height:330px}
+  .factor-orbit-ring--outer{width:455px;height:455px}
+  .factor-orbit-core{width:154px}
+  .factor-orbit-core span{font-size:1.9rem}
+  .factor-orbit-node{font-size:.8rem;padding:10px 14px}
+  .factor-orbit-card{margin-top:10px;min-height:182px;padding:25px 26px}
+  .factor-orbit-card h3{font-size:2.05rem}
+  .factor-orbit-card p{font-size:.94rem}
 
   /* Dense cards spread out on large screens. */
   .trap .shell{max-width:1080px}
@@ -1247,9 +1338,11 @@ body.reading-locked .sticky-thesis{display:none!important}
   }
   .story-step{min-height:52svh}
 
-  .factors{padding-top:185px!important;padding-bottom:185px!important}
-  .factor-core{width:168px}
-  .factor-core span{width:98px}
+  .fracture-scene{min-height:165svh}
+  .factor-orbit-stage{height:500px}
+  .factor-orbit-ring--inner{width:320px;height:320px}
+  .factor-orbit-ring--outer{width:440px;height:440px}
+  .factor-orbit-core{width:150px}
 
   .flash-content{max-width:860px}
   .questions{
@@ -1459,41 +1552,47 @@ body.reading-locked .sticky-thesis{display:none!important}
   <div class="gate-hint" data-gate-hint="meter">Подвигайте шкалу, чтобы продолжить.</div>
 </div></section>
 
+<section class="fracture-scene" id="fractureScene" aria-label="Страдание не равно любовь">
+  <div class="fracture-sticky">
+    <div class="shell fracture-shell">
+      <div class="fracture-words" id="fractureWords">
+        <span class="fracture-part fracture-part--pain">страдание</span>
+        <b class="fracture-sign">≠</b>
+        <span class="fracture-part fracture-part--love">любовь</span>
+      </div>
+      <p class="fracture-caption">Можно измерять интенсивность реакции. Нельзя из неё вычислить глубину любви.</p>
+    </div>
+  </div>
+</section>
+
 <section class="section factors" id="factors"><div class="shell">
   <div class="factor-copy">
-      <h2>Реакция говорит о человеке. Не обязательно — о любви.</h2>
+    <h2>Реакция говорит о человеке. Не обязательно — о любви.</h2>
     <p class="lede">Выберите фактор. Каждый из них способен менять интенсивность реакции, не являясь шкалой любви.</p>
   </div>
 
-  <div class="factor-interactive">
-    <div class="factor-core" aria-hidden="true"><span>любовь</span></div>
+  <div class="factor-orbit-module">
+    <div class="factor-orbit-stage" id="factorOrbitStage" aria-label="Факторы, влияющие на интенсивность реакции">
+      <div class="factor-orbit-ring factor-orbit-ring--outer" aria-hidden="true"></div>
+      <div class="factor-orbit-ring factor-orbit-ring--inner" aria-hidden="true"></div>
 
-    <div class="factor-tabs">
-      <input class="factor-radio" type="radio" name="factor" id="f1" checked>
-      <input class="factor-radio" type="radio" name="factor" id="f2">
-      <input class="factor-radio" type="radio" name="factor" id="f3">
-      <input class="factor-radio" type="radio" name="factor" id="f4">
-      <input class="factor-radio" type="radio" name="factor" id="f5">
-      <input class="factor-radio" type="radio" name="factor" id="f6">
+      <div class="factor-orbit-core" aria-hidden="true"><span>любовь</span></div>
 
-      <div class="chips">
-        <label class="chip" for="f1">неопределённость</label>
-        <label class="chip" for="f2">мысли</label>
-        <label class="chip" for="f3">гибкость</label>
-        <label class="chip" for="f4">опыт</label>
-        <label class="chip" for="f5">контроль</label>
-        <label class="chip" for="f6">чувствительность</label>
-      </div>
-
-      <div class="factor-panels">
-        <div class="factor-panel p1"><small>Сейчас подсвечено</small><h3>Переносимость неопределённости</h3><p>Насколько человек способен не знать, что происходит, и всё равно оставаться в контакте с реальностью.</p></div>
-        <div class="factor-panel p2"><small>Сейчас подсвечено</small><h3>Слияние с мыслями</h3><p>Насколько легко пугающий сценарий в голове начинает ощущаться как уже произошедший факт.</p></div>
-        <div class="factor-panel p3"><small>Сейчас подсвечено</small><h3>Психологическая гибкость</h3><p>Способность чувствовать сильные эмоции и при этом выбирать действия, которые важны здесь и сейчас.</p></div>
-        <div class="factor-panel p4"><small>Сейчас подсвечено</small><h3>Прошлый опыт</h3><p>Опыт потерь, нестабильности или безопасности влияет на реакцию нервной системы в похожих ситуациях.</p></div>
-        <div class="factor-panel p5"><small>Сейчас подсвечено</small><h3>Потребность в контроле</h3><p>Чем труднее переносится отсутствие контроля, тем сильнее может становиться тревога — даже при той же любви.</p></div>
-        <div class="factor-panel p6"><small>Сейчас подсвечено</small><h3>Чувствительность нервной системы</h3><p>Люди различаются по интенсивности и скорости эмоциональной реакции. Это тоже не шкала любви.</p></div>
-      </div>
+      <button class="factor-orbit-node is-active" type="button" data-factor="uncertainty" data-angle="-90">неопределённость</button>
+      <button class="factor-orbit-node" type="button" data-factor="thoughts" data-angle="-30">мысли</button>
+      <button class="factor-orbit-node" type="button" data-factor="flexibility" data-angle="30">гибкость</button>
+      <button class="factor-orbit-node" type="button" data-factor="experience" data-angle="90">опыт</button>
+      <button class="factor-orbit-node" type="button" data-factor="control" data-angle="150">контроль</button>
+      <button class="factor-orbit-node" type="button" data-factor="sensitivity" data-angle="210">чувствительность</button>
     </div>
+
+    <div class="factor-orbit-card" id="factorOrbitCard" aria-live="polite">
+      <small>Сейчас подсвечено</small>
+      <h3>Переносимость неопределённости</h3>
+      <p>Насколько человек способен не знать, что происходит, и всё равно оставаться в контакте с реальностью.</p>
+    </div>
+
+    <p class="factor-orbit-help">Нажмите на фактор — он переместится наверх. Кольцо также можно прокручивать рукой.</p>
     <div class="gate-hint" data-gate-hint="factors">Выберите любой фактор, чтобы продолжить.</div>
   </div>
 </div></section>
@@ -1893,8 +1992,8 @@ body.reading-locked .sticky-thesis{display:none!important}
     }
   });
 
-  document.querySelectorAll('.chip').forEach(chip=>{
-    chip.addEventListener('click',()=>{
+  document.querySelectorAll('.factor-orbit-node').forEach(node=>{
+    node.addEventListener('click',()=>{
       releaseGate('gate-factors','gate-trap','trap');
     });
   });
@@ -1999,11 +2098,161 @@ body.reading-locked .sticky-thesis{display:none!important}
   range.addEventListener('input',meter);
   meter();
 
-  /* Keep selected factor chip centered when CSS-only tab changes */
-  $$('input[name="factor"]').forEach(r=>r.addEventListener('change',()=>{
-    const label=document.querySelector(`label[for="${r.id}"]`);
-    if(label)label.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-  }));
+  /* Scroll-driven fracture: suffering and love physically separate. */
+  const fractureScene=$('#fractureScene');
+  const fracturePain=$('.fracture-part--pain');
+  const fractureLove=$('.fracture-part--love');
+  const fractureSign=$('.fracture-sign');
+  let fractureRaf=0;
+
+  function updateFracture(){
+    fractureRaf=0;
+    if(!fractureScene||!fracturePain||!fractureLove||!fractureSign)return;
+    const r=fractureScene.getBoundingClientRect();
+    const travel=Math.max(1,r.height-innerHeight);
+    const p=Math.max(0,Math.min(1,-r.top/travel));
+    const q=p*p*(3-2*p);
+    const mobile=matchMedia('(max-width:759px)').matches;
+
+    const x=(mobile?54:150)*q;
+    const y=(mobile?22:34)*q;
+    fracturePain.style.transform=`translate3d(${-x}px,${-y}px,0) rotate(${-5*q}deg)`;
+    fractureLove.style.transform=`translate3d(${x}px,${y}px,0) rotate(${5*q}deg)`;
+    fracturePain.style.filter=`blur(${1.4*q}px)`;
+    fractureLove.style.filter=`blur(${1.4*q}px)`;
+    fractureSign.style.transform=`scale(${1+q*.08})`;
+    fractureSign.style.textShadow=`0 0 ${28+q*36}px rgba(211,160,94,${.26+q*.22})`;
+  }
+  function scheduleFracture(){
+    if(!fractureRaf)fractureRaf=requestAnimationFrame(updateFracture);
+  }
+  addEventListener('scroll',scheduleFracture,{passive:true});
+  addEventListener('resize',scheduleFracture,{passive:true});
+  updateFracture();
+
+  /* Orbit factors: clicking a factor rotates it to twelve o'clock.
+     The empty ring can also be dragged/swiped by hand. */
+  const factorOrbitStage=$('#factorOrbitStage');
+  const factorOrbitCard=$('#factorOrbitCard');
+  const factorOrbitNodes=$('.factor-orbit-node');
+  const factorData={
+    uncertainty:['Переносимость неопределённости','Насколько человек способен не знать, что происходит, и всё равно оставаться в контакте с реальностью.'],
+    thoughts:['Слияние с мыслями','Насколько легко пугающий сценарий в голове начинает ощущаться как уже произошедший факт.'],
+    flexibility:['Психологическая гибкость','Способность чувствовать сильные эмоции и при этом выбирать действия, которые важны здесь и сейчас.'],
+    experience:['Прошлый опыт','Опыт потерь, нестабильности или безопасности влияет на реакцию нервной системы в похожих ситуациях.'],
+    control:['Потребность в контроле','Чем труднее переносится отсутствие контроля, тем сильнее может становиться тревога — даже при той же любви.'],
+    sensitivity:['Чувствительность нервной системы','Люди различаются по интенсивности и скорости эмоциональной реакции. Это тоже не шкала любви.']
+  };
+
+  let orbitCurrent=0;
+  let orbitTarget=0;
+  let orbitAnimating=false;
+  let orbitDragging=false;
+  let orbitPointer=null;
+  let orbitLastAngle=0;
+
+  function orbitRadius(){
+    if(!factorOrbitStage)return 140;
+    const w=factorOrbitStage.clientWidth;
+    return Math.min(w*.37,220);
+  }
+
+  function normalizeNear(target,current){
+    while(target-current>180)target-=360;
+    while(target-current<-180)target+=360;
+    return target;
+  }
+
+  function renderOrbit(){
+    if(!factorOrbitStage)return;
+    const radius=orbitRadius();
+    factorOrbitNodes.forEach(node=>{
+      const base=Number(node.dataset.angle)||0;
+      const a=base+orbitCurrent;
+      node.style.transform=
+        `translate(-50%,-50%) rotate(${a}deg) translateX(${radius}px) rotate(${-a}deg)`;
+    });
+  }
+
+  function animateOrbit(){
+    if(orbitDragging){orbitAnimating=false;return}
+    const d=orbitTarget-orbitCurrent;
+    if(Math.abs(d)<.08){
+      orbitCurrent=orbitTarget;
+      renderOrbit();
+      orbitAnimating=false;
+      return;
+    }
+    orbitCurrent+=d*.13;
+    renderOrbit();
+    requestAnimationFrame(animateOrbit);
+  }
+
+  function kickOrbit(){
+    if(orbitAnimating||orbitDragging)return;
+    orbitAnimating=true;
+    requestAnimationFrame(animateOrbit);
+  }
+
+  function selectOrbitFactor(node){
+    factorOrbitNodes.forEach(n=>n.classList.toggle('is-active',n===node));
+    const base=Number(node.dataset.angle)||0;
+    orbitTarget=normalizeNear(-90-base,orbitCurrent);
+    kickOrbit();
+
+    const data=factorData[node.dataset.factor];
+    if(data&&factorOrbitCard){
+      factorOrbitCard.animate(
+        [{opacity:.28,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],
+        {duration:360,easing:'cubic-bezier(.16,1,.3,1)'}
+      );
+      factorOrbitCard.innerHTML=
+        `<small>Сейчас подсвечено</small><h3>${data[0]}</h3><p>${data[1]}</p>`;
+    }
+  }
+
+  factorOrbitNodes.forEach(node=>{
+    node.addEventListener('click',()=>selectOrbitFactor(node));
+  });
+
+  function pointerAngle(e){
+    const r=factorOrbitStage.getBoundingClientRect();
+    return Math.atan2(e.clientY-(r.top+r.height/2),e.clientX-(r.left+r.width/2))*180/Math.PI;
+  }
+
+  factorOrbitStage?.addEventListener('pointerdown',e=>{
+    if(e.target.closest('.factor-orbit-node'))return;
+    orbitDragging=true;
+    orbitPointer=e.pointerId;
+    orbitLastAngle=pointerAngle(e);
+    orbitTarget=orbitCurrent;
+    try{factorOrbitStage.setPointerCapture(e.pointerId)}catch(_){}
+  });
+
+  factorOrbitStage?.addEventListener('pointermove',e=>{
+    if(!orbitDragging||e.pointerId!==orbitPointer)return;
+    const a=pointerAngle(e);
+    let delta=a-orbitLastAngle;
+    if(delta>180)delta-=360;
+    if(delta<-180)delta+=360;
+    orbitCurrent+=delta;
+    orbitTarget=orbitCurrent;
+    orbitLastAngle=a;
+    renderOrbit();
+  });
+
+  const endOrbitDrag=e=>{
+    if(!orbitDragging)return;
+    if(e&&orbitPointer!==null&&e.pointerId!==orbitPointer)return;
+    orbitDragging=false;
+    orbitPointer=null;
+  };
+  factorOrbitStage?.addEventListener('pointerup',endOrbitDrag);
+  factorOrbitStage?.addEventListener('pointercancel',endOrbitDrag);
+  factorOrbitStage?.addEventListener('lostpointercapture',endOrbitDrag);
+
+  addEventListener('resize',renderOrbit,{passive:true});
+  renderOrbit();
 
   /* Flashlight — optional interaction */
   const fs=$('#flashlight');
