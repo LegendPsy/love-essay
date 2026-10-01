@@ -43,7 +43,22 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
 .dash-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:20px}
 .dash-head h1{font-size:clamp(2rem,6vw,3.6rem)}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.analytics{margin:18px 0 30px}
+.analytics-title{display:flex;justify-content:space-between;gap:12px;align-items:end;margin-bottom:12px}
+.analytics-title h2,.section-title{margin:0;font-size:1.15rem}
+.analytics-note{color:var(--muted);font-size:.75rem}
+.analytics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.analytics-card{border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:16px;padding:14px}
+.analytics-card b{display:block;font-size:1.55rem}
+.analytics-card span{color:var(--muted);font-size:.78rem}
+.rating-breakdown{margin-top:10px;border:1px solid var(--line);border-radius:18px;padding:14px;background:rgba(255,255,255,.018)}
+.rating-row{display:grid;grid-template-columns:42px 1fr 34px;gap:10px;align-items:center;margin:8px 0;font-size:.78rem}
+.rating-row .stars{color:var(--gold)}
+.rating-track{height:7px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden}
+.rating-track i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),#efd09f);border-radius:inherit;transition:width .3s ease}
+.rating-row b{text-align:right;font-size:.78rem}
+.section-title{margin-top:24px;margin-bottom:8px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 18px}
 .stat{border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:16px;padding:14px}
 .stat b{display:block;font-size:1.55rem}.stat span{color:var(--muted);font-size:.8rem}
 .toolbar{display:grid;grid-template-columns:1fr auto;gap:10px;margin:18px 0}
@@ -63,7 +78,7 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
 .empty{padding:36px 12px;text-align:center;color:var(--muted)}
 .statusbar{margin:12px 0;color:var(--muted);font-size:.85rem;min-height:1.2em}
 @media(max-width:700px){
-  .toolbar{grid-template-columns:1fr}.dash-head{display:grid}.stats{grid-template-columns:1fr 1fr 1fr}
+  .toolbar{grid-template-columns:1fr}.dash-head{display:grid}.analytics-grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr 1fr}
   .meta{align-items:flex-start;flex-direction:column}.card-actions .btn{flex:1}
 }
 </style>
@@ -109,8 +124,8 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
   <section id="dashboard" class="hidden">
     <div class="dash-head">
       <div>
-        <h1>Комментарии</h1>
-        <p class="sub" style="margin-bottom:0">Редактирование, скрытие и удаление сообщений читателей.</p>
+        <h1>Панель статьи</h1>
+        <p class="sub" style="margin-bottom:0">Отклики читателей и основные показатели статьи.</p>
       </div>
       <div class="actions">
         <button id="refreshBtn" class="btn secondary">Обновить</button>
@@ -118,6 +133,28 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
       </div>
     </div>
 
+    <section class="analytics">
+      <div class="analytics-title">
+        <h2>Аналитика</h2>
+        <span class="analytics-note">без имён и email посетителей</span>
+      </div>
+      <div class="analytics-grid">
+        <div class="analytics-card"><b id="visitorsCount">0</b><span>уникальных посетителей*</span></div>
+        <div class="analytics-card"><b id="visitsCount">0</b><span>визитов</span></div>
+        <div class="analytics-card"><b id="ratingsCount">0</b><span>поставили оценку</span></div>
+        <div class="analytics-card"><b id="averageRating">—</b><span>средняя оценка · <i id="ratingShare">0%</i></span></div>
+      </div>
+      <div class="rating-breakdown" aria-label="Распределение оценок">
+        <div class="rating-row"><span class="stars">★★★★★</span><span class="rating-track"><i id="ratingBar5"></i></span><b id="ratingCount5">0</b></div>
+        <div class="rating-row"><span class="stars">★★★★</span><span class="rating-track"><i id="ratingBar4"></i></span><b id="ratingCount4">0</b></div>
+        <div class="rating-row"><span class="stars">★★★</span><span class="rating-track"><i id="ratingBar3"></i></span><b id="ratingCount3">0</b></div>
+        <div class="rating-row"><span class="stars">★★</span><span class="rating-track"><i id="ratingBar2"></i></span><b id="ratingCount2">0</b></div>
+        <div class="rating-row"><span class="stars">★</span><span class="rating-track"><i id="ratingBar1"></i></span><b id="ratingCount1">0</b></div>
+      </div>
+      <div class="analytics-note" style="margin-top:8px">* Один браузер считается одним посетителем. Повторный визит после 30 минут учитывается в «визитах», но не увеличивает число уникальных посетителей.</div>
+    </section>
+
+    <h2 class="section-title">Комментарии</h2>
     <div class="stats">
       <div class="stat"><b id="totalCount">0</b><span>всего</span></div>
       <div class="stat"><b id="visibleCount">0</b><span>видимых</span></div>
@@ -151,7 +188,7 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
   const loginNote=$('#loginNote'), signupNote=$('#signupNote'), activateNote=$('#activateNote'), statusbar=$('#statusbar');
   const activationBox=$('#activationBox');
   const list=$('#commentsList'), search=$('#search');
-  let comments=[],filter='all';
+  let comments=[],filter='all',analytics={};
 
   function getSession(){
     try{return JSON.parse(sessionStorage.getItem('legendpsy_admin_session')||'null')}catch(_){return null}
@@ -192,6 +229,26 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
   function dateLabel(value){
     try{return new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(value))}
     catch(_){return value||''}
+  }
+  function renderAnalytics(a={}){
+    analytics=a||{};
+    const visitors=Number(analytics.unique_visitors)||0;
+    const visits=Number(analytics.visits)||0;
+    const ratingCount=Number(analytics.rating_count)||0;
+    const avg=Number(analytics.average_rating)||0;
+    const share=Number(analytics.rating_share)||0;
+    $('#visitorsCount').textContent=String(visitors);
+    $('#visitsCount').textContent=String(visits);
+    $('#ratingsCount').textContent=String(ratingCount);
+    $('#averageRating').textContent=ratingCount?avg.toFixed(2):'—';
+    $('#ratingShare').textContent=(Number.isFinite(share)?share:0).toFixed(1).replace('.0','')+'%';
+    const dist=analytics.distribution||{};
+    const max=Math.max(1,...[1,2,3,4,5].map(n=>Number(dist[String(n)])||0));
+    [1,2,3,4,5].forEach(n=>{
+      const value=Number(dist[String(n)])||0;
+      $('#ratingCount'+n).textContent=String(value);
+      $('#ratingBar'+n).style.width=((value/max)*100).toFixed(1)+'%';
+    });
   }
   function counts(){
     $('#totalCount').textContent=comments.length;
@@ -275,7 +332,18 @@ input:focus,textarea:focus{border-color:rgba(211,160,94,.7);box-shadow:0 0 0 3px
     statusbar.textContent='Загружаю…';
     try{
       const data=await adminCall({action:'list'});
-      comments=data.comments||[];showDashboard();render();statusbar.textContent='';
+      comments=data.comments||[];
+      showDashboard();
+      render();
+      try{
+        const a=await adminCall({action:'analytics'});
+        renderAnalytics(a.analytics||{});
+        statusbar.textContent='';
+      }catch(err){
+        console.error('Analytics load failed',err);
+        renderAnalytics({});
+        statusbar.textContent='Комментарии загружены. Аналитику сейчас получить не удалось.';
+      }
     }catch(e){
       if(e.message==='forbidden'){
         showAuth('Аккаунт существует. Осталось один раз активировать права администратора.',true);
