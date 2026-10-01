@@ -345,7 +345,7 @@
       vec3 col=dark;
       col+=gold*(n*.12+w*.025)*(0.38+s*.6);
       col+=cold*glow*.075*(1.0-s*.25);
-      float edge=smoothstep(1.0,.05,length(uv*.78));
+      float edge=1.0-smoothstep(.05,1.0,length(uv*.78));
       col*=.72+.28*edge;
       gl_FragColor=vec4(col,.92);
     }
