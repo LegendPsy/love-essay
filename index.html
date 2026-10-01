@@ -2684,6 +2684,28 @@ body.reading-locked .sticky-thesis{display:none!important}
   const SUPABASE_URL='https://eswoqjxioavegjnhosbb.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY='sb_publishable_Czx1d7slcJQgqhjOS0miWw_Na2Yrnvb';
   const COMMENTS_ARTICLE_ID='love-suffering-v1';
+
+  /* Privacy-light visit analytics: one pseudonymous browser id, no name/email.
+     A new visit is counted by the server only after 30 minutes of inactivity. */
+  const VISIT_SESSION_KEY='legendpsy_visit_tracked_v1';
+  async function trackArticleVisit(){
+    try{
+      if(sessionStorage.getItem(VISIT_SESSION_KEY))return;
+      sessionStorage.setItem(VISIT_SESSION_KEY,'1');
+      await fetch(SUPABASE_URL+'/functions/v1/track-visit',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          article_id:COMMENTS_ARTICLE_ID,
+          client_id:getRatingClientId()
+        })
+      });
+    }catch(err){
+      console.error('Visit tracking failed',err);
+      try{sessionStorage.removeItem(VISIT_SESSION_KEY)}catch(_){}
+    }
+  }
+  trackArticleVisit();
   const COMMENT_CLOUD_SESSION_KEY='legendpsy_comment_cloud_unlocked_v1';
 
   const commentsEndpoint=()=>(
