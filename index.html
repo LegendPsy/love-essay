@@ -1837,19 +1837,47 @@ body.reading-locked .sticky-thesis{display:none!important}
 
   const mobileRatingOverlay=document.querySelector('#mobileRatingOverlay');
   const mobileRatingMedia=window.matchMedia('(max-width:759px), (min-width:760px) and (max-width:1400px) and (hover:none) and (pointer:coarse)');
+  const mobileRatingCover=document.querySelector('#flashlight');
+  let mobileRatingRaf=0;
 
   function syncMobileRatingOverlay(){
-    if(!mobileRatingOverlay)return;
+    if(!mobileRatingOverlay||!mobileRatingCover)return;
+
+    const coverRect=mobileRatingCover.getBoundingClientRect();
+    const overlayRect=mobileRatingOverlay.getBoundingClientRect();
+    const revealLine=overlayRect.top+(overlayRect.height/2);
+
+    /*
+      The rating is armed only once the flashlight section itself has
+      reached the rating's screen position. Before that it does not exist
+      visually at all. From that point on it sits underneath the flashlight
+      section and is naturally uncovered by its lower edge.
+    */
+    const reachedFlashlight=
+      coverRect.top<=revealLine;
+
     const shouldShow=
       mobileRatingMedia.matches &&
-      document.body.classList.contains('gate-final');
+      document.body.classList.contains('gate-final') &&
+      reachedFlashlight;
 
     mobileRatingOverlay.classList.toggle('is-visible',shouldShow);
     mobileRatingOverlay.setAttribute('aria-hidden',String(!shouldShow));
   }
 
-  mobileRatingMedia.addEventListener?.('change',syncMobileRatingOverlay);
-  syncMobileRatingOverlay();
+  function scheduleMobileRatingOverlaySync(){
+    if(mobileRatingRaf)return;
+    mobileRatingRaf=requestAnimationFrame(()=>{
+      mobileRatingRaf=0;
+      syncMobileRatingOverlay();
+    });
+  }
+
+  addEventListener('scroll',scheduleMobileRatingOverlaySync,{passive:true});
+  addEventListener('resize',scheduleMobileRatingOverlaySync,{passive:true});
+  addEventListener('orientationchange',scheduleMobileRatingOverlaySync,{passive:true});
+  mobileRatingMedia.addEventListener?.('change',scheduleMobileRatingOverlaySync);
+  scheduleMobileRatingOverlaySync();
 
   document.querySelectorAll('input[name="loveChoice"]').forEach(r=>{
     r.addEventListener('change',()=>{
