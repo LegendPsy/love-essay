@@ -2247,7 +2247,7 @@ body.reading-locked .sticky-thesis{display:none!important}
   const fs=$('#flashlight');
   const light=$('#light');
   const torch=$('#torch');
-  const qs=$('.questions p');
+  const qs=Array.from(document.querySelectorAll('.questions p'));
   let on=false;
 
   function setOn(v){
