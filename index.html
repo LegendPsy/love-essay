@@ -673,6 +673,69 @@ body.reading-locked .sticky-thesis{display:none!important}
   font-size:.78rem;letter-spacing:.03em
 }
 .cover-open:active{transform:scale(.985)}
+
+/* Browser help: one canonical URL, no separate messenger file. */
+.browser-help{
+  position:relative;z-index:4500;
+  width:max-content;max-width:100%;
+  margin-top:11px
+}
+.browser-help summary{
+  list-style:none;width:max-content;max-width:100%;
+  color:rgba(255,255,255,.58);
+  font-size:.72rem;line-height:1.35;
+  text-decoration:underline;text-decoration-color:rgba(255,255,255,.22);
+  text-underline-offset:3px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent
+}
+.browser-help summary::-webkit-details-marker{display:none}
+.browser-help[open] summary{color:rgba(255,255,255,.82)}
+.browser-help-card{
+  position:fixed;z-index:4801;
+  left:50%;bottom:max(18px,calc(12px + env(safe-area-inset-bottom)));
+  transform:translateX(-50%);
+  width:min(calc(100% - 28px),470px);
+  padding:19px 18px 17px;
+  border:1px solid rgba(236,228,216,.16);border-radius:22px;
+  background:linear-gradient(180deg,rgba(17,19,20,.98),rgba(7,9,10,.98));
+  box-shadow:0 28px 90px rgba(0,0,0,.48);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)
+}
+.browser-help-card strong{
+  display:block;padding-right:34px;margin-bottom:8px;
+  color:#eee5d8;font-family:Georgia,"Times New Roman",serif;
+  font-size:1.25rem;font-weight:400
+}
+.hero .browser-help-card p{
+  margin:0;color:#aaa49c;font-size:.86rem;line-height:1.52
+}
+.hero .browser-help-card .browser-help-detected{
+  display:none;margin:0 0 9px;color:#d9b98e
+}
+.browser-help.in-app .browser-help-detected{display:block!important}
+.browser-help-actions{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px
+}
+.browser-help-copy{
+  appearance:none;-webkit-appearance:none;
+  min-height:43px;padding:10px 15px;
+  border:1px solid rgba(211,160,94,.5);border-radius:999px;
+  background:rgba(211,160,94,.11);color:#eee5d8;
+  font:650 .82rem/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  cursor:pointer
+}
+.browser-help-status{min-height:1em;color:#9d968d;font-size:.72rem}
+.browser-help-close{
+  position:absolute;right:10px;top:10px;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.11);
+  background:rgba(255,255,255,.03);color:#cfc6ba;
+  font-size:1rem;line-height:1;cursor:pointer
+}
+@media(min-width:760px){
+  .browser-help summary{font-size:.76rem}
+  .browser-help-card{bottom:28px;padding:21px 21px 19px}
+}
 .cover-viewer{
   position:fixed;inset:0;z-index:5000;display:grid;place-items:center;
   background:#030405;opacity:0;visibility:hidden;pointer-events:none;
@@ -1406,7 +1469,22 @@ body.reading-locked .sticky-thesis{display:none!important}
       <a class="start" id="startReading" href="#intuition">Начать читать <span>↓</span></a>
       <button class="cover-open" id="coverOpen" type="button" aria-haspopup="dialog">Посмотреть изображение ⛶</button>
     </div>
-    <noscript><div class="nojs-note">Этот просмотрщик не запускает JavaScript. Статья всё равно доступна целиком, а часть интерактивов работает без скриптов. Для полной версии — с анимацией шкал и «фонариком» — откройте этот же файл в обычном браузере.</div></noscript>
+
+    <details class="browser-help" id="browserHelp">
+      <summary>Не работает интерактив?</summary>
+      <div class="browser-help-card">
+        <button class="browser-help-close" id="browserHelpClose" type="button" aria-label="Закрыть">×</button>
+        <strong>Если что-то не работает</strong>
+        <p class="browser-help-detected" id="browserHelpDetected">Похоже, статья открыта внутри приложения.</p>
+        <p>Для полной интерактивной версии лучше открыть статью в Safari, Chrome или другом обычном браузере. Если что-то не прокручивается или не реагирует, скорее всего ссылка открылась во встроенном браузере приложения.</p>
+        <div class="browser-help-actions">
+          <button class="browser-help-copy" id="browserHelpCopy" type="button">Скопировать ссылку</button>
+          <span class="browser-help-status" id="browserHelpStatus" role="status" aria-live="polite"></span>
+        </div>
+      </div>
+    </details>
+
+    <noscript><div class="nojs-note">Для полной интерактивной версии откройте эту страницу в Safari, Chrome или другом обычном браузере.</div></noscript>
   </div>
 </header>
 
@@ -1731,10 +1809,6 @@ body.reading-locked .sticky-thesis{display:none!important}
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.1 3.1 0 0 0 0-1.4l7.05-4.11A2.99 2.99 0 1 0 15 5c0 .23.03.46.08.67L8.03 9.78a3 3 0 1 0 0 4.44l7.13 4.16c-.04.2-.06.41-.06.62a2.9 2.9 0 1 0 2.9-2.92Z"/></svg>
             Поделиться
           </button>
-          <button class="social-action" id="shareTelegram" type="button" aria-label="Отправить файл статьи в Telegram">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.8 3.6 18.6 19c-.24 1.09-.88 1.36-1.79.85l-4.87-3.59-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.96 9.02-8.15c.39-.35-.09-.55-.61-.2L6.22 12.72 1.42 11.2c-1.04-.33-1.06-1.04.22-1.54L20.4 2.43c.87-.32 1.63.2 1.4 1.17Z"/></svg>
-            Telegram · файл
-          </button>
         </div>
         <p class="share-status" id="shareStatus" role="status" aria-live="polite"></p>
       </article>
@@ -1789,6 +1863,66 @@ body.reading-locked .sticky-thesis{display:none!important}
   const soundtrackToggle=$('#soundtrackToggle');
   const soundtrackJump=$('#soundtrackJump');
   const silentMusicStart=$('#silentMusicStart');
+  const browserHelp=$('#browserHelp');
+  const browserHelpCopy=$('#browserHelpCopy');
+  const browserHelpClose=$('#browserHelpClose');
+  const browserHelpStatus=$('#browserHelpStatus');
+
+  function likelyInAppBrowser(){
+    const ua=navigator.userAgent||'';
+    const ref=document.referrer||'';
+    return /Telegram|FBAN|FBAV|Instagram|Line\/|MicroMessenger|Snapchat|Twitter|LinkedInApp/i.test(ua)
+      || /t\.me|telegram\.me|telegram\.org/i.test(ref);
+  }
+
+  async function copyArticleUrl(){
+    const url=location.href.split('#')[0];
+    let copied=false;
+
+    try{
+      if(navigator.clipboard?.writeText){
+        await navigator.clipboard.writeText(url);
+        copied=true;
+      }
+    }catch(_){}
+
+    if(!copied){
+      const ta=document.createElement('textarea');
+      ta.value=url;
+      ta.setAttribute('readonly','');
+      ta.style.position='fixed';
+      ta.style.left='-9999px';
+      ta.style.opacity='0';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0,ta.value.length);
+      try{copied=document.execCommand('copy')}catch(_){}
+      ta.remove();
+    }
+
+    if(copied){
+      const old=browserHelpCopy?.textContent||'Скопировать ссылку';
+      if(browserHelpCopy)browserHelpCopy.textContent='Ссылка скопирована ✓';
+      if(browserHelpStatus)browserHelpStatus.textContent='';
+      setTimeout(()=>{
+        if(browserHelpCopy)browserHelpCopy.textContent=old;
+      },1800);
+      return;
+    }
+
+    if(browserHelpStatus)browserHelpStatus.textContent='Выделите и скопируйте ссылку из адресной строки.';
+    window.prompt('Скопируйте ссылку на статью:',url);
+  }
+
+  browserHelpCopy?.addEventListener('click',copyArticleUrl);
+  browserHelpClose?.addEventListener('click',()=>{
+    if(browserHelp)browserHelp.open=false;
+  });
+
+  if(browserHelp && matchMedia('(max-width:900px)').matches && likelyInAppBrowser()){
+    browserHelp.classList.add('in-app');
+    browserHelp.open=true;
+  }
 
   let soundtrackReady=false;
   let soundtrackPlaying=false;
@@ -2900,43 +3034,10 @@ body.reading-locked .sticky-thesis{display:none!important}
 
   /* Sharing */
   const shareArticle=$('#shareArticle');
-  const shareTelegram=$('#shareTelegram');
   const shareStatus=$('#shareStatus');
   const shareUrl=location.href.split('#')[0];
   const shareTitle='Любовь не измеряется страданием';
   const shareText='Интерактивное эссе о том, почему интенсивность страдания не является мерой любви.';
-
-  const telegramFileUrl=new URL('share/essay-love.html',location.href).href;
-  let telegramFilePromise=null;
-
-  function prepareTelegramFile(){
-    if(telegramFilePromise)return telegramFilePromise;
-    telegramFilePromise=fetch(telegramFileUrl,{cache:'force-cache'})
-      .then(r=>{
-        if(!r.ok)throw new Error('file_'+r.status);
-        return r.blob();
-      })
-      .then(blob=>new File(
-        [blob],
-        'Эссе о любви.html',
-        {type:'text/html;charset=utf-8',lastModified:Date.now()}
-      ))
-      .catch(err=>{
-        telegramFilePromise=null;
-        throw err;
-      });
-    return telegramFilePromise;
-  }
-
-  if('IntersectionObserver' in window && shareTelegram){
-    const sharePrefetch=new IntersectionObserver(entries=>{
-      if(entries.some(e=>e.isIntersecting)){
-        prepareTelegramFile().catch(()=>{});
-        sharePrefetch.disconnect();
-      }
-    },{rootMargin:'450px 0px'});
-    sharePrefetch.observe(shareTelegram);
-  }
 
   shareArticle?.addEventListener('click',async()=>{
     if(shareStatus)shareStatus.textContent='';
@@ -2963,48 +3064,7 @@ body.reading-locked .sticky-thesis{display:none!important}
     }
   });
 
-  shareTelegram?.addEventListener('click',async()=>{
-    if(shareStatus)shareStatus.textContent='';
 
-    try{
-      const file=await prepareTelegramFile();
-
-      if(navigator.canShare?.({files:[file]}) && navigator.share){
-        await navigator.share({
-          files:[file],
-          title:shareTitle
-        });
-        return;
-      }
-
-      const a=document.createElement('a');
-      a.href=telegramFileUrl;
-      a.download='Эссе о любви.html';
-      a.rel='noopener';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      if(shareStatus){
-        shareStatus.textContent='Браузер не умеет отправлять HTML-файл напрямую. Файл скачан — его можно прикрепить в Telegram.';
-      }
-    }catch(err){
-      if(err?.name==='AbortError')return;
-      console.error('Telegram file share failed',err);
-
-      const a=document.createElement('a');
-      a.href=telegramFileUrl;
-      a.download='Эссе о любви.html';
-      a.rel='noopener';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      if(shareStatus){
-        shareStatus.textContent='Не удалось открыть меню отправки. Файл скачан — прикрепите его в Telegram.';
-      }
-    }
-  });
 
   })();
 </script>
