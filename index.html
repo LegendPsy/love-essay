@@ -17,7 +17,7 @@
 <style>
 /* «Любовь не измеряется страданием» — живой сайт.
    Характер: спокойная, надёжная любовь. Вокруг бушуют тревога, ревность и «кино»,
-   а сайт остаётся ровным: дыхание раз в 6 секунд и не ускоряется.
+   а сайт остаётся ровным. Живых касаний немного: прибор, пульт, позолота и медаль.
    Внешний вид — как открытки каталога (тёплая бумага, Lora + Golos Text, закатная палитра). */
 :root {
   --bg-l: #efe4d0; --bg-d: #1f1914; --bg: var(--bg-l);
@@ -83,7 +83,7 @@ p { margin: 0 0 1.15em; }
 }
 h1 {
   font: 600 clamp(2.05rem, 8.6vw, 3.1rem)/1.12 var(--serif); margin: 0 0 .45em; letter-spacing: -.01em;
-  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: pointer; touch-action: pan-y;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
 }
 h1 .w { display: inline-block; }
 .w-love { position: relative; }
@@ -93,7 +93,6 @@ h1 .w { display: inline-block; }
 .w-pain .ch { display: inline-block; will-change: transform; }
 .lede { font-style: italic; color: var(--muted); font-size: 1.04rem; line-height: 1.6; margin-bottom: .8em; }
 .meta { font: 500 .82rem var(--sans); color: var(--muted); letter-spacing: .02em; margin-bottom: 2.2em; }
-.meta .hint-h { opacity: .85; }
 
 /* ---------- разделы ---------- */
 .part { padding-top: 2.2em; }
@@ -130,44 +129,18 @@ ul.mech strong { font-weight: 600; }
   transition: color .2s;
 }
 .ph-gild.worn { cursor: default; }
+.hint.said { color: var(--accent); font-style: normal; font-weight: 500; font-size: .88rem; opacity: 1; }
 .ph-crumble { display: inline-block; cursor: pointer; touch-action: pan-y; }
 .ph-crumble .cl { display: inline-block; transition: transform .9s cubic-bezier(.3, 1.5, .5, 1), opacity .9s; }
 .ph-trapword { transition: color .6s; }
 .ph-trapword.snap { color: var(--wine); }
 
-/* огонёк */
-#og {
-  position: fixed; z-index: 20; right: max(10px, calc(50vw - 23rem)); bottom: 24vh; width: 34px; height: 34px;
-  margin: -17px; transform: translate3d(0, var(--oy, 0px), 0); cursor: pointer; touch-action: manipulation;
-  transition: opacity 1.2s;
-}
-#og .core {
-  position: absolute; left: 50%; top: 50%; width: 11px; height: 11px; margin: -5.5px; border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #fff3d6, #f6b453 55%, #e07d2a);
-  box-shadow: 0 0 10px 3px var(--amber-glow), 0 0 26px 8px rgba(255, 170, 70, .22);
-  animation: breathe 6s ease-in-out infinite;
-}
-#og.warm .core { box-shadow: 0 0 16px 6px rgba(255, 190, 90, .8), 0 0 44px 16px rgba(255, 170, 70, .35); transition: box-shadow .5s; }
-#og.dim { opacity: .45; }
-#og.gone { opacity: 0; pointer-events: none; }
-@keyframes breathe { 0%, 100% { transform: scale(.86); } 50% { transform: scale(1.12); } }
-.og-say {
-  position: fixed; z-index: 21; right: calc(max(10px, calc(50vw - 23rem)) + 24px); bottom: calc(24vh - 18px);
-  background: var(--paper); color: var(--fg); font: 500 .88rem/1.35 var(--sans); padding: 8px 12px; border-radius: 12px 12px 3px 12px;
-  box-shadow: 0 6px 18px var(--shadow); max-width: 230px; opacity: 0; transform: translateY(6px); transition: opacity .5s, transform .5s; pointer-events: none;
-}
-.og-say.on { opacity: 1; transform: none; pointer-events: auto; }
-.og-say button { display: block; margin-top: 7px; font: 600 .82rem var(--sans); color: var(--accent); background: none; border: 1.5px solid currentColor; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
-
-/* фонарь */
-#dark {
-  position: fixed; inset: 0; z-index: 5; pointer-events: none; opacity: 0; transition: opacity 1.4s;
-  background: radial-gradient(circle at var(--lx, 50%) var(--ly, 40%), rgba(10, 9, 16, 0) 0, rgba(10, 9, 16, 0) var(--lr, 0px), rgba(10, 9, 16, .4) calc(var(--lr, 0px) + 90px));
-}
-#dark.on { opacity: 1; }
-#lamp-glow { position: fixed; z-index: 4; width: 260px; height: 260px; margin: -130px; border-radius: 50%; pointer-events: none; left: 0; top: 0;
-  background: radial-gradient(circle, rgba(255, 196, 110, .16), rgba(255, 196, 110, 0) 65%); opacity: 0; transition: opacity .4s; }
-#lamp-glow.on { opacity: 1; }
+/* фонарь на себя: свет сам ложится на абзац, который читаешь */
+.js .lampable { color: var(--muted); transition: color 1.4s ease; position: relative; }
+.js .lampable::before { content: ""; position: absolute; inset: -22px -26px; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 1.4s ease;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 190, 110, .16), rgba(255, 190, 110, 0) 70%); }
+.js .lampable.lit { color: var(--fg); }
+.js .lampable.lit::before { opacity: 1; }
 
 /* ---------- телефоны ---------- */
 .phones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 0 0; }
@@ -179,7 +152,7 @@ ul.mech strong { font-weight: 600; }
 .ph-a .glance { position: absolute; inset: 0; background: linear-gradient(#cfe7ff, #9fc8f2); opacity: 0; transition: opacity .5s; }
 .ph-a .glance.on { opacity: .85; }
 .phone.hot { box-shadow: 0 0 34px 6px rgba(150, 205, 255, var(--hot, .25)), 0 0 70px 46px rgba(30, 34, 46, calc(var(--vig, 0) * .45)), 0 10px 20px var(--shadow); }
-.phone.hot .scr { background: linear-gradient(#dff0ff, #b5d8fb); touch-action: none; cursor: grab; }
+.phone.hot .scr { background: linear-gradient(#dff0ff, #b5d8fb); }
 .feed { position: absolute; inset: 0; will-change: transform; }
 .phone.hot .bar { background: rgba(40, 80, 130, .2); }
 .msg { height: 16px; border-radius: 8px; margin: 10px 10px 0; background: rgba(40, 80, 130, .22); width: 60%; }
@@ -205,10 +178,11 @@ ul.mech strong { font-weight: 600; }
 .ic.talk { border: 1.5px solid currentColor; border-radius: 6px; }
 .ic.book { border: 1.5px solid currentColor; border-left-width: 3px; border-radius: 1px; }
 .ph-b .d { transform: scale(var(--ds, 1)); opacity: var(--do, 1); }
-.cap { position: absolute; bottom: 0; font: 500 .78rem var(--sans); color: var(--muted); z-index: 2; }
+.cap { position: absolute; bottom: 0; font: 500 .78rem var(--sans); color: var(--muted); z-index: 2; white-space: nowrap; }
+.cap .cnt { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; display: inline-block; }
 
 /* ---------- весы ---------- */
-.sc-svg { display: block; width: 100%; max-width: 360px; margin: 0 auto; touch-action: pan-y; cursor: grab; overflow: visible; }
+.sc-svg { display: block; width: 100%; max-width: 360px; margin: 0 auto; overflow: visible; }
 .sc-caps { display: flex; justify-content: space-between; max-width: 300px; margin: -4px auto 0; font: 500 .78rem var(--sans); color: var(--muted); padding: 0 18px; }
 
 /* ---------- прибор ---------- */
@@ -236,18 +210,19 @@ ul.mech strong { font-weight: 600; }
 .ends { display: flex; justify-content: space-between; font: italic 400 .66rem var(--sans); color: var(--muted); margin-top: -2px; }
 .ends em { font-style: italic; }
 .cn-heart { position: absolute; right: 12px; top: 10px; display: flex; flex-direction: column; align-items: center; gap: 0; }
+@keyframes breathe { 0%, 100% { transform: scale(.86); } 50% { transform: scale(1.12); } }
 .cn-heart svg { width: 26px; fill: var(--amber); filter: drop-shadow(0 0 6px rgba(242, 166, 73, .6)); animation: breathe 6s ease-in-out infinite; }
 .cn-heart span { font: 600 .6rem var(--sans); color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
 .cn-sliders .sl:first-child { padding-right: 52px; }
 
 /* ---------- медаль ---------- */
-.md-wrap { position: relative; height: 290px; display: flex; justify-content: center; touch-action: none; overflow: hidden; }
+.md-wrap { position: relative; height: 290px; display: flex; justify-content: center; touch-action: pan-y; overflow: hidden; }
 .ribbon { position: absolute; top: 0; left: 50%; width: 34px; margin-left: -17px; height: 96px; transform-origin: 50% 0;
   background: repeating-linear-gradient(90deg, #7b2430 0 8px, #d7a54a 8px 13px, #7b2430 13px 21px, #d7a54a 21px 26px, #7b2430 26px 34px);
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 88%, 0 100%); }
 .disc { position: absolute; top: 84px; left: 50%; width: 96px; height: 96px; margin-left: -48px; border-radius: 50%; cursor: grab;
   background: radial-gradient(circle at 35% 30%, #fff1b8, #e3b452 45%, #a8772a 80%); box-shadow: inset 0 0 0 5px rgba(160, 110, 40, .55), inset 0 0 0 7px rgba(255, 235, 170, .5), 0 8px 18px var(--shadow);
-  display: flex; align-items: center; justify-content: center; text-align: center; will-change: transform; transition: filter 2.5s, opacity 2.5s; }
+  display: flex; align-items: center; justify-content: center; text-align: center; will-change: transform; transition: filter 2.5s, opacity 2.5s; touch-action: none; }
 .disc span { font: 700 .56rem/1.25 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: #6d4a17; }
 .disc.tarnish { filter: grayscale(1) brightness(.6); opacity: .35; }
 
@@ -264,58 +239,36 @@ ul.mech strong { font-weight: 600; }
 .jb { bottom: 0; transform: translateY(101%); clip-path: polygon(0 14%, 5% 0, 10% 14%, 15% 0, 20% 14%, 25% 0, 30% 14%, 35% 0, 40% 14%, 45% 0, 50% 14%, 55% 0, 60% 14%, 65% 0, 70% 14%, 75% 0, 80% 14%, 85% 0, 90% 14%, 95% 0, 100% 14%, 100% 100%, 0 100%); }
 .c-shake.shut .jt, .c-shake.shut .jb { transform: translateY(0); }
 .c-shake.shut { animation: none; }
-.c-calm { cursor: pointer; }
+.c-calm { transition: background 2s; }
+.tr-caps { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 8px 6px 0; text-align: center; font: 500 .78rem var(--sans); color: var(--muted); }
 .lamp { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff3d6, #f6b453 60%, #e07d2a); box-shadow: 0 0 calc(8px + 30px * var(--lit, 0)) calc(2px + 14px * var(--lit, 0)) rgba(255, 180, 80, calc(.35 + .4 * var(--lit, 0))); }
 .c-calm.lit { background: linear-gradient(160deg, #fff6e2, #f6e2bb); }
+.c-calm .ring { display: none; }
 .ring { position: absolute; width: 74px; height: 74px; left: 50%; top: 50%; margin: -37px; transform: rotate(-90deg); fill: none; stroke: var(--amber); stroke-width: 2.4; stroke-dasharray: 164; stroke-dashoffset: calc(164 * (1 - var(--hold, 0))); opacity: calc(var(--hold, 0) * 3); }
 .tr-glow { position: absolute; left: 0; top: 0; width: 46px; height: 46px; margin: -23px; border-radius: 50%; pointer-events: none; opacity: 0; transition: opacity .3s;
   background: radial-gradient(circle, rgba(255, 200, 120, .75), rgba(255, 170, 80, 0) 70%); z-index: 3; }
 .tr-glow.on { opacity: 1; }
 
-/* ---------- нить ---------- */
-.th-cv { display: block; width: 100%; height: 230px; touch-action: pan-y; border-radius: 14px; }
+/* ---------- нить: история, которая идёт сама, пока листаешь ---------- */
+.scene.thread { margin: 26px auto 10px; }
+.th-track { position: relative; height: 330vh; }
+.th-sticky { position: sticky; top: max(8px, calc(50vh - 228px)); }
+.th-cap { min-height: 92px; text-align: center; padding: 0 6px; transition: opacity .28s ease, transform .28s ease; }
+.th-cap.swap { opacity: 0; transform: translateY(10px); }
+.th-n { display: block; font: 600 .7rem var(--sans); letter-spacing: .14em; color: var(--muted); }
+.th-word { display: block; font: 600 1.55rem/1.2 var(--serif); margin: 2px 0 4px; color: var(--fg); }
+.th-q { display: block; font: italic 400 .92rem/1.4 var(--serif); color: var(--muted); }
+.th-cv { display: block; width: 100%; height: 270px; border-radius: 14px; box-shadow: 0 10px 26px var(--shadow); }
+.th-dots { display: flex; gap: 9px; justify-content: center; margin-top: 12px; }
+.th-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); transition: background .5s, transform .5s; }
+.th-dots i.on { background: var(--amber); transform: scale(1.25); box-shadow: 0 0 6px rgba(242, 166, 73, .6); }
+.th-hint { min-height: 1.3em; }
+.th-end { font: 500 1rem/1.45 var(--sans); color: var(--accent); text-align: center; min-height: 2.9em; margin: 4px 0 0; opacity: 0; transform: translateY(6px); transition: opacity 1s, transform 1s; }
+.th-end.on { opacity: 1; transform: none; }
 
-/* ---------- финал ---------- */
-.final { margin: 46px auto 10px; min-height: 34vh; }
-.fin-line { display: flex; align-items: center; justify-content: center; gap: 12px; font: 500 1rem/1.5 var(--sans); color: var(--amber); opacity: 0; transition: opacity 2s 1.2s; text-align: left; }
-.final.on .fin-line { opacity: 1; }
-.fin-dot { flex: none; width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff3d6, #f6b453 55%, #e07d2a); box-shadow: 0 0 12px 4px var(--amber-glow); animation: breathe 6s ease-in-out infinite; opacity: 0; }
-.final.landed .fin-dot { opacity: 1; }
-
-
-/* ---------- после статьи: оценка, записки, поделиться ---------- */
-.after { padding-top: 10px; display: grid; gap: 34px; }
+/* ---------- после статьи ---------- */
+.after { padding-top: 34px; }
 .thanks { text-align: center; font-style: italic; color: var(--muted); margin: 0; }
-.rate { text-align: center; }
-.rate-q { font: 500 1rem var(--sans); margin: 0 0 12px; }
-.stars { display: flex; justify-content: center; gap: 14px; }
-.star { width: 46px; height: 46px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper2); cursor: pointer; display: grid; place-items: center; padding: 0; transition: transform .2s; }
-.star i { width: 12px; height: 12px; border-radius: 50%; background: var(--line); transition: background .3s, box-shadow .4s; }
-.star.on i, .star.pre i { background: radial-gradient(circle at 40% 35%, #fff3d6, #f6b453 55%, #e07d2a); box-shadow: 0 0 12px 4px var(--amber-glow); }
-.star:active { transform: scale(.92); }
-.star:focus-visible, .btn:focus-visible, textarea:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
-.rate-st, .c-st { font: 500 .85rem var(--sans); color: var(--accent); min-height: 1.2em; margin: 10px 0 0; text-align: center; }
-.note-card { background: var(--paper); border-radius: 14px; padding: 20px 18px; box-shadow: 0 8px 22px var(--shadow); }
-.note-card h2, .pass h2 { font-size: 1.3rem; margin: 0 0 8px; }
-.note-intro { font: 400 .92rem/1.5 var(--sans); color: var(--muted); margin: 0 0 14px; }
-.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.hp { position: absolute; left: -9999px; }
-textarea { width: 100%; min-height: 120px; resize: vertical; border-radius: 10px; border: 1.5px solid var(--line); background: var(--paper2); color: var(--fg); font: 400 1rem/1.5 var(--serif); padding: 10px 12px; }
-.c-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-.c-count { font: 500 .78rem var(--sans); color: var(--muted); }
-.btn { font: 600 .9rem var(--sans); color: var(--paper); background: var(--accent); border: 0; border-radius: 999px; padding: 10px 18px; cursor: pointer; text-decoration: none; display: inline-block; }
-.btn.ghost { background: transparent; color: var(--accent); border: 1.5px solid currentColor; }
-.btn:disabled { opacity: .6; }
-#cOpen { margin-top: 12px; }
-.pass { text-align: center; }
-.pass-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
-.notes { position: fixed; inset: 0; z-index: 50; background: rgba(20, 16, 24, .82); backdrop-filter: blur(4px); overflow-y: auto; padding: calc(56px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px)); }
-.notes-x { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); right: calc(12px + env(safe-area-inset-right, 0px)); width: 42px; height: 42px; border-radius: 50%; border: 0; background: #f6ead2; color: #2b2119; font-size: 1.5rem; cursor: pointer; }
-.notes-stage { max-width: 40rem; margin: 0 auto; columns: 2 160px; column-gap: 14px; }
-.note { break-inside: avoid; margin: 0 0 14px; background: #fbf3e0; color: #2b2119; border-radius: 4px; padding: 12px 12px 10px; font: 400 .92rem/1.45 var(--serif); box-shadow: 0 6px 14px rgba(0,0,0,.3); transform: rotate(var(--r, 0deg)); animation: noteIn .7s both; white-space: pre-wrap; overflow-wrap: anywhere; }
-.note time { display: block; margin-top: 8px; font: 500 .7rem var(--sans); color: #8a7764; }
-@keyframes noteIn { from { opacity: 0; transform: translateY(14px) rotate(var(--r, 0deg)); } }
-.notes-empty { color: #f1e6d4; text-align: center; font: 500 1rem var(--sans); }
 
 footer { padding: 40px 0 calc(40px + env(safe-area-inset-bottom)); text-align: center; font: 500 .9rem var(--sans); }
 footer a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
@@ -338,7 +291,7 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     <figure class="cover"><img src="art/love.jpg" alt="Двое сидят на соседних скалах на закате, между ними тонкая нить" width="900" height="600"></figure>
     <h1 data-t><span class="w w-love">Любовь</span> <span class="w">не</span> <span class="w">измеряется</span> <span class="w w-pain"><span class="ch">с</span><span class="ch">т</span><span class="ch">р</span><span class="ch">а</span><span class="ch">д</span><span class="ch">а</span><span class="ch">н</span><span class="ch">и</span><span class="ch">е</span><span class="ch">м</span></span></h1>
     <p class="lede" data-t>Почему мы принимаем тревогу, ревность и неспособность жить без другого за доказательство глубины чувств — и в поисках надёжности выбираем то, что делает близость невыносимой</p>
-    <p class="meta">6 минут чтения <span class="hint-h">· прижмите заголовок и подержите</span></p>
+    <p class="meta">6 минут чтения</p>
   </div>
 </header>
 <main class="wrap">
@@ -373,9 +326,8 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
       </div>
       <div class="toast">Новых сообщений нет</div>
     </div></div>
-    <figcaption class="cap">второй</figcaption>
+    <figcaption class="cap">второй · проверок: <b class="cnt">0</b></figcaption>
   </div>
-  <p class="hint">потяните экран второго телефона вниз</p>
   <p class="voice" aria-live="polite"></p>
 </figure>
 <p data-t>Если спросить вслух, кто из них любит сильнее, разум почти наверняка ответит: «Мы не можем знать». Но <span class="nobr">где-то</span> глубже, в слое почти автоматических культурных рефлексов, весы успеют качнуться в сторону второго.</p>
@@ -406,7 +358,6 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     </g>
   </svg>
   <div class="sc-caps" aria-hidden="true"><span>первый</span><span>второй</span></div>
-  <p class="hint">выровняйте весы пальцем</p>
   <p class="voice" aria-live="polite"></p>
 </figure>
 <p data-t data-z="intro">В нашей культуре живёт одна странная, но удивительно живучая идея о любви — мы усвоили её настолько рано, что почти перестали замечать. Мы привыкли измерять любовь амплитудой страдания.</p>
@@ -492,13 +443,13 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
 </figure>
 <p class="single" data-t data-z="wine">Здесь и срабатывает тихий, почти незаметный капкан.</p>
 <p data-t>Когда мы принимаем неспособность обходиться без другого за доказательство любви, тревогу — за её меру, а крушение жизни после потери — за знак качества, мы начинаем бессознательно отбирать в партнёры совсем не тех людей. Не тех, кто способен глубоко любить, а тех, кому тяжелее всего справляться с собственными переживаниями. Тех, кому труднее отделиться от пугающих мыслей, выдерживать дистанцию, непредсказуемость, перемены и утрату контроля.</p>
-<figure class="scene trap" data-scene="trap" aria-label="Две карточки: дрожащая притягивает палец, спокойную трудно выбрать">
+<figure class="scene trap" data-scene="trap" aria-label="Две карточки: взгляд сам тянется к дрожащей, и капкан захлопывается; спокойная остаётся незамеченной">
   <div class="tr-cards">
     <div class="card c-shake"><div class="pulse"><svg viewBox="0 0 120 40"><path d="M0 22 L28 22 L34 8 L42 36 L50 4 L58 30 L64 22 L120 22"/></svg></div><div class="jaw jt"></div><div class="jaw jb"></div></div>
     <div class="card c-calm"><div class="lamp"></div><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26"/></svg></div>
   </div>
+  <div class="tr-caps" aria-hidden="true"><span>тревожное</span><span>спокойное</span></div>
   <div class="tr-glow" aria-hidden="true"></div>
-  <p class="hint">коснитесь спокойной карточки и подержите</p>
   <p class="voice" aria-live="polite"></p>
 </figure>
 <p data-t>Мы смотрим на эмоциональную хрупкость, романтизируем её и выдыхаем с облегчением: <span class="ph ph-trapword" data-ph="trapword">вот оно, настоящее</span>.</p>
@@ -509,11 +460,17 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
 <p data-t>За этим поиском стоит очень понятное человеческое желание — получить страховку. Нам кажется: если меня любят так отчаянно, так на разрыв, значит, эти отношения будут крепкими, глубокими и долгими.</p>
 <p data-t>Ирония в том, что мы ищем гарантию надёжности именно там, где отношениям приходится тяжелее всего.</p>
 <p data-t>Долгая и живая близость держится не на одном лишь неравнодушии. Она требует куда более тихих и трудных навыков: выдерживать тревогу и временную дистанцию; мириться с тем, что нельзя знать всё наверняка; оставаться отдельным человеком рядом с другим отдельным человеком; проходить через конфликты, не разрушая связь; обращаться с собственной ревностью; принимать неизбежные перемены — и продолжать жить свою жизнь даже в те дни, когда рядом с любовью закономерно появляются страх и боль.</p>
-<figure class="scene thread" data-scene="thread" aria-label="Два огонька на двух скалах, между ними нить: её можно натянуть, она держится, и каждый остаётся на своём месте">
-  <canvas class="th-cv"></canvas>
-  <p class="hint">потяните огонёк в сторону — или оба сразу двумя пальцами</p>
-  <p class="voice" aria-live="polite"></p>
-</figure>
+<div class="scene thread" data-scene="thread" role="img" aria-label="Двое сидят на соседних скалах, между ними нить. Пока листаешь, им достаются дистанция, буря, туман и смена дня и ночи, а нить держится, и каждый остаётся на своём месте">
+  <div class="th-track">
+    <div class="th-sticky">
+      <div class="th-cap" aria-hidden="true"><span class="th-n">1 / 6</span><b class="th-word">Двое</b><span class="th-q">«оставаться отдельным человеком рядом с другим отдельным человеком»</span></div>
+      <canvas class="th-cv"></canvas>
+      <div class="th-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="hint th-hint">листайте дальше, картина будет меняться</p>
+      <p class="th-end" aria-hidden="true">Нить выдержала всё. И каждый остался собой.</p>
+    </div>
+  </div>
+</div>
 <p data-t>Любовь действительно делает нас уязвимыми. Если человек <span class="nobr">по-настоящему</span> дорог, мысль о его потере не может оставить равнодушным. Но то, насколько я <span class="ph ph-crumble" data-ph="crumble">рассыпаюсь</span> перед лицом этой возможности, не измеряет мою любовь.</p>
 <p data-t>Возможно, одна из самых трудных задач взрослой близости — перестать оценивать чужое чувство по тому, насколько плохо человеку без нас. Потому что способность любить и способность выдерживать собственную любовь — это две разные способности.</p>
 <p data-t data-z="night">Если отвести взгляд от отношений и на минуту направить этот фонарь на себя, вопросы становятся куда менее теоретическими — и куда более честными.</p>
@@ -521,66 +478,20 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
 <p class="single" data-t>И самый неудобный вопрос напоследок.</p>
 <p class="q" data-t>Если однажды рядом окажется человек, который будет любить меня глубоко и <span class="nobr">по-настоящему</span> — но при этом не будет разрушаться от страха меня потерять, не станет цепляться, душить контролем и бросать собственную жизнь к моим ногам, — смогу ли я вообще узнать в этом любовь?</p>
 <p class="q last" data-t data-z="end">Или мне вдруг покажется, что её <span class="nobr">почему-то</span> недостаточно?</p>
-<div class="scene final" data-scene="final">
-  <p class="fin-line"><span class="fin-dot" aria-hidden="true"></span><span class="fin-text">Я был рядом всю статью. Ты меня заметил?</span></p>
-</div>
 </section>
 </main>
 <section class="after wrap" id="after">
   <p class="thanks">Благодарю за проявленный интерес и уделённое время</p>
-  <div class="rate">
-    <p class="rate-q" id="rateQ">Пожалуйста поделитесь, как вам статья?</p>
-    <div class="stars" id="stars" role="group" aria-label="Оценка статьи от одной до пяти">
-      <button type="button" class="star" data-r="1" aria-label="1 из 5" aria-pressed="false"><i></i></button>
-      <button type="button" class="star" data-r="2" aria-label="2 из 5" aria-pressed="false"><i></i></button>
-      <button type="button" class="star" data-r="3" aria-label="3 из 5" aria-pressed="false"><i></i></button>
-      <button type="button" class="star" data-r="4" aria-label="4 из 5" aria-pressed="false"><i></i></button>
-      <button type="button" class="star" data-r="5" aria-label="5 из 5" aria-pressed="false"><i></i></button>
-    </div>
-    <p class="rate-st" id="rateSt" role="status" aria-live="polite"></p>
-  </div>
-
-  <div class="note-card">
-    <h2>Оставить что-то после себя</h2>
-    <p class="note-intro">Отзыв, мысль, пожелание или благодарность. Без регистрации и смс :) . То, что вы напишете, смогут прочитать следующие читатели.</p>
-    <form id="cForm">
-      <div class="hp" aria-hidden="true"><label for="cSite">Сайт</label><input id="cSite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
-      <label for="cBody" class="vh">Ваше сообщение</label>
-      <textarea id="cBody" maxlength="2000" placeholder="Напишите здесь…" required></textarea>
-      <div class="c-row"><span class="c-count"><span id="cChars">0</span>/2000</span><button class="btn" id="cSend" type="submit">Оставить анонимно</button></div>
-      <p class="c-st" id="cSt" role="status" aria-live="polite"></p>
-    </form>
-    <button class="btn ghost" id="cOpen" type="button" hidden>Посмотреть, что думают другие</button>
-  </div>
-
-  <div class="pass">
-    <h2>Если хочется передать дальше</h2>
-    <div class="pass-row">
-      <button class="btn" id="share" type="button">Поделиться статьёй</button>
-      <a class="btn ghost" href="https://alekseipsychology.tilda.ws/" target="_blank" rel="noopener noreferrer">Сайт автора</a>
-      <a class="btn ghost" href="https://www.b17.ru/davydych_aleksey/?prt=724069" target="_blank" rel="noopener noreferrer">Профиль B17</a>
-    </div>
-    <p class="c-st" id="shareSt" role="status" aria-live="polite"></p>
-  </div>
 </section>
-<div class="notes" id="notes" role="dialog" aria-modal="true" aria-label="Что думают другие читатели" hidden>
-  <button class="notes-x" id="notesX" type="button" aria-label="Закрыть">×</button>
-  <div class="notes-stage" id="notesStage"></div>
-  <p class="notes-empty" id="notesEmpty" hidden>Пока здесь только ваш голос.</p>
-</div>
 <footer>
   <div class="wrap">
     <div class="row"><a href="https://legendpsy.github.io/stati/">← Все статьи</a><a href="#" id="again">Прочитать сначала</a></div>
   </div>
 </footer>
-<div id="dark" aria-hidden="true"></div>
-<div id="lamp-glow" aria-hidden="true"></div>
-<div id="og" role="button" tabindex="0" aria-label="Огонёк"><span class="core"></span></div>
-<div class="og-say" aria-live="polite"></div>
 <script>
-/* «Любовь не измеряется страданием» — поведение живого сайта.
-   Сайт — спокойная любовь: огонёк рядом с читателем, ровное дыхание.
-   Вокруг — сцены тревоги, «кино» и проверок. Память только в браузере читателя. */
+/* «Любовь не измеряется страданием» — поведение живого сайта (версия 2).
+   Сайт — спокойная любовь. Вокруг — сцены тревоги, «кино» и проверок.
+   Трогать пальцем можно только прибор, пульт, позолоту и медаль; остальное живёт само, пока читаешь. */
 (function () {
   'use strict';
   document.documentElement.classList.add('js');
@@ -588,13 +499,14 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const sm = x => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
   const buzz = ms => { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} };
   const KEY = 'love-live:v1';
   let mem = {};
   try { mem = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { mem = {}; }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(mem)); } catch (e) {} };
 
-  // реплика сайта под сценой (один раз на ключ, если не сказано иное)
+  // реплика сайта под сценой (один раз на ключ)
   const said = {};
   function say(scene, text, key) {
     const v = $('.voice', scene); if (!v) return;
@@ -609,6 +521,12 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     (live.get(e.target) || []).forEach(f => f(e.isIntersecting));
   }), { rootMargin: '80px 0px' });
   function onSeen(el, f) { if (!live.has(el)) { live.set(el, []); io.observe(el); } live.get(el).push(f); }
+  // один раз, когда элемент дошёл до нужной высоты экрана
+  function onReach(el, margin, f) {
+    const ob = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { ob.disconnect(); f(); } }), { rootMargin: margin });
+    ob.observe(el);
+  }
+  const paraStarting = start => $$('main p').find(p => p.textContent.replace(/\s/g, ' ').startsWith(start));
 
   // общий цикл анимации: подписчики, только видимые
   const ticks = new Set();
@@ -621,105 +539,60 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
   requestAnimationFrame(frame);
   function loopWhileSeen(el, f) { onSeen(el, on => on ? ticks.add(f) : ticks.delete(f)); }
 
-  // место в окне для точки касания
-  const local = (el, e) => { const r = el.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top, w: r.width, h: r.height }; };
-
   /* ---------------- настроение разделов ---------------- */
   const zoneEls = $$('[data-z]');
   function setZone() {
     const line = innerHeight * .45; let z = 'intro';
     for (const el of zoneEls) { if (el.getBoundingClientRect().top < line) z = el.dataset.z; }
-    if (document.documentElement.dataset.zone !== z) { document.documentElement.dataset.zone = z; zoneChanged(z); }
+    if (document.documentElement.dataset.zone !== z) document.documentElement.dataset.zone = z;
   }
+  addEventListener('scroll', setZone, { passive: true });
+  $('#again').addEventListener('click', e => { e.preventDefault(); scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }); });
 
-  /* ---------------- огонёк ---------------- */
-  const og = $('#og'), ogSay = $('.og-say');
-  let ogVy = 0, ogY = 0, lastScroll = scrollY, sayT = 0;
-  function ogTalk(html, ms = 2600) {
-    ogSay.innerHTML = html; ogSay.classList.add('on'); clearTimeout(sayT);
-    if (ms) sayT = setTimeout(() => ogSay.classList.remove('on'), ms);
-  }
-  const ogLines = ['Я здесь', 'Никуда не делся', 'Ничего нового. И это хорошо', 'Читай спокойно, я рядом'];
-  let ogN = 0;
-  og.addEventListener('click', () => {
-    og.classList.add('warm'); setTimeout(() => og.classList.remove('warm'), 1500);
-    ogTalk(ogLines[ogN++ % ogLines.length]); buzz(6);
-  });
-  ticks.add(dt => {
-    // чуть отстаёт при быстрой прокрутке и спокойно возвращается
-    const v = (scrollY - lastScroll) / Math.max(dt, .001); lastScroll = scrollY;
-    const target = RM ? 0 : clamp(v * .03, -46, 46);
-    ogVy += (target - ogY) * 10 * dt - ogVy * 6 * dt;
-    ogY += ogVy * dt * 8;
-    og.style.setProperty('--oy', ogY.toFixed(1) + 'px');
-  });
-
-  function zoneChanged(z) {
-    og.classList.toggle('dim', z === 'quiet');
-    darkZone = z === 'night';
-    $('#dark').classList.toggle('on', darkZone);
-    if (!darkZone) $('#lamp-glow').classList.remove('on');
-  }
-
-  // память: место чтения и возвращение
-  const visits = (mem.visits || 0) + 1; mem.visits = visits; save();
-  if (visits > 1 && (mem.y || 0) > innerHeight * 1.5) {
-    setTimeout(() => {
-      ogTalk('С возвращением.<button type="button">Продолжить, где остановились</button>', 9000);
-      const b = $('button', ogSay);
-      b.addEventListener('click', () => { scrollTo({ top: mem.y, behavior: RM ? 'auto' : 'smooth' }); ogSay.classList.remove('on'); });
-    }, 900);
-  } else if (visits > 1) {
-    setTimeout(() => ogTalk('С возвращением', 2600), 900);
-  }
-  let saveT = 0;
-  addEventListener('scroll', () => {
-    setZone();
-    clearTimeout(saveT); saveT = setTimeout(() => { mem.y = Math.round(scrollY); save(); }, 400);
-  }, { passive: true });
-  $('#again').addEventListener('click', e => { e.preventDefault(); mem.y = 0; save(); scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }); });
-
-  /* ---------------- заголовок: «страданием» дрожит, «Любовь» — нет ---------------- */
+  /* ---------------- заголовок: «страданием» дрожит само, «Любовь» — нет ---------------- */
   (function title() {
-    const h1 = $('h1'), letters = $$('.w-pain .ch', h1); if (!h1) return;
-    let amp = 0, ampV = 0, holding = false, held = 0, told = false;
+    const h1 = $('h1'), letters = $$('.w-pain .ch', h1); if (!h1 || !letters.length) return;
     const seeds = letters.map(() => Math.random() * 10);
-    const down = e => { holding = true; held = 0; if (e.pointerType !== 'mouse') e.preventDefault && 0; };
-    const up = () => {
-      if (holding && held > .4 && !told) { told = true; setTimeout(() => ogTalk('«Любовь» не сдвинулась ни на миллиметр', 3400), 500); }
-      holding = false;
-    };
-    h1.addEventListener('pointerdown', down);
-    addEventListener('pointerup', up); addEventListener('pointercancel', up);
-    h1.addEventListener('contextmenu', e => e.preventDefault());
-    let shown = true;
-    onSeen(h1, on => shown = on);
-    ticks.add((dt, t) => {
-      if (!shown && amp < .001) return;
-      if (holding) { held += dt; const target = clamp(held / 2.4, 0, 1); ampV += (target - amp) * 18 * dt; }
-      else { ampV += (0 - amp) * 26 * dt; }
-      ampV *= Math.pow(.02, dt); amp += ampV * dt * 6; if (!holding && Math.abs(amp) < .002 && Math.abs(ampV) < .002) { amp = 0; ampV = 0; }
-      const a = RM ? Math.min(.15, Math.abs(amp)) : amp;
+    const shake = (dt, t) => {
+      const k = t / 1000;
+      // приступы дрожи раз в несколько секунд, между ними — мелкая зыбь
+      const a = RM ? .08 : .1 + .75 * Math.pow(Math.max(0, Math.sin(k * 1.15)), 8);
       letters.forEach((l, i) => {
-        const s = seeds[i], k = t / 1000;
-        const jx = Math.sin(k * 37 + s) * 3.2 * a, jy = Math.cos(k * 43 + s * 2) * 3.6 * a;
-        const r = Math.sin(k * 29 + s * 3) * 7 * a, sc = 1 + .22 * a;
-        l.style.transform = a > .001 ? `translate(${jx.toFixed(2)}px,${jy.toFixed(2)}px) rotate(${r.toFixed(2)}deg) scale(${sc.toFixed(3)})` : '';
-        l.style.textShadow = a > .02 ? `0 0 ${(14 * a).toFixed(1)}px rgba(160,30,40,${(.55 * a).toFixed(2)})` : '';
+        const s = seeds[i];
+        const jx = Math.sin(k * 37 + s) * 3 * a, jy = Math.cos(k * 43 + s * 2) * 3.4 * a;
+        const r = Math.sin(k * 29 + s * 3) * 6.5 * a, sc = 1 + .16 * a;
+        l.style.transform = `translate(${jx.toFixed(2)}px,${jy.toFixed(2)}px) rotate(${r.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+        l.style.textShadow = a > .2 ? `0 0 ${(14 * a).toFixed(1)}px rgba(160,30,40,${(.5 * a).toFixed(2)})` : '';
       });
-      if (holding && a > .5 && Math.random() < dt * 6) buzz(4);
-    });
+    };
+    loopWhileSeen(h1, shake);
   })();
 
-  /* ---------------- 3. два телефона ---------------- */
+  /* ---------------- два телефона: второй проверяет сам ---------------- */
   (function phones() {
     const sc = $('[data-scene="phones"]'); if (!sc) return;
     const glance = $('.ph-a .glance', sc), colB = $('.ph-b', sc), dB = $$('.ph-b .d', sc), phoneB = $('.ph-b .phone', sc);
-    const scr = $('.ph-b .scr', sc), feed = $('.feed', scr), spin = $('.spin', scr), toast = $('.toast', scr);
-    let tA = 0, pulls = 0, auto = 0, busy = false;
-    // первый: иногда смотрит на экран и возвращается к делам
+    const scr = $('.ph-b .scr', sc), feed = $('.feed', scr), spin = $('.spin', scr), toast = $('.toast', scr), cnt = $('.cnt', sc);
+    let tA = 0, wait = 0, busy = false, n = 0;
+    function pull() {
+      busy = true;
+      // палец тянет переписку вниз…
+      feed.style.transition = 'transform .55s cubic-bezier(.4,0,.6,1)'; feed.style.transform = 'translateY(46px)';
+      spin.style.transition = 'opacity .3s'; spin.style.opacity = 1;
+      spin.firstElementChild.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(240deg)' }], { duration: 550, easing: 'ease-in' });
+      setTimeout(() => { spin.classList.add('go'); feed.style.transition = 'transform .45s cubic-bezier(.3,1.6,.5,1)'; feed.style.transform = ''; }, 600);
+      // …и ничего нового
+      setTimeout(() => {
+        spin.classList.remove('go'); spin.style.opacity = 0; toast.classList.add('on');
+        n++; cnt.textContent = n;
+        if (!RM) cnt.animate([{ transform: 'scale(1.5)' }, { transform: 'scale(1)' }], { duration: 400, easing: 'cubic-bezier(.3,1.6,.5,1)' });
+        if (n === 3) say(sc, 'Ответа не прибавилось. Тревоги — да.');
+      }, 1350);
+      setTimeout(() => { toast.classList.remove('on'); busy = false; }, 2500);
+    }
     loopWhileSeen(sc, dt => {
       tA += dt;
+      // первый: иногда смотрит на экран и возвращается к делам
       if (tA > 5.5) { tA = 0; glance.classList.add('on'); setTimeout(() => glance.classList.remove('on'), 1100); }
       // второй: мир сжимается по мере чтения
       const r = sc.getBoundingClientRect();
@@ -730,49 +603,15 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
       });
       colB.style.setProperty('--vig', (.55 * p).toFixed(3));
       phoneB.style.setProperty('--hot', (.25 + .45 * p).toFixed(3));
-      // сам «обновляет» переписку, пока никто не трогает
-      if (!busy && !drag) { auto += dt; if (auto > 3.6) { auto = 0; refresh(true); } }
+      if (!busy) { wait += dt; if (wait > 1.2) { wait = 0; pull(); } }
     });
-    function refresh(silent) {
-      busy = true; spin.style.opacity = 1; spin.classList.add('go');
-      if (!silent) buzz(8);
-      setTimeout(() => {
-        spin.classList.remove('go'); spin.style.opacity = 0;
-        feed.style.transition = 'transform .5s cubic-bezier(.3,1.6,.5,1)'; feed.style.transform = '';
-        if (!silent) { toast.classList.add('on'); setTimeout(() => toast.classList.remove('on'), 1300); }
-        busy = false;
-      }, silent ? 500 : 900);
-    }
-    let drag = false, y0 = 0, d = 0;
-    scr.addEventListener('pointerdown', e => {
-      if (busy) return; drag = true; y0 = e.clientY; d = 0; scr.setPointerCapture(e.pointerId);
-      feed.style.transition = 'none'; hintOff(sc);
-    });
-    scr.addEventListener('pointermove', e => {
-      if (!drag) return;
-      const raw = Math.max(0, e.clientY - y0);
-      d = 70 * (1 - Math.exp(-raw / 90)); // тугая резина
-      feed.style.transform = `translateY(${d.toFixed(1)}px)`;
-      spin.style.opacity = clamp(d / 40, 0, 1); spin.firstElementChild.style.transform = `rotate(${(d * 6).toFixed(0)}deg)`;
-    });
-    const end = () => {
-      if (!drag) return; drag = false;
-      if (d > 34) {
-        pulls++; refresh(false);
-        if (pulls === 3) say(sc, 'Тянет проверить ещё раз, правда?');
-        if (pulls === 7) say(sc, 'Ответа не прибавилось. Тревоги — да.');
-      } else {
-        feed.style.transition = 'transform .45s cubic-bezier(.3,1.6,.5,1)'; feed.style.transform = ''; spin.style.opacity = 0;
-      }
-    };
-    scr.addEventListener('pointerup', end); scr.addEventListener('pointercancel', end);
   })();
 
-  /* ---------------- 4. весы, которые клонятся сами ---------------- */
+  /* ---------------- весы, которые клонятся сами ---------------- */
   (function scales() {
     const sc = $('[data-scene="scales"]'); if (!sc) return;
     const svg = $('svg', sc), beam = $('.beam', svg), pl = $('.pan-l', svg), pr = $('.pan-r', svg);
-    const BIAS = 13; let th = 0, w = 0, bias = 0, drag = false, fTh = 0, swingL = 0, swingR = 0, sv = 0, released = 0, told = false;
+    const BIAS = 13; let th = 0, w = 0, bias = 0, sv = 0, told = false;
     const px = 160, py = 40, half = 112;
     function draw() {
       beam.setAttribute('transform', `rotate(${th.toFixed(2)} ${px} ${py})`);
@@ -783,40 +622,25 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
       pr.setAttribute('transform', `translate(${rx.toFixed(1)} ${ry.toFixed(1)}) rotate(${(-sv * 2).toFixed(2)})`);
     }
     draw();
-    onSeen(sc, on => { if (on) setTimeout(() => bias = BIAS, 700); });
+    // ровно стоят, пока весы целиком не в кадре, потом медленно и неотвратимо клонятся ко второму
+    onReach(sc, '0px 0px -30% 0px', () => setTimeout(() => bias = BIAS, 900));
     loopWhileSeen(sc, dt => {
-      const target = drag ? fTh : bias;
-      const k = drag ? 30 : 5;           // без пальца — медленно, но неотвратимо
-      const acc = (target - th) * k - w * (drag ? 9 : 2.2);
+      const acc = (bias - th) * 5 - w * 2.2;
       w += acc * dt; th += w * dt;
-      sv += ((-w * .08) - sv) * 6 * dt;   // чаши раскачиваются от движения
+      sv += ((-w * .08) - sv) * 6 * dt;
       draw();
-      if (released && !drag && Math.abs(th - BIAS) < 1.5 && !told) { told = true; say(sc, 'Весы снова качнулись сами. Это рефлекс, а не взвешивание.'); }
+      if (bias && Math.abs(th - BIAS) < 1.2 && Math.abs(w) < 2 && !told) { told = true; say(sc, 'Весы качнулись сами. Это рефлекс, а не взвешивание.'); }
     });
-    const angleFrom = e => {
-      const r = svg.getBoundingClientRect(), s = 320 / r.width;
-      const x = (e.clientX - r.left) * s, y = (e.clientY - r.top) * s;
-      const side = x < px ? -1 : 1;
-      return clamp(Math.atan2((y - py - 70) * side, Math.abs(x - px) + 1) * 180 / Math.PI, -18, 18);
-    };
-    svg.addEventListener('pointerdown', e => { drag = true; fTh = th; svg.setPointerCapture(e.pointerId); hintOff(sc); });
-    svg.addEventListener('pointermove', e => { if (drag) fTh = th + (angleFrom(e) - th) * .55; });
-    const up = () => { if (drag) { drag = false; released = 1; buzz(5); } };
-    svg.addEventListener('pointerup', up); svg.addEventListener('pointercancel', up);
   })();
 
   /* ---------------- «больше любви» дописывается само ---------------- */
   (function write() {
     const w = $('.ph-write'); if (!w || RM) return;
     w.classList.add('pre');
-    const p = w.closest('p');
-    const ob = new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting) { setTimeout(() => { w.classList.add('go'); w.classList.remove('pre'); }, 900); ob.disconnect(); }
-    }), { rootMargin: '0px 0px -35% 0px' });
-    ob.observe(p);
+    onReach(w.closest('p'), '0px 0px -35% 0px', () => setTimeout(() => { w.classList.add('go'); w.classList.remove('pre'); }, 900));
   })();
 
-  /* ---------------- 5. прибор «Любовь» ---------------- */
+  /* ---------------- прибор «Любовь» ---------------- */
   (function gauge() {
     const sc = $('[data-scene="gauge"]'); if (!sc) return;
     const svg = $('svg', sc), needle = $('.needle', svg), ticksG = $('.ticks', svg), cracks = $('.cracks', svg);
@@ -829,14 +653,17 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
       l.setAttribute('x2', 150 + r2 * Math.cos(a)); l.setAttribute('y2', 172 + r2 * Math.sin(a));
       l.setAttribute('stroke-width', i % 5 ? 1.2 : 2.2); ticksG.appendChild(l);
     }
-    let e = 0, ang = -78, angV = 0, broken = false, hit = { x: 150, y: 110 }, fly = null, peel = null, taps = 0, lastRip = 0;
+    let e = 0, auto = 0, ang = -78, angV = 0, broken = false, hit = { x: 150, y: 110 }, fly = null, peel = null, lastRip = 0;
     function setNeedle(a) { needle.setAttribute('transform', `rotate(${a.toFixed(2)} 150 172)`); }
     setNeedle(ang);
     loopWhileSeen(sc, (dt, t) => {
       if (!broken) {
+        // стрелка сама ползёт вверх, пока читаешь про растущую тревогу; стук подбрасывает её ещё
+        auto = Math.min(1.12, auto + dt * .2);
         e = Math.max(0, e - dt * .45);
-        const jit = e > .15 ? Math.sin(t / 23) * 5 * e + (Math.random() - .5) * 7 * e : 0;
-        const target = clamp(-78 + 156 * Math.min(e, 1) + jit, -80, 80);
+        const E = Math.max(e, auto);
+        const jit = E > .15 ? Math.sin(t / 23) * 5 * E + (Math.random() - .5) * 7 * E : 0;
+        const target = clamp(-78 + 156 * Math.min(E, 1) + jit, -80, 80);
         angV += ((target - ang) * 60 - angV * 9) * dt; ang += angV * dt;
         if (ang > 80) { ang = 80; angV = -angV * .4; if (e > 1) buzz(5); }
         setNeedle(ang);
@@ -867,8 +694,8 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
       hit = { x: clamp((ev.clientX - r.left) * s, 40, 260), y: clamp((ev.clientY - r.top) * s, 60, 165) };
       ripple.setAttribute('cx', hit.x); ripple.setAttribute('cy', hit.y); lastRip = performance.now();
       glass.animate([{ transform: 'scale(.985)', transformOrigin: '150px 140px' }, { transform: 'scale(1)', transformOrigin: '150px 140px' }], { duration: 220, easing: 'cubic-bezier(.3,1.6,.5,1)' });
-      hintOff(sc); taps++;
-      if (!broken) { e = Math.min(1.35, e + .2); angV += 40; buzz(4); }
+      hintOff(sc);
+      if (!broken) { e = Math.min(1.35, Math.max(e, auto) + .2); angV += 40; buzz(4); }
       else say(sc, 'Стрелка показывала силу, а не любовь.', 'g2');
     });
     function crack() {
@@ -897,14 +724,11 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
       hintOff(sc);
     }
     // ломается на абзаце «И именно в эту секунду шкала ломается»
-    const trig = $$('main p').find(p => p.textContent.replace(/\s/g, ' ').startsWith('И именно в эту секунду'));
-    if (trig) {
-      const ob = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { crack(); ob.disconnect(); } }), { rootMargin: '0px 0px -66% 0px' });
-      ob.observe(trig);
-    }
+    const trig = paraStarting('И именно в эту секунду');
+    if (trig) onReach(trig, '0px 0px -66% 0px', crack);
   })();
 
-  /* ---------------- 6. пульт нервной системы ---------------- */
+  /* ---------------- пульт нервной системы ---------------- */
   (function consoleScene() {
     const sc = $('[data-scene="console"]'); if (!sc) return;
     const sls = $$('.sl', sc), merc = $('.merc', sc), wave = $('.wave', sc), tube = $('.tube', sc);
@@ -912,9 +736,9 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     let h = 0, hv = 0, moved = 0, told = false;
     const storm = () => {
       let s = 0; sls.forEach((el, i) => { const dir = +el.dataset.dir; s += dir > 0 ? vals[i] : 1 - vals[i]; });
-      s /= 6; // 0..1
-      const k = (s - .5) * 2; // -1..1
-      return clamp(.5 + .5 * Math.sign(k) * Math.pow(Math.abs(k), .7), .03, 1); // крайности уходят в потолок и к нулю
+      s /= 6;
+      const k = (s - .5) * 2;
+      return clamp(.5 + .5 * Math.sign(k) * Math.pow(Math.abs(k), .7), .03, 1);
     };
     function place(el, i) { const kb = $('.knob', el), tr = $('.trk', el); kb.style.left = (10 + vals[i] * (tr.clientWidth - 20)).toFixed(1) + 'px'; }
     sls.forEach((el, i) => {
@@ -932,11 +756,10 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     });
     const placeAll = () => sls.forEach(place);
     addEventListener('resize', placeAll); placeAll();
-    // ползунки выезжают по одному
     onSeen(sc, on => { if (on && !sc.dataset.shown) { sc.dataset.shown = 1; if (!RM) sls.forEach((el, i) => el.animate([{ opacity: 0, transform: 'translateX(26px)' }, { opacity: 1, transform: 'none' }], { duration: 500, delay: 150 + i * 160, easing: 'cubic-bezier(.2,.9,.3,1.2)', fill: 'backwards' })); } });
     loopWhileSeen(sc, (dt, t) => {
       const s = storm();
-      hv += ((s - h) * 40 - hv * 7) * dt; h += hv * dt; // ртуть с инерцией и перелётом
+      hv += ((s - h) * 40 - hv * 7) * dt; h += hv * dt;
       merc.style.height = (clamp(h, 0, 1.02) * 100).toFixed(2) + '%';
       const rough = clamp((h - .7) / .3, 0, 1);
       wave.style.transform = `translateY(${(Math.sin(t / 90) * 1.5 * rough).toFixed(2)}px) scaleX(${(1 + .3 * rough * Math.sin(t / 60)).toFixed(3)})`;
@@ -944,7 +767,7 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     });
   })();
 
-  /* ---------------- 7. позолота с цитат ---------------- */
+  /* ---------------- крошки (позолота, «рассыпаюсь») ---------------- */
   const fx = document.createElement('div');
   fx.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:15;overflow:hidden';
   document.body.appendChild(fx);
@@ -965,9 +788,10 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
       if (b.life <= 0) { b.el.remove(); bits.splice(i, 1); }
     }
   });
+
+  /* ---------------- позолота с цитат ---------------- */
   (function gild() {
     const gs = $$('.ph-gild'); if (!gs.length) return;
-    // подсказка у первой цитаты
     const hint = document.createElement('p'); hint.className = 'hint'; hint.textContent = 'потрите позолоту пальцем';
     hint.style.margin = '-.6em 0 1.1em'; gs[0].closest('p').after(hint);
     let firstWorn = false;
@@ -984,8 +808,11 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
             g.style.color = `rgb(${mix([241, 207, 122], ink(), Math.pow(w, .45)).join(',')})`;
             if (Math.random() < .7 && w < 1) crumb(e.clientX, e.clientY, Math.random() < .5 ? '#e9c46a' : '#b8862f');
             if (w >= 1 && !g.classList.contains('worn')) {
-              g.classList.add('worn'); g.style.color = ''; g.style.textShadow = 'none'; buzz(6); hint.classList.add('gone');
-              if (!firstWorn) { firstWorn = true; ogTalk('Без позолоты это просто жизнь', 3000); }
+              g.classList.add('worn'); g.style.color = ''; g.style.textShadow = 'none'; buzz(6);
+              if (!firstWorn) {
+                firstWorn = true; hint.classList.add('gone');
+                setTimeout(() => { hint.textContent = 'Без позолоты это просто жизнь'; hint.classList.add('said'); hint.classList.remove('gone'); }, 600);
+              }
             }
           }
         }
@@ -1015,7 +842,6 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
         return;
       }
       if (!drag) { sway = Math.sin(t / 1300) * 4; tx = sway; ty = 0; }
-      // тяжёлая: отстаёт от пальца
       vx += ((tx - x) * 26 - vx * 6.5) * dt; vy += ((ty - y) * 26 - vy * 6.5) * dt;
       x += vx * dt; y += vy * dt;
       disc.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(x * .5).toFixed(1)}deg)`;
@@ -1036,240 +862,288 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     disc.addEventListener('pointerup', up); disc.addEventListener('pointercancel', up);
   })();
 
-  /* ---------------- 8. тихий капкан ---------------- */
+  /* ---------------- тихий капкан: взгляд сам тянется к дрожащему ---------------- */
   (function trap() {
     const sc = $('[data-scene="trap"]'); if (!sc) return;
-    const shake = $('.c-shake', sc), calm = $('.c-calm', sc), glow = $('.tr-glow', sc), cards = $('.tr-cards', sc);
-    let fx = 0, fy = 0, gx = 0, gy = 0, inside = false, hold = 0, holding = false, lit = 0, done = false, snapT = 0;
+    const shake = $('.c-shake', sc), calm = $('.c-calm', sc), glow = $('.tr-glow', sc);
+    let pull = 0, gx = null, gy = 0, snapped = false, want = false, lit = 0, litT = 0;
     const centerOf = el => { const a = el.getBoundingClientRect(), b = sc.getBoundingClientRect(); return { x: a.left - b.left + a.width / 2, y: a.top - b.top + a.height / 2 }; };
-    function snap(auto) {
-      if (shake.classList.contains('shut')) return;
-      shake.classList.add('shut'); buzz(18);
-      clearTimeout(snapT);
-      if (!auto) snapT = setTimeout(() => shake.classList.remove('shut'), 1100);
-    }
-    const move = e => {
-      const r = sc.getBoundingClientRect(); fx = e.clientX - r.left; fy = e.clientY - r.top;
-      if (!inside) { gx = fx; gy = fy; } inside = true; glow.classList.add('on');
-    };
-    sc.addEventListener('pointerdown', e => { move(e); hintOff(sc); });
-    sc.addEventListener('pointermove', move);
-    const leave = () => { inside = false; glow.classList.remove('on'); holding = false; };
-    sc.addEventListener('pointerleave', leave); sc.addEventListener('pointercancel', leave);
-    sc.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') leave(); holding = false; });
-    shake.addEventListener('pointerdown', () => snap(false));
-    calm.addEventListener('pointerdown', e => { holding = true; e.stopPropagation(); move(e); });
-    calm.addEventListener('pointerup', () => holding = false);
-    calm.addEventListener('pointerleave', () => holding = false);
-    loopWhileSeen(sc, dt => {
-      if (inside) {
-        // тёплый след тянет к дрожащей карточке, как магнит
-        const c = centerOf(shake), d = Math.hypot(c.x - fx, c.y - fy);
-        const pull = RM ? .1 : clamp(1 - d / 360, 0, 1) * .55 + (holding ? -.25 : 0);
-        const tx = fx + (c.x - fx) * Math.max(0, pull), ty = fy + (c.y - fy) * Math.max(0, pull);
-        gx += (tx - gx) * Math.min(1, 14 * dt); gy += (ty - gy) * Math.min(1, 14 * dt);
+    onSeen(sc, on => glow.classList.toggle('on', on && !snapped));
+    loopWhileSeen(sc, (dt, t) => {
+      const c1 = centerOf(calm), c2 = centerOf(shake), k = t / 1000;
+      if (!snapped) {
+        // «внимание» начинает у спокойной карточки, но его медленно перетягивает к дрожащей
+        pull = Math.min(1, pull + dt * .28);
+        const e = sm(pull), orb = 10 + 16 * e;
+        const tx = c1.x + (c2.x - c1.x) * e + Math.cos(k * 2.3) * orb, ty = c1.y + (c2.y - c1.y) * e + Math.sin(k * 3.1) * orb * .7;
+        if (gx === null) { gx = tx; gy = ty; }
+        gx += (tx - gx) * Math.min(1, 5 * dt); gy += (ty - gy) * Math.min(1, 5 * dt);
         glow.style.transform = `translate(${gx.toFixed(1)}px,${gy.toFixed(1)}px)`;
       }
-      // держать спокойную — против тяги, ей нужно время
-      hold = holding ? Math.min(1, hold + dt / 1.6) : Math.max(0, hold - dt * 1.5);
-      calm.style.setProperty('--hold', hold.toFixed(3));
-      if (hold >= 1 && !done) { done = true; calm.classList.add('lit'); buzz(8); say(sc, 'Спокойное легко не заметить. Его приходится выбирать.'); }
-      lit += ((done ? 1 : 0) - lit) * 2 * dt; calm.style.setProperty('--lit', lit.toFixed(3));
+      // капкан ждёт, пока «внимание» не окажется у дрожащей карточки
+      if (want && !snapped && pull >= 1) { want = false; setTimeout(snap, 500); }
+      // после капкана спокойная карточка медленно разгорается: её никто не заметил
+      if (snapped) { litT += dt; lit += ((litT > 2.6 ? 1 : 0) - lit) * 1.2 * dt; calm.style.setProperty('--lit', lit.toFixed(3)); }
     });
-    // сам захлопывается на словах «вот оно, настоящее»
+    // захлопывается на словах «вот оно, настоящее»
     const word = $('.ph-trapword');
-    if (word) {
-      const ob = new IntersectionObserver(es => es.forEach(x => {
-        if (x.isIntersecting) { setTimeout(() => { snap(true); word.classList.add('snap'); say(sc, 'Капкан захлопнулся тихо.', 'trap-auto'); }, 600); ob.disconnect(); }
-      }), { rootMargin: '0px 0px -40% 0px' });
-      ob.observe(word.closest('p'));
+    function snap() {
+      if (snapped) return;
+      snapped = true; shake.classList.add('shut'); word.classList.add('snap'); glow.classList.remove('on'); buzz(18);
+      say(sc, 'Капкан захлопнулся тихо.');
+      setTimeout(() => { calm.classList.add('lit'); say(sc, 'А спокойное легко не заметить. Его приходится выбирать.'); }, 3200);
     }
+    if (word) onReach(word.closest('p'), '0px 0px -40% 0px', () => { want = true; });
   })();
 
-  /* ---------------- 9. нить между двумя отдельными людьми ---------------- */
+  /* ---------------- нить: история двоих, которая идёт сама, пока листаешь ---------------- */
   (function thread() {
     const sc = $('[data-scene="thread"]'); if (!sc) return;
-    const cv = $('canvas', sc), cx = cv.getContext('2d');
-    let W = 0, H = 0, dpr = 1;
-    const N = 26; let pts = [], A = [], rest = [], grab = new Map(), told = false, stretched = 0, slack = 0;
+    const track = $('.th-track', sc), stick = $('.th-sticky', sc), cv = $('canvas', sc), cx = cv.getContext('2d');
+    const cap = $('.th-cap', sc), nEl = $('.th-n', sc), wEl = $('.th-word', sc), qEl = $('.th-q', sc), dots = $$('.th-dots i', sc);
+    const hint = $('.th-hint', sc), endEl = $('.th-end', sc);
+    const STAGES = [
+      ['Двое', '«оставаться отдельным человеком рядом с другим отдельным человеком»'],
+      ['Дистанция', '«выдерживать тревогу и временную дистанцию»'],
+      ['Конфликт', '«проходить через конфликты, не разрушая связь»'],
+      ['Неизвестность', '«мириться с тем, что нельзя знать всё наверняка»'],
+      ['Перемены', '«принимать неизбежные перемены»'],
+      ['Своя жизнь', '«продолжать жить свою жизнь»'],
+    ];
+    const NST = STAGES.length;
+    let W = 0, H = 0, dpr = 1, pts = [], pS = 0, stage = 0, flash = 0, flashed = false;
+    const N = 28;
+    const stars = Array.from({ length: 46 }, (_, i) => ({ x: (i * 0.6180339 * 1.7) % 1, y: ((i * 0.3819 * 2.3) % 1) * .55, s: .6 + (i % 3) * .45, ph: i * 1.7 }));
     function size() {
       dpr = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight;
-      cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      rest = [{ x: W * .2, y: H * .5 }, { x: W * .8, y: H * .44 }];
-      if (!A.length) A = rest.map(p => ({ x: p.x, y: p.y, vx: 0, vy: 0 }));
-      slack = Math.hypot(rest[1].x - rest[0].x, rest[1].y - rest[0].y) * 1.08 / (N - 1);
-      if (!pts.length) for (let i = 0; i < N; i++) { const k = i / (N - 1); const x = rest[0].x + (rest[1].x - rest[0].x) * k, y = rest[0].y + (rest[1].y - rest[0].y) * k; pts.push({ x, y, px: x, py: y }); }
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cx.setTransform(dpr, 0, 0, dpr, 0, 0); pts = [];
     }
-    size(); addEventListener('resize', () => { A = []; pts = []; size(); });
-    const dark = () => matchMedia('(prefers-color-scheme: dark)').matches || ['night', 'end'].includes(document.documentElement.dataset.zone);
+    size(); addEventListener('resize', size);
+    // цвета
+    const hex = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+    const mixc = (a, b, k) => a.map((v, i) => v + (b[i] - v) * k);
+    const css = (c, a = 1) => `rgba(${c.map(v => Math.round(v)).join(',')},${a})`;
+    const SKY = {
+      dusk: ['#f6d7a6', '#f2b98a', '#e9c39a'].map(hex),
+      storm: ['#5d6375', '#7f8290', '#9d968f'].map(hex),
+      night: ['#1c2036', '#2f2c48', '#463b4e'].map(hex),
+      dawn: ['#f4cdbd', '#f8dfba', '#fcebcb'].map(hex),
+    };
+    function progress() {
+      const r = track.getBoundingClientRect(), top = parseFloat(getComputedStyle(stick).top) || 0;
+      return clamp((top - r.top) / Math.max(1, r.height - stick.offsetHeight), 0, 1);
+    }
+    function setStage(i) {
+      if (i === stage) return; stage = i;
+      cap.classList.add('swap');
+      setTimeout(() => {
+        nEl.textContent = (stage + 1) + ' / ' + NST; wEl.textContent = STAGES[stage][0]; qEl.textContent = STAGES[stage][1];
+        cap.classList.remove('swap');
+      }, 280);
+      dots.forEach((d, k) => d.classList.toggle('on', k <= i));
+      if (i > 0) hint.classList.add('gone');
+    }
+    function cliff(ex, ty, dir, col, grass) {
+      const out = dir > 0 ? -30 : W + 30, mid = (out + ex) / 2;
+      cx.fillStyle = css(col); cx.beginPath();
+      cx.moveTo(out, H); cx.lineTo(out, ty + 6);
+      cx.quadraticCurveTo(mid, ty - 7, ex, ty);
+      cx.bezierCurveTo(ex + dir * 12, ty + 34, ex - dir * 8, ty + 74, ex + dir * 10, H);
+      cx.closePath(); cx.fill();
+      cx.fillStyle = css(grass); cx.beginPath();
+      cx.moveTo(out, ty + 6); cx.quadraticCurveTo(mid, ty - 7, ex, ty); cx.lineTo(ex - dir * 2, ty + 5); cx.quadraticCurveTo(mid, ty - 1, out, ty + 12); cx.closePath(); cx.fill();
+    }
+    function person(ex0, ty0, dir, col, sway, S) {
+      cx.save(); cx.translate(ex0, ty0); cx.scale(S, S);
+      const ex = 0, ty = 0, x = -dir * 17;
+      cx.fillStyle = css(col); cx.strokeStyle = css(col); cx.lineCap = 'round'; cx.lineJoin = 'round';
+      // ноги свешиваются с края
+      cx.lineWidth = 4.6; cx.beginPath(); cx.moveTo(x, ty - 3); cx.lineTo(ex + dir * 1, ty - 2); cx.lineTo(ex + dir * 5, ty + 12); cx.stroke();
+      // спина и голова
+      cx.beginPath(); cx.moveTo(x - 6, ty); cx.quadraticCurveTo(x - 7 - dir * 1, ty - 18, x + sway, ty - 23); cx.quadraticCurveTo(x + 7, ty - 18, x + 6, ty); cx.closePath(); cx.fill();
+      cx.beginPath(); cx.arc(x + dir * 1.5 + sway, ty - 29, 5.6, 0, 7); cx.fill();
+      // рука держит нить
+      cx.lineWidth = 3; cx.beginPath(); cx.moveTo(x + dir * 2 + sway * .6, ty - 18); cx.lineTo(ex - dir * 4, ty - 12); cx.stroke();
+      cx.restore();
+      return { x: ex0 - dir * 4 * S, y: ty0 - 12 * S };
+    }
+    function lantern(x, y, k, glow) {
+      const r = 15 * k;
+      const rg = cx.createRadialGradient(x, y, 0, x, y, r * 1.8);
+      rg.addColorStop(0, `rgba(255,243,214,${glow})`); rg.addColorStop(.28, `rgba(246,180,83,${.9 * glow})`); rg.addColorStop(1, 'rgba(246,180,83,0)');
+      cx.fillStyle = rg; cx.beginPath(); cx.arc(x, y, r * 1.8, 0, 7); cx.fill();
+    }
     function draw(t) {
-      cx.clearRect(0, 0, W, H);
-      // вечернее небо и две скалы, как на открытке
+      const k = t / 1000;
+      const i = Math.min(NST - 1, Math.floor(pS * NST)), u = clamp(pS * NST - i, 0, 1);
+      setStage(i);
+      endEl.classList.toggle('on', pS > .93);
+      const bump = (a, b) => sm(u / a) * (1 - sm((u - b) / (1 - b)));
+      const sep = i === 1 ? bump(.4, .7) : 0;
+      const storm = i === 2 ? bump(.25, .75) : 0;
+      const fog = i === 3 ? bump(.3, .72) : 0;
+      const night = i === 4 ? (u < .5 ? sm(u / .45) : 1 - sm((u - .55) / .45)) : 0;
+      const dawn = i === 4 ? sm((u - .5) / .5) : i === 5 ? 1 : 0;
+      const life = i === 5 ? sm(u / .7) : 0;
+      if (i === 2 && u > .5 && !flashed) { flashed = true; flash = 1; }
+      if (i !== 2) flashed = false;
+      flash = Math.max(0, flash - .03);
+      const dark = Math.max(night * .75, storm * .45);
+
+      cx.save();
+      cx.beginPath(); cx.roundRect ? cx.roundRect(0, 0, W, H, 14) : cx.rect(0, 0, W, H); cx.clip();
+      // небо
+      const sky = [0, 1, 2].map(j => {
+        let c = mixc(SKY.dusk[j], SKY.dawn[j], dawn);
+        c = mixc(c, SKY.storm[j], storm); c = mixc(c, SKY.night[j], night); return c;
+      });
       const g = cx.createLinearGradient(0, 0, 0, H);
-      g.addColorStop(0, dark() ? '#2a2236' : '#f6d7a6'); g.addColorStop(.7, dark() ? '#3a2a2e' : '#f2b98a'); g.addColorStop(1, dark() ? '#2b2420' : '#e9c39a');
-      cx.fillStyle = g; cx.beginPath(); cx.roundRect ? cx.roundRect(0, 0, W, H, 14) : cx.rect(0, 0, W, H); cx.fill();
-      cx.fillStyle = dark() ? 'rgba(255,214,150,.5)' : 'rgba(255,240,200,.9)';
-      cx.beginPath(); cx.arc(W * .58, H * .66, 15, 0, 7); cx.fill();
+      g.addColorStop(0, css(sky[0])); g.addColorStop(.65, css(sky[1])); g.addColorStop(1, css(sky[2]));
+      cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+      // звёзды
+      if (night > .02) stars.forEach(s => { cx.fillStyle = `rgba(255,248,230,${(night * (.55 + .45 * Math.sin(k * 2 + s.ph))).toFixed(3)})`; cx.beginPath(); cx.arc(s.x * W, s.y * H, s.s, 0, 7); cx.fill(); });
+      // солнце: садится в ночь и встаёт к рассвету
+      const sunA = (1 - night) * (1 - storm * .85);
+      if (sunA > .02) {
+        const sy = H * (.6 - dawn * .1) + night * H * .35;
+        const sg = cx.createRadialGradient(W * .5, sy, 0, W * .5, sy, 46);
+        sg.addColorStop(0, `rgba(255,246,215,${sunA})`); sg.addColorStop(.35, `rgba(255,226,170,${.85 * sunA})`); sg.addColorStop(1, 'rgba(255,220,160,0)');
+        cx.fillStyle = sg; cx.beginPath(); cx.arc(W * .5, sy, 46, 0, 7); cx.fill();
+      }
       // дальние холмы
-      cx.fillStyle = dark() ? 'rgba(70,60,90,.55)' : 'rgba(150,140,160,.35)';
-      cx.beginPath(); cx.moveTo(0, H * .72);
-      for (let x = 0; x <= W; x += W / 8) cx.quadraticCurveTo(x + W / 16, H * (.62 + .06 * Math.sin(x * .03)), x + W / 8, H * .7);
+      cx.fillStyle = css(mixc(hex('#a99aa6'), hex('#2a2638'), dark), .55);
+      cx.beginPath(); cx.moveTo(0, H * .74);
+      for (let x = 0; x <= W; x += W / 8) cx.quadraticCurveTo(x + W / 16, H * (.63 + .05 * Math.sin(x * .03)), x + W / 8, H * .72);
       cx.lineTo(W, H); cx.lineTo(0, H); cx.fill();
-      // две скалы: каждый на своей
-      const cliff = (ax, ay, dir, col, edge) => {
-        cx.fillStyle = col; cx.beginPath();
-        const ex = dir > 0 ? 0 : W;
-        cx.moveTo(ex, H); cx.lineTo(ex, ay + 6);
-        cx.bezierCurveTo(ex + dir * W * .06, ay - 4, ax - dir * 30, ay - 2, ax + dir * 22, ay + 8);
-        cx.bezierCurveTo(ax + dir * 40, ay + 26, ax + dir * 30, ay + 60, ax + dir * 46, H);
-        cx.closePath(); cx.fill();
-        cx.strokeStyle = edge; cx.lineWidth = 1; cx.beginPath();
-        cx.moveTo(ax + dir * 22, ay + 8); cx.bezierCurveTo(ax + dir * 40, ay + 26, ax + dir * 30, ay + 60, ax + dir * 46, H); cx.stroke();
-        cx.fillStyle = dark() ? 'rgba(90,120,80,.5)' : 'rgba(150,180,110,.7)';
-        cx.beginPath(); cx.ellipse(ax - dir * 6, ay + 2, 34, 6, 0, 0, 7); cx.fill();
-      };
-      cliff(rest[0].x, rest[0].y, 1, dark() ? '#2b3426' : '#7e8f64', dark() ? '#46543c' : '#a8b58c');
-      cliff(rest[1].x, rest[1].y, -1, dark() ? '#2e3729' : '#8a9a6c', dark() ? '#4a5940' : '#b2bf94');
-      // нить
-      const span = Math.hypot(A[1].x - A[0].x, A[1].y - A[0].y), base = Math.hypot(rest[1].x - rest[0].x, rest[1].y - rest[0].y);
-      const taut = clamp((span - base * 1.02) / (base * .6), 0, 1);
-      cx.strokeStyle = `rgba(255,${Math.round(220 - 30 * taut)},${Math.round(150 - 40 * taut)},${(.75 + .25 * taut).toFixed(2)})`;
-      cx.lineWidth = 1.4 + taut; cx.shadowColor = 'rgba(255,190,100,.9)'; cx.shadowBlur = 4 + 10 * taut;
-      cx.beginPath(); cx.moveTo(pts[0].x, pts[0].y); for (let i = 1; i < N; i++) cx.lineTo(pts[i].x, pts[i].y); cx.stroke();
-      cx.shadowBlur = 0;
-      // два огонька, каждый свой
-      A.forEach((a, i) => {
-        const br = 1 + .12 * Math.sin(t / 955 + i * 2);
-        const rg = cx.createRadialGradient(a.x, a.y, 0, a.x, a.y, 22 * br);
-        rg.addColorStop(0, 'rgba(255,243,214,1)'); rg.addColorStop(.3, 'rgba(246,180,83,.9)'); rg.addColorStop(1, 'rgba(246,180,83,0)');
-        cx.fillStyle = rg; cx.beginPath(); cx.arc(a.x, a.y, 22 * br, 0, 7); cx.fill();
-      });
-      return taut;
-    }
-    loopWhileSeen(sc, (dt, t) => {
-      // огоньки: держит палец — к пальцу, иначе на своё место (не друг к другу)
-      A.forEach((a, i) => {
-        const g = [...grab.values()].find(v => v.i === i);
-        const tx = g ? g.x : rest[i].x, ty = g ? g.y : rest[i].y;
-        const k = g ? 120 : 40, c = g ? 16 : 7;
-        a.vx += ((tx - a.x) * k - a.vx * c) * dt; a.vy += ((ty - a.y) * k - a.vy * c) * dt;
-        a.x += a.vx * dt; a.y += a.vy * dt;
-      });
-      // держится: дальше предела не растягивается
-      const base = Math.hypot(rest[1].x - rest[0].x, rest[1].y - rest[0].y), maxD = base * 1.75;
-      const dx = A[1].x - A[0].x, dy = A[1].y - A[0].y, d = Math.hypot(dx, dy);
-      if (d > maxD) { const k = (d - maxD) / d / 2; A[0].x += dx * k; A[0].y += dy * k; A[1].x -= dx * k; A[1].y -= dy * k; }
-      // нить (верле)
-      for (const p of pts) { const vx = (p.x - p.px) * .985, vy = (p.y - p.py) * .985; p.px = p.x; p.py = p.y; p.x += vx; p.y += vy + 260 * dt * dt * 60 * .016; }
-      for (let it = 0; it < 14; it++) {
-        pts[0].x = A[0].x; pts[0].y = A[0].y; pts[N - 1].x = A[1].x; pts[N - 1].y = A[1].y;
-        for (let i = 0; i < N - 1; i++) {
-          const p = pts[i], q = pts[i + 1], ddx = q.x - p.x, ddy = q.y - p.y, dd = Math.hypot(ddx, ddy) || 1;
-          if (dd > slack) { const k = (dd - slack) / dd / 2; p.x += ddx * k; p.y += ddy * k; q.x -= ddx * k; q.y -= ddy * k; }
+      // глубина пропасти
+      const ab = cx.createLinearGradient(0, H * .66, 0, H);
+      ab.addColorStop(0, css(mixc(hex('#6b4f5a'), hex('#0e0c14'), dark), 0)); ab.addColorStop(1, css(mixc(hex('#4a3443'), hex('#0e0c14'), dark), .75));
+      cx.fillStyle = ab; cx.fillRect(0, H * .66, W, H * .34);
+
+      // две скалы расходятся в «дистанции» и возвращаются
+      const S = clamp(W / 260, 1.2, 1.5);
+      const half = W * .2, push = W * .19 * sep;
+      const exL = W * .5 - half - push, exR = W * .5 + half + push, tyL = H * .6, tyR = H * .55;
+      const rock = mixc(hex('#7e8f64'), hex('#232b22'), dark), rock2 = mixc(hex('#8a9a6c'), hex('#262f24'), dark);
+      const grass = mixc(hex('#a9bf7f'), hex('#33402e'), dark), body = mixc(hex('#4a3428'), hex('#141016'), dark * .8);
+      cliff(exL, tyL, 1, rock, grass); cliff(exR, tyR, -1, rock2, grass);
+      // своя жизнь: у каждого на его скале что-то растёт
+      if (life > .01) {
+        const tx = Math.max(14, exL - Math.min(78, W * .2)), th = 34 * life * S;
+        cx.strokeStyle = css(mixc(hex('#6b4a32'), hex('#2a1d14'), dark)); cx.lineWidth = 2.4; cx.beginPath(); cx.moveTo(tx, tyL + 1); cx.lineTo(tx, tyL - th); cx.stroke();
+        cx.fillStyle = `rgba(111,154,85,${life})`;
+        [[0, -th, 11], [-8, -th + 8, 8], [8, -th + 7, 8]].forEach(([dx, dy, r]) => { cx.beginPath(); cx.arc(tx + dx * S, tyL + dy, r * life * S, 0, 7); cx.fill(); });
+        ['#f2a649', '#e07a78', '#fff3d6'].forEach((c, j) => {
+          const fx = Math.min(W - 10, exR + (52 + j * 13) * S), fy = tyR + 1 - (12 + 3 * j) * life * S;
+          cx.strokeStyle = `rgba(90,130,70,${life})`; cx.lineWidth = 1.4; cx.beginPath(); cx.moveTo(fx, tyR + 2); cx.lineTo(fx, fy); cx.stroke();
+          cx.fillStyle = c; cx.globalAlpha = life; cx.beginPath(); cx.arc(fx, fy, 3.4 * S, 0, 7); cx.fill(); cx.globalAlpha = 1;
+        });
+      }
+      const sway = storm * Math.sin(k * 3) * 1.5;
+      const hL = person(exL, tyL, 1, body, sway, S), hR = person(exR, tyR, -1, body, -sway, S);
+      const br = 1 + .08 * Math.sin(k * 1.05);
+      lantern(Math.max(12, exL - 34 * S), tyL - 7 * S, br * S * (1 + .45 * life), .85 + .15 * life);
+      lantern(Math.min(W - 12, exR + 34 * S), tyR - 7 * S, br * S * (1 + .45 * life), .85 + .15 * life);
+
+      // нить (верле): провисает, натягивается на расстоянии, бьётся в бурю — и держится
+      const base = 2 * half - 8 * S, d = Math.hypot(hR.x - hL.x, hR.y - hL.y);
+      const seg = Math.max(base * 1.12, d * 1.002) / (N - 1);
+      if (!pts.length) for (let j = 0; j < N; j++) { const q = j / (N - 1), x = hL.x + (hR.x - hL.x) * q, y = hL.y + (hR.y - hL.y) * q; pts.push({ x, y, px: x, py: y }); }
+      const dt = 1 / 60;
+      for (let j = 1; j < N - 1; j++) {
+        const p = pts[j], vx = (p.x - p.px) * .97, vy = (p.y - p.py) * .97; p.px = p.x; p.py = p.y;
+        const wgt = Math.sin(Math.PI * j / (N - 1));
+        const wx = storm * (Math.sin(k * 1.7) * 2600 + Math.sin(k * 4.6 + j * .5) * 1500) * wgt;
+        const wy = storm * Math.sin(k * 3.3 + j * .45) * 1800 * wgt;
+        p.x += vx + wx * dt * dt; p.y += vy + (1300 + wy) * dt * dt;
+      }
+      for (let it = 0; it < 16; it++) {
+        pts[0].x = hL.x; pts[0].y = hL.y; pts[N - 1].x = hR.x; pts[N - 1].y = hR.y;
+        for (let j = 0; j < N - 1; j++) {
+          const p = pts[j], q = pts[j + 1], ddx = q.x - p.x, ddy = q.y - p.y, dd = Math.hypot(ddx, ddy) || 1;
+          if (dd > seg) { const m = (dd - seg) / dd / 2; p.x += ddx * m; p.y += ddy * m; q.x -= ddx * m; q.y -= ddy * m; }
         }
       }
-      const taut = draw(t);
-      if (taut > .6) stretched = 1;
-      if (stretched && !grab.size && !told) { told = true; buzz(6); say(sc, 'Натянулась и выдержала. И каждый остался на своём месте.'); }
-    });
-    const near = (x, y) => { let best = -1, bd = 60; A.forEach((a, i) => { const d = Math.hypot(a.x - x, a.y - y); if (d < bd) { bd = d; best = i; } }); return best; };
-    cv.addEventListener('pointerdown', e => {
-      const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-      const taken = new Set([...grab.values()].map(v => v.i));
-      let i = near(x, y);
-      if (i < 0 || taken.has(i)) {
-        // касание нити — она качнётся
-        let bi = 0, bd = 1e9; pts.forEach((p, k) => { const d = Math.hypot(p.x - x, p.y - y); if (d < bd) { bd = d; bi = k; } });
-        if (bd < 40) for (let k = 1; k < N - 1; k++) pts[k].py -= 8 * Math.exp(-Math.abs(k - bi) / 4);
-        return;
+      const taut = clamp((d - base * 1.05) / (base * .25), 0, 1);
+      cx.strokeStyle = `rgba(255,${Math.round(226 - 26 * taut)},${Math.round(160 - 40 * taut)},${(.8 + .2 * taut).toFixed(2)})`;
+      cx.lineWidth = 1.5 + taut * .8; cx.shadowColor = 'rgba(255,190,100,.95)'; cx.shadowBlur = 5 + 10 * Math.max(taut, storm, night * .6);
+      cx.beginPath(); cx.moveTo(pts[0].x, pts[0].y); for (let j = 1; j < N; j++) cx.lineTo(pts[j].x, pts[j].y); cx.stroke();
+      cx.shadowBlur = 0;
+
+      // дождь
+      if (storm > .02) {
+        cx.strokeStyle = `rgba(225,232,250,${(.55 * storm).toFixed(3)})`; cx.lineWidth = 1;
+        cx.beginPath();
+        for (let j = 0; j < 70; j++) {
+          const x = ((j * 97.3 + k * 70 * (j % 3 + 2)) % (W + 40)) - 20, y = ((j * 53.1 + k * 560) % (H + 30)) - 15;
+          cx.moveTo(x, y); cx.lineTo(x - 7, y + 15);
+        }
+        cx.stroke();
       }
-      grab.set(e.pointerId, { i, x, y }); cv.setPointerCapture(e.pointerId); hintOff(sc); buzz(4);
-      cv.style.touchAction = 'none';
+      // туман закрывает второго; по нити всё равно бежит огонёк туда и обратно
+      if (fog > .01) {
+        const fc = '238,234,228';
+        const lg = cx.createLinearGradient(W * .42, 0, W * .72, 0);
+        lg.addColorStop(0, `rgba(${fc},0)`); lg.addColorStop(1, `rgba(${fc},${(.95 * fog).toFixed(3)})`);
+        cx.fillStyle = lg; cx.fillRect(W * .42, 0, W * .58, H);
+        for (let j = 0; j < 7; j++) {
+          const fx = W * (.48 + .09 * j) + Math.sin(k * .4 + j) * 18, fy = H * (.22 + .12 * (j % 4)), r = 70 + 12 * (j % 3);
+          const rg = cx.createRadialGradient(fx, fy, 0, fx, fy, r);
+          rg.addColorStop(0, `rgba(${fc},${(.85 * fog).toFixed(3)})`); rg.addColorStop(1, `rgba(${fc},0)`);
+          cx.fillStyle = rg; cx.beginPath(); cx.arc(fx, fy, r, 0, 7); cx.fill();
+        }
+        let s = (k * .42) % 2; s = s > 1 ? 2 - s : s;
+        const f = s * (N - 1), j0 = Math.floor(f), j1 = Math.min(N - 1, j0 + 1), q = f - j0;
+        const px = pts[j0].x + (pts[j1].x - pts[j0].x) * q, py = pts[j0].y + (pts[j1].y - pts[j0].y) * q;
+        const pg = cx.createRadialGradient(px, py, 0, px, py, 10);
+        pg.addColorStop(0, `rgba(255,246,220,${fog})`); pg.addColorStop(.4, `rgba(255,190,100,${.8 * fog})`); pg.addColorStop(1, 'rgba(255,190,100,0)');
+        cx.fillStyle = pg; cx.beginPath(); cx.arc(px, py, 10, 0, 7); cx.fill();
+      }
+      if (flash > 0) { cx.fillStyle = `rgba(255,255,255,${(flash * .6).toFixed(3)})`; cx.fillRect(0, 0, W, H); }
+      cx.restore();
+    }
+    loopWhileSeen(sc, (dt, t) => {
+      const p = progress();
+      pS += (p - pS) * Math.min(1, (RM ? 30 : 7) * dt);
+      draw(t);
     });
-    cv.addEventListener('pointermove', e => {
-      const g = grab.get(e.pointerId); if (!g) return;
-      const r = cv.getBoundingClientRect(); g.x = clamp(e.clientX - r.left, 10, W - 10); g.y = clamp(e.clientY - r.top, 10, H - 10);
-    });
-    const up = e => { if (grab.delete(e.pointerId) && !grab.size) cv.style.touchAction = 'pan-y'; };
-    cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
-    // чтобы палец на огоньке не прокручивал страницу
-    cv.addEventListener('touchstart', e => {
-      const r = cv.getBoundingClientRect(), t0 = e.touches[0];
-      if (near(t0.clientX - r.left, t0.clientY - r.top) >= 0) e.preventDefault();
-    }, { passive: false });
     draw(0);
   })();
 
-  /* ---------------- рассыпаюсь ---------------- */
+  /* ---------------- «рассыпаюсь» — само, когда дочитываешь до этого слова ---------------- */
   (function crumble() {
-    const w = $('.ph-crumble'); if (!w) return;
+    const w = $('.ph-crumble'); if (!w || RM) return;
     const txt = w.textContent; w.innerHTML = txt.split('').map(c => `<span class="cl">${c}</span>`).join('');
-    const ls = $$('.cl', w); let t = 0, busy = false;
+    const ls = $$('.cl', w);
     const go = () => {
-      if (busy || RM) return; busy = true; buzz(8);
       const r = w.getBoundingClientRect();
       ls.forEach((l, i) => {
-        l.style.transition = 'transform .7s cubic-bezier(.5,0,.9,.6), opacity .7s';
+        l.style.transition = 'transform .8s cubic-bezier(.5,0,.9,.6), opacity .8s';
         l.style.transform = `translate(${((Math.random() - .5) * 14).toFixed(1)}px, ${(18 + Math.random() * 26).toFixed(1)}px) rotate(${((Math.random() - .5) * 90).toFixed(0)}deg)`;
         l.style.opacity = '.15';
         for (let k = 0; k < 2; k++) setTimeout(() => crumb(r.left + (i + .5) * r.width / ls.length, r.top + r.height * .6, 'rgba(180,140,90,.9)'), Math.random() * 300);
       });
-      setTimeout(() => {
-        ls.forEach(l => { l.style.transition = ''; l.style.transform = ''; l.style.opacity = ''; });
-        setTimeout(() => { busy = false; ogTalk('Собралось обратно. А любовь и не рассыпалась', 3200); }, 900);
-      }, 1300);
+      // и спокойно собирается обратно
+      setTimeout(() => ls.forEach(l => { l.style.transition = ''; l.style.transform = ''; l.style.opacity = ''; }), 1700);
     };
-    w.addEventListener('pointerdown', () => { clearTimeout(t); t = setTimeout(go, 450); });
-    ['pointerup', 'pointerleave', 'pointercancel'].forEach(n => w.addEventListener(n, () => clearTimeout(t)));
-    w.addEventListener('contextmenu', e => e.preventDefault());
+    onReach(w.closest('p'), '0px 0px -45% 0px', () => setTimeout(go, 500));
   })();
 
-  /* ---------------- 10. фонарь на себя и финал ---------------- */
-  let darkZone = false;
-  const dk = $('#dark'), lg = $('#lamp-glow');
-  let lr = 0, lrT = 0, lx = innerWidth / 2, ly = innerHeight * .4, fingerOn = false;
-  function lamp(x, y, on) {
-    lx = x; ly = y; fingerOn = on;
-    dk.style.setProperty('--lx', x + 'px'); dk.style.setProperty('--ly', y + 'px');
-    lg.style.transform = `translate(${x}px,${y}px)`;
-  }
-  addEventListener('touchstart', e => { if (darkZone) { const t = e.touches[0]; lamp(t.clientX, t.clientY, true); } }, { passive: true });
-  addEventListener('touchmove', e => { if (darkZone) { const t = e.touches[0]; lamp(t.clientX, t.clientY, true); } }, { passive: true });
-  addEventListener('touchend', e => { if (!e.touches.length) fingerOn = false; }, { passive: true });
-  addEventListener('pointermove', e => { if (darkZone && e.pointerType === 'mouse') lamp(e.clientX, e.clientY, true); });
-  addEventListener('mouseout', e => { if (!e.relatedTarget) fingerOn = false; });
-  ticks.add(dt => {
-    if (!darkZone && lr === 0) return;
-    lrT = darkZone && fingerOn ? 95 : 0;
-    lr += (lrT - lr) * Math.min(1, 7 * dt); if (lr < .5 && lrT === 0) lr = 0;
-    dk.style.setProperty('--lr', lr.toFixed(1) + 'px');
-    lg.classList.toggle('on', darkZone && fingerOn);
-  });
-
-  (function final() {
-    const sc = $('[data-scene="final"]'); if (!sc) return;
-    const dot = $('.fin-dot', sc);
-    const ob = new IntersectionObserver(es => es.forEach(x => {
-      if (!x.isIntersecting || sc.classList.contains('on')) return;
-      sc.classList.add('on');
-      // огонёк спокойно подходит к строке
-      const a = og.getBoundingClientRect(), b = dot.getBoundingClientRect();
-      const dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2);
-      if (RM) { og.classList.add('gone'); sc.classList.add('landed'); return; }
-      og.animate([{ translate: '0 0' }, { translate: `${dx}px ${dy}px` }], { duration: 2200, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'forwards' })
-        .finished.then(() => { sc.classList.add('landed'); og.classList.add('gone'); });
-    }), { rootMargin: '0px 0px -6% 0px' });
-    ob.observe(sc);
-    dot.addEventListener('click', () => { dot.animate([{ boxShadow: '0 0 12px 4px rgba(255,176,80,.55)' }, { boxShadow: '0 0 26px 12px rgba(255,190,90,.85)' }, { boxShadow: '0 0 12px 4px rgba(255,176,80,.55)' }], { duration: 1600 }); buzz(6); });
+  /* ---------------- фонарь на себя: свет сам идёт по абзацам, которые читаешь ---------------- */
+  (function lamp() {
+    const start = $('p[data-z="night"]'); if (!start) return;
+    const ps = $$('main p'), from = ps.indexOf(start);
+    const lampPs = ps.slice(from);
+    lampPs.forEach(p => p.classList.add('lampable'));
+    const ob = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('lit', e.isIntersecting)), { rootMargin: '-28% 0px -28% 0px' });
+    lampPs.forEach(p => ob.observe(p));
   })();
 
-  /* ---------------- после статьи: посещения, оценка, записки, поделиться ----------------
-     Те же адреса и метка статьи, что у прежней версии, чтобы статистика в панели продолжилась. */
-  (function after() {
-    const SB = 'https://eswoqjxioavegjnhosbb.supabase.co';
-    const KEY_PUB = 'sb_publishable_Czx1d7slcJQgqhjOS0miWw_Na2Yrnvb';
-    const ART = 'love-suffering-v1';
-    const PREVIEW = !!window.LOVE_PREVIEW;
+  /* ---------------- учёт посещений для панели статистики (без кнопок на странице) ----------------
+     Тот же адрес и метка статьи, что у прежней версии, чтобы статистика в панели продолжилась. */
+  (function visits() {
+    if (window.LOVE_PREVIEW) return;
+    const SB = 'https://eswoqjxioavegjnhosbb.supabase.co', ART = 'love-suffering-v1';
     function clientId() {
       const k = 'legendpsy_rating_client_v1'; let id = '';
       try { id = localStorage.getItem(k) || ''; } catch (e) {}
@@ -1278,95 +1152,13 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
       try { localStorage.setItem(k, id); } catch (e) {}
       return id;
     }
-    const post = (fn, body) => fetch(SB + '/functions/v1/' + fn, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    // посещение: одно за сеанс браузера
-    if (!PREVIEW) (async () => {
+    (async () => {
       const k = 'legendpsy_visit_tracked_v1';
-      try { if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, '1'); await post('track-visit', { article_id: ART, client_id: clientId() }); }
-      catch (e) { try { sessionStorage.setItem(k, ''); } catch (_) {} }
+      try {
+        if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, '1');
+        await fetch(SB + '/functions/v1/track-visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ article_id: ART, client_id: clientId() }) });
+      } catch (e) { try { sessionStorage.setItem(k, ''); } catch (_) {} }
     })();
-
-    // оценка: пять огоньков
-    const stars = $$('.star'), rateSt = $('#rateSt');
-    let rated = 0; try { rated = +localStorage.getItem('legendpsy_rating_love_suffering_v1') || 0; } catch (e) {}
-    const paint = (n, cls) => stars.forEach(b => b.classList.toggle(cls, +b.dataset.r <= n));
-    if (rated) { paint(rated, 'on'); rateSt.textContent = 'Спасибо, ваша оценка у меня.'; }
-    let saving = false;
-    stars.forEach(b => {
-      b.addEventListener('pointerenter', () => paint(+b.dataset.r, 'pre'));
-      b.addEventListener('pointerleave', () => paint(0, 'pre'));
-      b.addEventListener('click', async () => {
-        if (saving) return; saving = true;
-        const r = +b.dataset.r; paint(r, 'on'); paint(0, 'pre'); buzz(8);
-        stars.forEach(x => x.setAttribute('aria-pressed', String(+x.dataset.r <= r)));
-        try { localStorage.setItem('legendpsy_rating_love_suffering_v1', String(r)); } catch (e) {}
-        rateSt.textContent = 'Спасибо, ваша оценка у меня.';
-        if (PREVIEW) { rateSt.textContent = 'В предпросмотре оценка не отправляется.'; saving = false; return; }
-        try { const res = await post('submit-rating', { article_id: ART, rating: r, client_id: clientId() }); if (!res.ok) throw 0; }
-        catch (e) { rateSt.textContent = 'Не получилось отправить оценку. Попробуйте чуть позже.'; }
-        finally { saving = false; }
-      });
-    });
-
-    // записки читателей
-    const form = $('#cForm'), body = $('#cBody'), site = $('#cSite'), send = $('#cSend'), st = $('#cSt'), chars = $('#cChars'), open = $('#cOpen');
-    const notes = $('#notes'), stage = $('#notesStage'), empty = $('#notesEmpty');
-    let mine = ''; try { mine = sessionStorage.getItem('legendpsy_comment_cloud_unlocked_v1') || ''; } catch (e) {}
-    if (mine) open.hidden = false;
-    body.addEventListener('input', () => chars.textContent = body.value.length);
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const text = body.value.trim(); if (!text) return;
-      if (PREVIEW) { st.textContent = 'В предпросмотре сообщения не отправляются.'; return; }
-      send.disabled = true; st.textContent = 'Сохраняю…';
-      try {
-        const res = await post('submit-comment', { article_id: ART, body: text, website: site.value || '' });
-        let out = {}; try { out = await res.json(); } catch (_) {}
-        if (!res.ok) throw new Error(out && out.error || 'save');
-        mine = text; try { sessionStorage.setItem('legendpsy_comment_cloud_unlocked_v1', mine); } catch (_) {}
-        body.value = ''; site.value = ''; chars.textContent = '0';
-        st.textContent = 'Сообщение сохранено. Спасибо.'; open.hidden = false;
-      } catch (err) {
-        const m = err && err.message;
-        st.textContent = m === 'rate_limit' ? 'Слишком много сообщений подряд. Попробуйте через несколько минут.'
-          : m === 'duplicate_comment' ? 'Такое сообщение уже было отправлено недавно.'
-          : m === 'too_many_links' ? 'В сообщении слишком много ссылок.'
-          : 'Не удалось сохранить сообщение. Попробуйте ещё раз чуть позже.';
-      } finally { send.disabled = false; }
-    });
-    const fmt = v => { try { return new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(v)); } catch (e) { return ''; } };
-    open.addEventListener('click', async () => {
-      notes.hidden = false; document.body.style.overflow = 'hidden'; stage.replaceChildren(); empty.hidden = true;
-      try {
-        const res = await fetch(SB + '/rest/v1/comments?select=id,body,created_at&article_id=eq.' + encodeURIComponent(ART) + '&order=created_at.desc&limit=160', { headers: { apikey: KEY_PUB } });
-        if (!res.ok) throw 0;
-        const items = (await res.json()).filter(x => x && (x.body || '').trim() && x.body.trim() !== mine.trim());
-        if (!items.length) { empty.hidden = false; return; }
-        items.forEach((x, i) => {
-          const n = document.createElement('div'); n.className = 'note';
-          n.style.setProperty('--r', ((Math.random() - .5) * 3).toFixed(2) + 'deg'); n.style.animationDelay = Math.min(i * 60, 1500) + 'ms';
-          n.textContent = x.body; const t = document.createElement('time'); t.textContent = fmt(x.created_at); n.append(t);
-          stage.append(n);
-        });
-      } catch (e) { empty.hidden = false; empty.textContent = 'Не получилось загрузить записки. Попробуйте чуть позже.'; }
-    });
-    const close = () => { notes.hidden = true; document.body.style.overflow = ''; };
-    $('#notesX').addEventListener('click', close);
-    addEventListener('keydown', e => { if (e.key === 'Escape' && !notes.hidden) close(); });
-
-    // поделиться
-    const url = location.href.split('#')[0], shareSt = $('#shareSt');
-    $('#share').addEventListener('click', async () => {
-      shareSt.textContent = '';
-      try {
-        if (navigator.share) { await navigator.share({ title: 'Любовь не измеряется страданием', text: 'Интерактивное эссе о том, почему интенсивность страдания не является мерой любви.', url }); return; }
-        await navigator.clipboard.writeText(url); shareSt.textContent = 'Ссылка скопирована.';
-      } catch (e) {
-        if (e && e.name === 'AbortError') return;
-        try { await navigator.clipboard.writeText(url); shareSt.textContent = 'Ссылка скопирована.'; }
-        catch (_) { shareSt.textContent = 'Ссылка: ' + url; }
-      }
-    });
   })();
 
   setZone();
