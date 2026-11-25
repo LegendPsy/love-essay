@@ -328,7 +328,6 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     </div></div>
     <figcaption class="cap">второй · проверок: <b class="cnt">0</b></figcaption>
   </div>
-  <p class="voice" aria-live="polite"></p>
 </figure>
 <p data-t>Если спросить вслух, кто из них любит сильнее, разум почти наверняка ответит: «Мы не можем знать». Но <span class="nobr">где-то</span> глубже, в слое почти автоматических культурных рефлексов, весы успеют качнуться в сторону второго.</p>
 <figure class="scene scales" data-scene="scales" aria-label="Весы сами клонятся в сторону второго">
@@ -358,7 +357,6 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     </g>
   </svg>
   <div class="sc-caps" aria-hidden="true"><span>первый</span><span>второй</span></div>
-  <p class="voice" aria-live="polite"></p>
 </figure>
 <p data-t data-z="intro">В нашей культуре живёт одна странная, но удивительно живучая идея о любви — мы усвоили её настолько рано, что почти перестали замечать. Мы привыкли измерять любовь амплитудой страдания.</p>
 <p data-t>Насколько человек разрушен после расставания — настолько глубоко он любил. Насколько его парализует тревога за близкого — настолько тот ему дорог. Насколько невозможными становятся еда, работа и сон, когда с любимым <span class="nobr">что-то</span> не так, — настолько чувство кажется подлинным.</p>
@@ -586,7 +584,6 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
         spin.classList.remove('go'); spin.style.opacity = 0; toast.classList.add('on');
         n++; cnt.textContent = n;
         if (!RM) cnt.animate([{ transform: 'scale(1.5)' }, { transform: 'scale(1)' }], { duration: 400, easing: 'cubic-bezier(.3,1.6,.5,1)' });
-        if (n === 3) say(sc, 'Ответа не прибавилось. Тревоги — да.');
       }, 1350);
       setTimeout(() => { toast.classList.remove('on'); busy = false; }, 2500);
     }
@@ -611,7 +608,7 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
   (function scales() {
     const sc = $('[data-scene="scales"]'); if (!sc) return;
     const svg = $('svg', sc), beam = $('.beam', svg), pl = $('.pan-l', svg), pr = $('.pan-r', svg);
-    const BIAS = 13; let th = 0, w = 0, bias = 0, sv = 0, told = false;
+    const BIAS = 13; let th = 0, w = 0, bias = 0, sv = 0;
     const px = 160, py = 40, half = 112;
     function draw() {
       beam.setAttribute('transform', `rotate(${th.toFixed(2)} ${px} ${py})`);
@@ -629,7 +626,6 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
       w += acc * dt; th += w * dt;
       sv += ((-w * .08) - sv) * 6 * dt;
       draw();
-      if (bias && Math.abs(th - BIAS) < 1.2 && Math.abs(w) < 2 && !told) { told = true; say(sc, 'Весы качнулись сами. Это рефлекс, а не взвешивание.'); }
     });
   })();
 
