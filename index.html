@@ -524,6 +524,21 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     const ob = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { ob.disconnect(); f(); } }), { rootMargin: margin });
     ob.observe(el);
   }
+  // сцена начинает двигаться, только когда видна целиком: низ поднялся выше 90% экрана
+  // (или верх ушёл выше 10% у высокой сцены). Иначе всё успевает закончиться, пока читаешь текст над ней.
+  const focusList = [];
+  function checkFocus() {
+    const vh = innerHeight;
+    for (let i = focusList.length - 1; i >= 0; i--) {
+      const it = focusList[i], r = it.el.getBoundingClientRect();
+      const ok = isPhone() || !it.desk ? r.height && (r.bottom <= vh * .9 || r.top <= vh * .1) : it.desk(r, vh);
+    if (ok) { focusList.splice(i, 1); it.f(); }
+    }
+  }
+  addEventListener('scroll', checkFocus, { passive: true }); addEventListener('resize', checkFocus);
+  // на компьютере экран большой: там сцена запускается как раньше (desk), «целиком на экране» — только для телефона
+  function isPhone() { return matchMedia('(hover: none) and (pointer: coarse)').matches || innerWidth < 700; }
+  function onFocus(el, f, desk) { focusList.push({ el, f, desk }); requestAnimationFrame(checkFocus); }
   const paraStarting = start => $$('main p').find(p => p.textContent.replace(/\s/g, ' ').startsWith(start));
 
   // общий цикл анимации: подписчики, только видимые
@@ -620,7 +635,7 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     }
     draw();
     // ровно стоят, пока весы целиком не в кадре, потом медленно и неотвратимо клонятся ко второму
-    onReach(sc, '0px 0px -30% 0px', () => setTimeout(() => bias = BIAS, 900));
+    onFocus(sc, () => setTimeout(() => bias = BIAS, 900), (r, vh) => r.top <= vh * .7);
     loopWhileSeen(sc, dt => {
       const acc = (bias - th) * 5 - w * 2.2;
       w += acc * dt; th += w * dt;
@@ -649,13 +664,14 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
       l.setAttribute('x2', 150 + r2 * Math.cos(a)); l.setAttribute('y2', 172 + r2 * Math.sin(a));
       l.setAttribute('stroke-width', i % 5 ? 1.2 : 2.2); ticksG.appendChild(l);
     }
+    let focused = false; onFocus(sc, () => focused = true, (r, vh) => r.top <= vh + 80 && r.bottom >= -80);
     let e = 0, auto = 0, ang = -78, angV = 0, broken = false, hit = { x: 150, y: 110 }, fly = null, peel = null, lastRip = 0;
     function setNeedle(a) { needle.setAttribute('transform', `rotate(${a.toFixed(2)} 150 172)`); }
     setNeedle(ang);
     loopWhileSeen(sc, (dt, t) => {
       if (!broken) {
         // стрелка сама ползёт вверх, пока читаешь про растущую тревогу; стук подбрасывает её ещё
-        auto = Math.min(1.12, auto + dt * .2);
+        if (focused) auto = Math.min(1.12, auto + dt * .2);
         e = Math.max(0, e - dt * .45);
         const E = Math.max(e, auto);
         const jit = E > .15 ? Math.sin(t / 23) * 5 * E + (Math.random() - .5) * 7 * E : 0;
@@ -752,7 +768,8 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     });
     const placeAll = () => sls.forEach(place);
     addEventListener('resize', placeAll); placeAll();
-    onSeen(sc, on => { if (on && !sc.dataset.shown) { sc.dataset.shown = 1; if (!RM) sls.forEach((el, i) => el.animate([{ opacity: 0, transform: 'translateX(26px)' }, { opacity: 1, transform: 'none' }], { duration: 500, delay: 150 + i * 160, easing: 'cubic-bezier(.2,.9,.3,1.2)', fill: 'backwards' })); } });
+    if (!RM) sls.forEach(el => el.style.opacity = 0);
+    onFocus(sc, () => { if (!sc.dataset.shown) { sc.dataset.shown = 1; sls.forEach(el => el.style.opacity = ''); if (!RM) sls.forEach((el, i) => el.animate([{ opacity: 0, transform: 'translateX(26px)' }, { opacity: 1, transform: 'none' }], { duration: 500, delay: 150 + i * 160, easing: 'cubic-bezier(.2,.9,.3,1.2)', fill: 'backwards' })); } }, (r, vh) => r.top <= vh + 80 && r.bottom >= -80);
     loopWhileSeen(sc, (dt, t) => {
       const s = storm();
       hv += ((s - h) * 40 - hv * 7) * dt; h += hv * dt;
@@ -864,12 +881,13 @@ footer .sign { color: var(--muted); margin-top: 18px; font-size: .8rem; }
     const shake = $('.c-shake', sc), calm = $('.c-calm', sc), glow = $('.tr-glow', sc);
     let pull = 0, gx = null, gy = 0, snapped = false, want = false, lit = 0, litT = 0;
     const centerOf = el => { const a = el.getBoundingClientRect(), b = sc.getBoundingClientRect(); return { x: a.left - b.left + a.width / 2, y: a.top - b.top + a.height / 2 }; };
+    let focused = false; onFocus(sc, () => focused = true, (r, vh) => r.top <= vh + 80 && r.bottom >= -80);
     onSeen(sc, on => glow.classList.toggle('on', on && !snapped));
     loopWhileSeen(sc, (dt, t) => {
       const c1 = centerOf(calm), c2 = centerOf(shake), k = t / 1000;
       if (!snapped) {
         // «внимание» начинает у спокойной карточки, но его медленно перетягивает к дрожащей
-        pull = Math.min(1, pull + dt * .28);
+        if (focused) pull = Math.min(1, pull + dt * .28);
         const e = sm(pull), orb = 10 + 16 * e;
         const tx = c1.x + (c2.x - c1.x) * e + Math.cos(k * 2.3) * orb, ty = c1.y + (c2.y - c1.y) * e + Math.sin(k * 3.1) * orb * .7;
         if (gx === null) { gx = tx; gy = ty; }
